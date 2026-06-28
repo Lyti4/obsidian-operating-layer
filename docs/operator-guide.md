@@ -44,4 +44,23 @@ The manifest must contain:
 - Keep changes small.
 - Re-scan after every edit.
 - Write final run reports into `Memory-Vault/Hermes/Reports/`.
+- Report back to Telegram with `docs/telegram-summary-templates.md` so Dmitry gets exact paths and verification evidence without opening server-local files.
 - Do not touch Gateway/systemd, secrets, payments, public posting, production restarts, or network exposure from this package.
+
+## Common safe aliases
+
+These aliases shorten routine acceptance commands. They are read-only, proposal-only, or sandbox-render flows; they do not install cron and do not perform live apply.
+
+```bash
+make dashboard-list PROPOSAL_ROOT=out/proposals
+make field-slice-example VAULT=/tmp/approved-vault-subset FIELD_SLICE_OUT=out/field-slices/example
+make render-diagrams DIAGRAM_OUT=out/diagrams/manual-acceptance REPORT_OUT=out/reports/manual-acceptance
+make rag-benchmark RAG_SANDBOX=out/sandbox-vaults/rag-benchmark RAG_REPORTS=out/reports/rag-benchmark
+make mcp-benchmark MCP_SANDBOX=out/sandbox-vaults/mcp-benchmark MCP_REPORTS=out/reports/mcp-benchmark
+```
+
+Use a disposable sandbox or approved subset for `field-slice-example` unless Dmitry explicitly wants a read-only scan of the full live vault.
+
+## Scheduled reports
+
+Scheduled observe/index reports are intentionally not installed by this project. Cron/systemd/webhook scheduling requires separate explicit approval that names the schedule, destination, retention, and rollback/disable command.

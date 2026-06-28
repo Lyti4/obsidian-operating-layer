@@ -198,11 +198,11 @@ Acceptance:
 
 ## P3 — polish and operations
 
-- Better report templates for Telegram summaries.
-- A compact `how to use` operator guide.
-- Cleaner command aliases for common flows.
-- Scheduled observe/index reports after explicit cron approval.
-- More visual themes for diagrams.
+- Better report templates for Telegram summaries — implemented in `docs/telegram-summary-templates.md`.
+- A compact `how to use` operator guide — implemented in `docs/operator-guide.md`.
+- Cleaner command aliases for common flows — implemented as safe `make` aliases: `dashboard-list`, `field-slice-example`, `render-diagrams`, `rag-benchmark`, `mcp-benchmark`.
+- Scheduled observe/index reports after explicit cron approval — not installed; remains approval-gated by design.
+- More visual themes for diagrams — optional future enhancement; current accepted rendered Mermaid SVG/PDF evidence is recorded in `15-manual-and-adapter-acceptance.md`.
 
 ## Proposed next kanban batch
 

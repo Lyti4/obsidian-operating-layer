@@ -20,6 +20,7 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `tools/obsidian_field_slice.py` — proposal-only field acceptance slice: observe → finding → proposal → verify → dashboard list → decision record.
 - `docs/controlled-autonomy.md` — Phase 08 controlled-autonomy operator notes and safety model.
 - `docs/obsidian-review-dashboard/` — Dataview/Templater-friendly Phase 7 review dashboard source notes.
+- `docs/telegram-summary-templates.md` — short Telegram reporting templates for dry-run, sandbox benchmark, manual acceptance, and live-approval request updates.
 - `obsidian_*.py` — compatibility wrappers for the canonical tools.
 - `src/obslayer/guardrails.py` — shared guardrails, approval manifest validation, protected path policy, backup policy.
 - `src/obslayer/sandbox.py` — sandbox vault copy/reset harness for read-only component evaluation.
@@ -62,6 +63,18 @@ pip install -U pip pytest ruff
 make verify
 make smoke
 ```
+
+Safe make aliases for common flows:
+
+```bash
+make dashboard-list PROPOSAL_ROOT=out/proposals
+make field-slice-example VAULT=/tmp/approved-vault-subset FIELD_SLICE_OUT=out/field-slices/example
+make render-diagrams DIAGRAM_OUT=out/diagrams/manual-acceptance REPORT_OUT=out/reports/manual-acceptance
+make rag-benchmark RAG_SANDBOX=out/sandbox-vaults/rag-benchmark RAG_REPORTS=out/reports/rag-benchmark
+make mcp-benchmark MCP_SANDBOX=out/sandbox-vaults/mcp-benchmark MCP_REPORTS=out/reports/mcp-benchmark
+```
+
+These aliases are read-only/proposal-only/sandbox-render helpers. They do not install cron and do not run real live apply. `field-slice-example` should use an approved subset or disposable sandbox path when you do not want to read the full vault.
 
 `make smoke` creates a timestamped `out/smoke-*` directory and runs the full safe pipeline against `/home/hermesadmin/Obsidian`: observe → propose → verify → apply dry-run. It does not delete previous artifacts and does not mutate the vault.
 

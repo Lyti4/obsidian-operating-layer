@@ -178,12 +178,18 @@ The concrete manual dashboard/diagram review decision is recorded in
 
 These remain future roadmap work, not blockers for the current operational acceptance baseline:
 
-1. `P2.2` RAG/graph candidate benchmark on sandbox data.
-2. `P2.3` MCP read-only adapter expansion.
-3. Scheduled observe/index reports, only after explicit cron approval.
-4. Better Telegram summary templates and command aliases.
+1. Decide whether any specific real proposal should ever be approved for live apply.
+2. Scheduled observe/index reports, only after explicit cron approval.
+3. Optional additional visual themes for diagrams.
 
-The sandbox-only benchmark contracts for `P2.2` and `P2.3` are recorded in
+Closed after the original acceptance pass:
+
+- `P2.2` RAG/graph candidate benchmark on sandbox data — implemented and exercised; evidence is recorded in `15-manual-and-adapter-acceptance.md`.
+- `P2.3` MCP read-only adapter expansion — implemented and exercised; evidence is recorded in `15-manual-and-adapter-acceptance.md`.
+- Better Telegram summary templates — implemented in `docs/telegram-summary-templates.md`.
+- Command aliases for common flows — implemented as safe `make` targets.
+
+The sandbox-only benchmark evidence for `P2.2` and `P2.3` is recorded in
 `15-manual-and-adapter-acceptance.md`.
 
 ## Safety boundary
