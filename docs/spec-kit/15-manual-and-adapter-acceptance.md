@@ -104,7 +104,7 @@ notes: <short issue list or OK>
 
 ## P2.2 RAG/graph sandbox benchmark contract
 
-Status: benchmark metrics implemented for the local wrapper; sandbox-only.
+Status: benchmark metrics implemented and exercised on a copied sandbox vault; sandbox-only.
 
 Existing implementation and evidence:
 
@@ -141,9 +141,31 @@ Verification:
 pytest tests/test_rag_graph_adapter.py
 ```
 
+Latest sandbox evidence:
+
+```text
+out/reports/rag-benchmark-20260628-095744Z/rag-graph-evaluation-benmaster82-Kwipu-20260628-095759Z.json
+out/reports/rag-benchmark-20260628-095744Z/rag-graph-evaluation-benmaster82-Kwipu-20260628-095759Z.md
+```
+
+Recorded evidence fields:
+
+```text
+sandboxed: true
+direct_write_disabled: true
+normalized_findings_only: true
+proposal_only_for_write_like_suggestions: true
+notes_scanned: 627
+fixed_query_count: 2
+finding_count: 7869
+benchmark_metrics.cost_model: local-wrapper-no-llm-call
+benchmark_metrics.wall_time_ms: 13885.955
+benchmark_metrics.max_rss_kb: 35272
+```
+
 ## P2.3 MCP read-only adapter expansion contract
 
-Status: read-only expansion metrics implemented for the local wrapper; sandbox-only.
+Status: read-only expansion metrics implemented and exercised on a copied sandbox vault; sandbox-only.
 
 Existing implementation and evidence:
 
@@ -179,6 +201,26 @@ Verification:
 
 ```bash
 pytest tests/test_mcp_adapter.py
+```
+
+Latest sandbox evidence:
+
+```text
+out/reports/mcp-benchmark-20260628-095744Z/mcp-adapter-evaluation-cyanheads-obsidian-mcp-server-20260628-095759Z.json
+out/reports/mcp-benchmark-20260628-095744Z/mcp-adapter-evaluation-cyanheads-obsidian-mcp-server-20260628-095759Z.md
+```
+
+Recorded evidence fields:
+
+```text
+sandboxed: true
+direct_write_disabled: true
+dangerous_tools_refused: true
+probe_count: 5
+source_path_count: 627
+benchmark_metrics.cost_model: local-wrapper-no-llm-call
+benchmark_metrics.wall_time_ms: 16.946
+benchmark_metrics.max_rss_kb: 20220
 ```
 
 ## Done criteria for this addendum

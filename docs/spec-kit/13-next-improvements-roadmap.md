@@ -175,6 +175,8 @@ python3 tools/obsidian_field_slice.py --vault /tmp/approved-vault-subset --out-r
 
 Goal: test the primary ready RAG/graph candidate against a copied vault benchmark.
 
+Status: implemented and exercised as sandbox-only benchmark evidence; see `15-manual-and-adapter-acceptance.md`.
+
 Acceptance:
 
 - install/run only inside sandbox;
@@ -185,6 +187,8 @@ Acceptance:
 ### P2.3 MCP read-only adapter expansion
 
 Goal: expand read/search/graph evidence collection without write tools.
+
+Status: implemented and exercised as sandbox-only read-only/refusal evidence; see `15-manual-and-adapter-acceptance.md`.
 
 Acceptance:
 
@@ -208,6 +212,8 @@ Acceptance:
 4. `p1_dashboard_manual_review`
 5. `p1_diagram_readability_acceptance`
 6. `p2_field_test_slice_no_live_apply`
+7. `p2_rag_graph_sandbox_benchmark_evidence`
+8. `p2_mcp_readonly_benchmark_evidence`
 
 The remaining manual/UI and adapter benchmark contracts are defined in
 `15-manual-and-adapter-acceptance.md`.
