@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/obslayer/queue-task.schema.json",
+  "title": "Obsidian Operating Layer Queue Task",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "created_at",
+    "updated_at",
+    "status",
+    "worker",
+    "vault_root",
+    "vault_mode",
+    "capabilities",
+    "write_policy",
+    "inputs",
+    "outputs",
+    "attempts",
+    "max_attempts",
+    "safety"
+  ],
+  "properties": {
+    "task_id": {"type": "string", "pattern": "^obslayer-[A-Za-z0-9_.:-]+$"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "status": {"type": "string", "enum": ["pending", "queued", "running", "blocked", "done", "succeeded", "failed", "cancelled"]},
+    "worker": {"type": "string", "minLength": 1},
+    "priority": {"type": "integer", "minimum": 0, "maximum": 100, "default": 50},
+    "vault_root": {"type": "string", "minLength": 1},
+    "vault_mode": {"type": "string", "enum": ["sandbox-copy", "read-only-live", "approved-live-output"]},
+    "capabilities": {
+      "type": "array",
+      "items": {"type": "string", "enum": ["read", "search", "graph", "analyze", "metadata-read", "propose", "render", "write-request"]},
+      "uniqueItems": true
+    },
+    "write_policy": {"type": "string", "enum": ["proposal_only", "report_only", "render_only"]},
+    "inputs": {"type": "object"},
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "finding": {"type": "string"},
+        "proposal": {"type": "string"},
+        "report": {"type": "string"},
+        "diagrams": {"type": "array", "items": {"type": "string"}},
+        "log": {"type": "string"}
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeout_seconds": {"type": "integer", "minimum": 1},
+        "max_files": {"type": "integer", "minimum": 1},
+        "max_output_bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "attempts": {"type": "integer", "minimum": 0},
+    "max_attempts": {"type": "integer", "minimum": 1},
+    "depends_on": {"type": "array", "items": {"type": "string"}},
+    "owner": {"type": "string"},
+    "labels": {"type": "array", "items": {"type": "string"}},
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["protected_paths_excluded", "direct_write_enabled", "requires_manifest_for_apply"],
+      "properties": {
+        "protected_paths_excluded": {"const": true},
+        "direct_write_enabled": {"const": false},
+        "requires_manifest_for_apply": {"const": true}
+      }
+    }
+  }
+}

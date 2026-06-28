@@ -35,3 +35,5 @@ Obsidian vault
 - `09-rag-graph-sandbox-plan.md` — sandbox-план для RAG/graph компонентов.
 - `10-diagram-pdf-pipeline.md` — pipeline красивых схем и PDF.
 - `11-implementation-roadmap.md` — порядок реализации по фазам.
+- `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
+- `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.

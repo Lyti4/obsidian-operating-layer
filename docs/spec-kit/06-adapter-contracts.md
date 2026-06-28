@@ -55,6 +55,24 @@ No adapter may directly create, modify, move, merge, or delete live vault files.
 | `move-direct` | move/rename live vault files | no |
 | `secret-read` | read tokens/keys/.env | no |
 
+## Adapter behavior by type
+
+### Read/search adapters
+
+Must operate read-only, return normalized outputs, avoid changing vault content, and record source paths/timestamps where available.
+
+### Graph/RAG adapters
+
+May produce backlinks, orphan notes, duplicates, candidate MOCs, related notes, and memory maps. They must keep output traceable to source notes and never auto-apply structural changes.
+
+### Proposal adapters
+
+Must separate suggestion from execution. They convert findings into obslayer proposal format with target paths, change type, risk level, rationale, and evidence.
+
+### Render adapters
+
+Must emit reproducible source artifacts first and write generated SVG/PDF only to safe output locations such as `out/diagrams/` or `out/reports/`.
+
 ## Output normalization
 
 Every adapter must emit one of:
@@ -82,6 +100,34 @@ Minimum finding shape:
   ]
 }
 ```
+
+Recommended run output shape:
+
+```json
+{
+  "adapter": "graph-worker",
+  "run_id": "run-20260628-001",
+  "status": "ok",
+  "findings": [],
+  "artifacts": {
+    "report": "out/reports/example.md",
+    "proposal": "out/proposals/example.json",
+    "diagram_source": "out/diagrams/example.mmd"
+  },
+  "write_requests": [],
+  "warnings": [],
+  "verification": {
+    "sandboxed": true,
+    "direct_write_disabled": true
+  }
+}
+```
+
+## Machine-readable schema
+
+- `schemas/adapter-metadata.schema.json` defines the adapter metadata contract.
+- `direct_write_enabled` is constrained to `false`.
+- Forbidden mutation and secret capabilities are explicit enum values.
 
 ## Adapter acceptance checklist
 

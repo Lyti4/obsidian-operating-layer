@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/obslayer/adapter-metadata.schema.json",
+  "title": "Obsidian Operating Layer Adapter Metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "kind",
+    "source",
+    "license",
+    "capabilities",
+    "forbidden_capabilities",
+    "direct_write_enabled",
+    "vault_scope",
+    "outputs",
+    "risk_level",
+    "sandbox_required"
+  ],
+  "properties": {
+    "name": {"type": "string", "minLength": 1},
+    "kind": {
+      "type": "string",
+      "enum": ["mcp-server", "obsidian-plugin", "rag-engine", "diagram-renderer", "local-cli", "python-library", "node-package"]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "id"],
+      "properties": {
+        "type": {"type": "string", "enum": ["github", "obsidian-community-registry", "local", "package-registry"]},
+        "id": {"type": "string", "minLength": 1},
+        "url": {"type": "string"}
+      }
+    },
+    "version": {"type": "string"},
+    "license": {"type": "string", "minLength": 1},
+    "runtime": {"type": "string"},
+    "capabilities": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/allowedCapability"},
+      "uniqueItems": true
+    },
+    "forbidden_capabilities": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/forbiddenCapability"},
+      "uniqueItems": true
+    },
+    "direct_write_enabled": {"const": false},
+    "vault_scope": {"type": "string", "enum": ["sandbox-copy", "read-only-live", "approved-output-only"]},
+    "outputs": {
+      "type": "array",
+      "items": {"type": "string", "enum": ["finding-json", "proposal-json", "markdown-report", "diagram-source", "svg", "pdf", "log"]},
+      "uniqueItems": true
+    },
+    "risk_level": {"type": "string", "enum": ["low", "medium", "high"]},
+    "risk_notes": {"type": "array", "items": {"type": "string"}},
+    "sandbox_required": {"type": "boolean"},
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sandbox_command": {"type": "string"},
+        "expected_outputs": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "allowedCapability": {
+      "type": "string",
+      "enum": ["read", "search", "graph", "analyze", "metadata-read", "propose", "render", "write-request"]
+    },
+    "forbiddenCapability": {
+      "type": "string",
+      "enum": ["write-direct", "delete-direct", "move-direct", "merge-direct", "patch-direct", "execute-live-mutation", "secret-read"]
+    }
+  }
+}

@@ -10,8 +10,10 @@ Start worker orchestration with a small local durable queue. Avoid heavy distrib
 out/queue/
   pending/
   running/
+  blocked/
   done/
   failed/
+  cancelled/
 out/reports/
 out/proposals/
 out/research/
@@ -26,7 +28,7 @@ Queue files are JSON. Moving a file between directories changes state.
 {
   "task_id": "obslayer-20260628-120000-linker-001",
   "created_at": "2026-06-28T12:00:00Z",
-  "status": "pending|running|done|failed|cancelled",
+  "status": "pending|queued|running|blocked|done|succeeded|failed|cancelled",
   "worker": "linker-worker",
   "priority": 50,
   "vault_root": "/home/hermesadmin/Obsidian",
@@ -53,9 +55,15 @@ Queue files are JSON. Moving a file between directories changes state.
     "protected_paths_excluded": true,
     "direct_write_enabled": false,
     "requires_manifest_for_apply": true
-  }
+  },
+  "attempts": 0,
+  "max_attempts": 3,
+  "depends_on": [],
+  "labels": []
 }
 ```
+
+Machine-readable schema: `schemas/queue-task.schema.json`.
 
 ## Initial workers
 
@@ -77,9 +85,35 @@ Queue files are JSON. Moving a file between directories changes state.
 
 ```text
 pending -> running -> done
+queued  -> running -> succeeded
 pending -> running -> failed
+queued  -> blocked  (missing dependency or approval)
 pending -> cancelled
 failed  -> pending  (manual retry)
+```
+
+`done` and `succeeded` are synonyms during the draft phase; implementation should pick one canonical value before coding.
+
+## Retry and deduplication
+
+- Retry only transient failures.
+- Stop at `max_attempts`.
+- Fail fast on protected path access, direct write attempts, secrets exposure, invalid vault root, or malformed proposal target.
+- Deduplicate tasks by `worker`, `vault_root`, normalized `inputs`, and `write_policy`.
+
+## Audit record
+
+Every state transition should append an audit entry:
+
+```json
+{
+  "task_id": "obslayer-20260628-120000-graph",
+  "from_status": "queued",
+  "to_status": "running",
+  "worker": "graph-worker",
+  "timestamp": "2026-06-28T12:01:00Z",
+  "note": "claimed by worker"
+}
 ```
 
 ## Execution rules
