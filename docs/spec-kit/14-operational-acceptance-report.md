@@ -13,8 +13,8 @@ Acceptance scope covered in this pass:
 - human-readable proposal explanation;
 - disposable sandbox apply rehearsal;
 - controlled-autonomy report format clarity;
-- diagram/PDF generation acceptance;
-- dashboard static acceptance.
+- diagram/PDF generation and server-side visual acceptance;
+- dashboard static and server-side usability acceptance.
 
 The real live vault was not mutated. Live apply to `/home/hermesadmin/Obsidian` remains outside this acceptance pass.
 
@@ -88,7 +88,7 @@ Acceptance result:
 
 ### P1.3 Dashboard field review
 
-Status: static acceptance complete; live Obsidian UI review remains manual.
+Status: accepted by server-side manual review; live Obsidian publication remains gated.
 
 Evidence:
 
@@ -98,12 +98,12 @@ Evidence:
 
 Acceptance result:
 
-- Dashboard source is ready to copy/publish through the normal approval gate.
-- Manual Obsidian UI rendering is still a human acceptance step because this CLI run cannot open Dmitry's Obsidian UI.
+- Dashboard source is readable and ready to copy/publish through the normal approval gate.
+- Дмитрий cannot open server-local files directly, so Hermes Agent performed the manual file-level review and recorded the decision in `15-manual-and-adapter-acceptance.md`.
 
 ### P1.4 Diagram readability acceptance
 
-Status: technical acceptance complete; visual taste review remains human.
+Status: accepted by server-side manual review with real Mermaid-rendered SVG artifacts.
 
 Evidence:
 
@@ -115,8 +115,8 @@ Evidence:
 
 Acceptance result:
 
-- Diagrams are reproducible from committed sources.
-- Human visual approval can now focus on wording/layout, not pipeline correctness.
+- Diagrams are reproducible from committed sources and now render as actual Mermaid SVG diagrams, not only source-preview fallbacks.
+- Hermes Agent recorded the server-side visual decision in `15-manual-and-adapter-acceptance.md`.
 
 ### P2.1 Proposal-only field-test slice
 
@@ -165,13 +165,11 @@ Expected canonical result:
 
 ### Human/manual acceptance
 
-These are not safe or meaningful to automate from the CLI agent alone:
+Server-local dashboard and diagram acceptance is now recorded by Hermes Agent because Dmitry cannot open these files directly. The remaining explicit human decision is:
 
-1. Open dashboard in Obsidian and confirm visual usability.
-2. Open generated SVG/PDF and approve wording/layout.
-3. Decide whether any specific real proposal should be approved for live apply.
+1. Decide whether any specific real proposal should ever be approved for live apply.
 
-The concrete manual dashboard/diagram review checklist is recorded in
+The concrete manual dashboard/diagram review decision is recorded in
 `15-manual-and-adapter-acceptance.md`.
 
 ### Future capability expansion

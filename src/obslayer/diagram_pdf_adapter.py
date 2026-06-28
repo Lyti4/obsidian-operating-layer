@@ -3,6 +3,9 @@ from __future__ import annotations
 import html
 import json
 import re
+import shutil
+import subprocess
+import tempfile
 import textwrap
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -102,7 +105,7 @@ def _diagram_title(name: str, source: str) -> str:
     return first_line[:80]
 
 
-def render_mermaid_source_to_svg(name: str, source: str, out: str | Path) -> None:
+def _safe_source_preview_svg(name: str, source: str, out: Path) -> None:
     title = _diagram_title(name, source)
     lines = [line.rstrip() for line in source.splitlines() if line.strip()]
     width = 1040
@@ -128,14 +131,58 @@ def render_mermaid_source_to_svg(name: str, source: str, out: str | Path) -> Non
   <rect class="bg" x="0" y="0" width="{width}" height="{height}"/>
   <rect class="panel" x="24" y="24" width="{width - 48}" height="{height - 48}"/>
   <text x="44" y="64" class="title">{escaped_title}</text>
-  <text x="44" y="90" class="subtitle">Reproducible Mermaid source rendered as safe SVG preview</text>
+  <text x="44" y="90" class="subtitle">Mermaid renderer unavailable; safe source preview fallback</text>
   <line x1="44" y1="106" x2="{width - 44}" y2="106" class="rule"/>
   {''.join(text_lines)}
 </svg>
 """
+    out.write_text(svg, encoding="utf-8")
+
+
+def _mermaid_cli_command() -> list[str] | None:
+    if shutil.which("mmdc"):
+        return ["mmdc"]
+    if shutil.which("npx"):
+        return ["npx", "--yes", "@mermaid-js/mermaid-cli"]
+    return None
+
+
+def _render_with_mermaid_cli(source: str, out: Path) -> bool:
+    command = _mermaid_cli_command()
+    if not command:
+        return False
+    with tempfile.TemporaryDirectory(prefix="obslayer-mermaid-") as tmp:
+        tmp_dir = Path(tmp)
+        input_path = tmp_dir / "diagram.mmd"
+        input_path.write_text(source, encoding="utf-8")
+        puppeteer_config = tmp_dir / "puppeteer.json"
+        puppeteer_config.write_text(
+            json.dumps({"args": ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]}),
+            encoding="utf-8",
+        )
+        cli = [
+            *command,
+            "-i",
+            str(input_path),
+            "-o",
+            str(out),
+            "--backgroundColor",
+            "transparent",
+            "-p",
+            str(puppeteer_config),
+        ]
+        try:
+            subprocess.run(cli, check=True, capture_output=True, text=True, timeout=120)
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            return False
+    return out.is_file() and "<svg" in out.read_text(encoding="utf-8", errors="ignore")[:500]
+
+
+def render_mermaid_source_to_svg(name: str, source: str, out: str | Path) -> None:
     target = Path(out)
     target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(svg, encoding="utf-8")
+    if not _render_with_mermaid_cli(source, target):
+        _safe_source_preview_svg(name, source, target)
 
 
 def _pdf_escape(text: str) -> str:

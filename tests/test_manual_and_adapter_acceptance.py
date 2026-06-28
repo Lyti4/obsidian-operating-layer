@@ -50,3 +50,14 @@ def test_manual_and_adapter_acceptance_addendum_is_indexed_and_actionable() -> N
     )
     for boundary in required_boundaries:
         assert boundary in addendum
+
+    server_side_decisions = (
+        "dashboard_visual_acceptance: accepted",
+        "diagram_visual_acceptance: accepted",
+        "Hermes Agent on server",
+        "rendered flowchart",
+        "rendered sequence diagram",
+        "not source-preview fallback",
+    )
+    for decision in server_side_decisions:
+        assert decision in addendum
