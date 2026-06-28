@@ -15,6 +15,8 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `tools/obsidian_verify.py` — verify observation/proposal consistency.
 - `tools/obsidian_backfill_report.py` — write an operator report into Obsidian Reports.
 - `tools/obsidian_sandbox.py` — create/reset protected-path-excluding sandbox vault copies under `out/`.
+- `tools/obsidian_controlled_autonomy.py` — explicit Phase 08 observe/index/report queue jobs and acceptance reports; no scheduler is installed.
+- `docs/controlled-autonomy.md` — Phase 08 controlled-autonomy operator notes and safety model.
 - `docs/obsidian-review-dashboard/` — Dataview/Templater-friendly Phase 7 review dashboard source notes.
 - `obsidian_*.py` — compatibility wrappers for the canonical tools.
 - `src/obslayer/guardrails.py` — shared guardrails, approval manifest validation, protected path policy, backup policy.
