@@ -8,7 +8,7 @@ from pathlib import Path
 
 from _bootstrap import SRC  # noqa: F401
 
-from obslayer import GuardrailError, load_json
+from obslayer import GuardrailError, load_json, normalize_vault_root, validate_targets
 
 
 def verify(observation: dict, proposal: dict) -> dict:
@@ -20,8 +20,31 @@ def verify(observation: dict, proposal: dict) -> dict:
     if proposal.get("approval_phrase") != observation.get("run_commands", {}).get("approval_phrase", proposal.get("approval_phrase")):
         # The observation bundle does not currently carry the phrase; compare against proposal only.
         pass
-    if proposal.get("targets") != []:
-        issues.append("this safety-rails slice should not emit live targets")
+    targets = proposal.get("targets", [])
+    if not isinstance(targets, list):
+        issues.append("proposal targets must be a list")
+    elif targets:
+        try:
+            raw_vault_root = proposal.get("vault_root") or observation.get("vault_root")
+            if not raw_vault_root:
+                raise GuardrailError("proposal must include vault_root before target validation")
+            vault_root = normalize_vault_root(str(raw_vault_root))
+            target_paths = []
+            for target in targets:
+                raw_path = str(target.get("path")) if isinstance(target, dict) else str(target)
+                candidate = Path(raw_path).expanduser()
+                target_paths.append(str(candidate if candidate.is_absolute() else vault_root / candidate))
+            validate_targets(vault_root, target_paths)
+        except (GuardrailError, TypeError, ValueError) as exc:
+            issues.append(f"proposal targets failed safety validation: {exc}")
+        for target in targets:
+            if not isinstance(target, dict):
+                issues.append("proposal target must be an object")
+                continue
+            if "path" not in target or "new_text" not in target:
+                issues.append("proposal target must include path and new_text")
+            if not target.get("evidence"):
+                issues.append("proposal target must retain evidence")
     backup_plan = proposal.get("backup_plan", {})
     if not backup_plan.get("backup_dir"):
         issues.append("proposal must include a backup dir")

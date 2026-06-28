@@ -1,3 +1,10 @@
+from .diagram_pdf_adapter import (
+    DiagramPdfReportEvaluation,
+    build_diagram_pdf_report_evaluation,
+    diagram_pdf_report_to_markdown,
+    load_diagram_renderer_record,
+    write_diagram_pdf_report_evaluation,
+)
 from .guardrails import (
     DEFAULT_APPROVAL_PHRASE,
     DEFAULT_BACKUP_ROOT,
@@ -21,13 +28,6 @@ from .guardrails import (
     validate_targets,
     write_json,
 )
-from .diagram_pdf_adapter import (
-    DiagramPdfReportEvaluation,
-    build_diagram_pdf_report_evaluation,
-    diagram_pdf_report_to_markdown,
-    load_diagram_renderer_record,
-    write_diagram_pdf_report_evaluation,
-)
 from .mcp_adapter import (
     McpAdapterEvaluation,
     build_mcp_adapter_evaluation,
@@ -36,6 +36,12 @@ from .mcp_adapter import (
     load_mcp_adapter_record,
     normalize_mcp_tool_request,
     write_mcp_adapter_evaluation,
+)
+from .proposal_normalization import (
+    load_findings_bundle,
+    normalize_findings_to_proposal,
+    proposal_to_markdown,
+    write_normalized_proposal,
 )
 from .rag_graph_adapter import (
     RagGraphAdapterEvaluation,
@@ -74,19 +80,23 @@ __all__ = [
     "is_protected_relative",
     "load_json",
     "load_diagram_renderer_record",
+    "load_findings_bundle",
     "load_mcp_adapter_record",
     "load_rag_graph_adapter_record",
     "manifest_backup_plan",
+    "normalize_findings_to_proposal",
     "normalize_mcp_tool_request",
     "normalize_rag_graph_findings",
     "normalize_vault_root",
     "parse_paths",
     "planned_backup_dir",
+    "proposal_to_markdown",
     "rag_graph_evaluation_to_markdown",
     "validate_approval_manifest",
     "validate_targets",
     "write_json",
     "write_diagram_pdf_report_evaluation",
     "write_mcp_adapter_evaluation",
+    "write_normalized_proposal",
     "write_rag_graph_adapter_evaluation",
 ]

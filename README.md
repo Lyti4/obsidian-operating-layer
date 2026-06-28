@@ -10,6 +10,7 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 
 - `tools/obsidian_observe.py` — read-only vault observation to JSON.
 - `tools/obsidian_propose.py` — turn an observation bundle into a dry-run proposal bundle.
+- `tools/obsidian_proposal_worker.py` — normalize component findings into an obslayer dry-run proposal bundle with evidence, risk, and validated targets.
 - `tools/obsidian_apply.py` — dry-run by default; live apply only with an explicit approval manifest.
 - `tools/obsidian_verify.py` — verify observation/proposal consistency.
 - `tools/obsidian_backfill_report.py` — write an operator report into Obsidian Reports.
@@ -80,6 +81,17 @@ python3 tools/obsidian_propose.py \
   --observe /tmp/obslayer-observe.json \
   --out-dir /tmp/obslayer-proposal
 ```
+
+Normalize component findings into a proposal-only mutation request:
+
+```bash
+python3 tools/obsidian_proposal_worker.py \
+  --findings /tmp/component-findings.json \
+  --vault-root /home/hermesadmin/Obsidian \
+  --out-dir /tmp/obslayer-proposal
+```
+
+The findings JSON may be either a list of finding objects or an object with `source_id` and `findings`. Each finding target must include `path` and `new_text`; protected namespaces are refused before `proposal.json` is written. The generated proposal stays dry-run by default and still needs an approval manifest before live apply.
 
 Dry-run an apply:
 
