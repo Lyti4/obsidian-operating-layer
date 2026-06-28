@@ -1,14 +1,69 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Inter, ui-sans-serif, system-ui", "background": "#0B1020", "primaryColor": "#E0F2FE", "primaryBorderColor": "#38BDF8", "primaryTextColor": "#0F172A", "lineColor": "#94A3B8", "clusterBkg": "#111827", "clusterBorder": "#334155", "edgeLabelBackground": "#111827"}, "flowchart": {"curve": "basis", "padding": 18}}}%%
 flowchart TB
-  Human[Human / Obsidian UI]
-  Plugins[Ready Obsidian plugins\nDataview / Templater / Search]
-  Workers[Worker layer\nMCP / RAG / Graph / Diagram]
-  Safety[Obslayer safety core\nobserve -> propose -> verify -> apply]
-  Vault[Approved vaults and sandbox copies]
-  Reports[out/reports\nPDF / Markdown / JSON]
+  Title["Obsidian Operating Layer<br/><b>safe local control plane</b>"]
 
-  Human --> Plugins
-  Plugins --> Workers
-  Workers --> Safety
-  Safety --> Vault
-  Workers --> Reports
-  Safety --> Reports
+  subgraph HumanZone["👤 Human decision layer"]
+    Human["Dmitry / Obsidian UI<br/><span style='font-size:12px'>reviews, approves, rejects</span>"]
+    Dashboard["Review dashboard<br/><span style='font-size:12px'>Dataview + checklist</span>"]
+  end
+
+  subgraph PluginZone["🧩 Ready Obsidian components"]
+    Dataview["Dataview<br/>queries"]
+    Templater["Templater<br/>forms"]
+    Search["Search / backlinks<br/>context"]
+  end
+
+  subgraph WorkerZone["🤖 Worker layer"]
+    Observe["observe<br/><span style='font-size:12px'>read-only vault scan</span>"]
+    RAG["RAG / Graph<br/><span style='font-size:12px'>find patterns</span>"]
+    Diagram["Diagram/PDF<br/><span style='font-size:12px'>visual reports</span>"]
+    ProposalWorker["proposal worker<br/><span style='font-size:12px'>normalize findings</span>"]
+  end
+
+  subgraph SafetyZone["🛡️ Safety core"]
+    Propose["propose<br/>dry-run bundle"]
+    Verify["verify<br/>fresh evidence"]
+    Apply["apply<br/>approval manifest only"]
+    Autonomy["controlled autonomy<br/>queue + audit"]
+  end
+
+  subgraph DataZone["📦 Outputs and storage"]
+    Sandbox["Sandbox vault copies<br/><span style='font-size:12px'>safe experiments</span>"]
+    Reports["out/reports<br/><span style='font-size:12px'>PDF / MD / JSON</span>"]
+    Vault["Approved vault targets<br/><span style='font-size:12px'>no direct mutation</span>"]
+    GitHub["GitHub baseline<br/><span style='font-size:12px'>versioned tools/docs</span>"]
+  end
+
+  Title --> Human
+  Human --> Dashboard
+  Dashboard --> Propose
+  Dataview --> Observe
+  Templater --> ProposalWorker
+  Search --> RAG
+  Observe --> RAG
+  RAG --> ProposalWorker
+  ProposalWorker --> Propose
+  Diagram --> Reports
+  Propose --> Verify
+  Verify -->|PASS + approval| Apply
+  Verify -->|needs work| ProposalWorker
+  Apply --> Sandbox
+  Apply --> Vault
+  Autonomy --> Propose
+  Autonomy --> Reports
+  Reports --> Human
+  GitHub --> WorkerZone
+
+  classDef title fill:#F8FAFC,stroke:#38BDF8,stroke-width:2px,color:#0F172A;
+  classDef human fill:#FEF3C7,stroke:#F59E0B,stroke-width:2px,color:#111827;
+  classDef plugin fill:#DBEAFE,stroke:#2563EB,stroke-width:2px,color:#111827;
+  classDef worker fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#111827;
+  classDef safety fill:#FFE4E6,stroke:#E11D48,stroke-width:2px,color:#111827;
+  classDef data fill:#EDE9FE,stroke:#7C3AED,stroke-width:2px,color:#111827;
+
+  class Title title;
+  class Human,Dashboard human;
+  class Dataview,Templater,Search plugin;
+  class Observe,RAG,Diagram,ProposalWorker worker;
+  class Propose,Verify,Apply,Autonomy safety;
+  class Sandbox,Reports,Vault,GitHub data;

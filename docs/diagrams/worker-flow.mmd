@@ -1,14 +1,45 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Inter, ui-sans-serif, system-ui", "background": "#0B1020", "primaryColor": "#E0F2FE", "primaryBorderColor": "#38BDF8", "primaryTextColor": "#0F172A", "lineColor": "#64748B", "clusterBkg": "#111827", "clusterBorder": "#334155"}, "flowchart": {"curve": "monotoneX", "padding": 20}}}%%
 flowchart LR
-  Intake[Approved phase item]
-  Queue[Local durable queue]
-  Code[code_slice worker]
-  Verify[verification worker]
-  Final[final_report worker]
-  Human[Human acceptance]
+  Start(["Approved spec-kit item"])
 
-  Intake --> Queue
-  Queue --> Code
-  Code --> Verify
-  Verify --> Final
-  Final --> Human
-  Verify -. failed evidence .-> Code
+  subgraph QueueZone["📋 Durable board / queue"]
+    Intake["Intake card<br/><span style='font-size:12px'>scope + rails</span>"]
+    Kanban["Kanban state<br/><span style='font-size:12px'>todo → running → done</span>"]
+  end
+
+  subgraph BuildZone["🧠 Build lane"]
+    Codex["codex profile<br/><b>code_slice</b><br/><span style='font-size:12px'>implementation + local checks</span>"]
+    BuildReport["build_report.md<br/><span style='font-size:12px'>diff, commands, limitations</span>"]
+  end
+
+  subgraph VerifyZone["🔎 Verification lane"]
+    Ops["ops profile<br/><b>verification</b><br/><span style='font-size:12px'>pytest, ruff, smoke</span>"]
+    Evidence["verification evidence<br/><span style='font-size:12px'>PASS/FAIL + artifacts</span>"]
+  end
+
+  subgraph FinalZone["🧾 Acceptance lane"]
+    BoardAgent["boardagent profile<br/><b>final_report</b><br/><span style='font-size:12px'>summary + decision point</span>"]
+    Human["Dmitry<br/><span style='font-size:12px'>accept / push / next batch</span>"]
+  end
+
+  Done(["Baseline ready"])
+
+  Start --> Intake --> Kanban --> Codex
+  Codex --> BuildReport --> Ops
+  Ops --> Evidence --> BoardAgent --> Human --> Done
+  Ops -. "failed evidence" .-> Codex
+  Human -. "scope change" .-> Intake
+
+  classDef start fill:#F8FAFC,stroke:#38BDF8,stroke-width:2px,color:#0F172A;
+  classDef queue fill:#E0F2FE,stroke:#0284C7,stroke-width:2px,color:#0F172A;
+  classDef build fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#0F172A;
+  classDef verify fill:#FEF3C7,stroke:#D97706,stroke-width:2px,color:#0F172A;
+  classDef final fill:#EDE9FE,stroke:#7C3AED,stroke-width:2px,color:#0F172A;
+  classDef done fill:#ECFDF5,stroke:#059669,stroke-width:3px,color:#064E3B;
+
+  class Start start;
+  class Intake,Kanban queue;
+  class Codex,BuildReport build;
+  class Ops,Evidence verify;
+  class BoardAgent,Human final;
+  class Done done;

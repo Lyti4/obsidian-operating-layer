@@ -1,14 +1,30 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Inter, ui-sans-serif, system-ui", "background": "#0B1020", "primaryColor": "#E0F2FE", "primaryBorderColor": "#38BDF8", "primaryTextColor": "#0F172A", "actorBkg": "#E0F2FE", "actorBorder": "#0284C7", "actorTextColor": "#0F172A", "activationBkgColor": "#FEF3C7", "activationBorderColor": "#D97706", "sequenceNumberColor": "#FFFFFF", "lineColor": "#94A3B8", "noteBkgColor": "#DCFCE7", "noteTextColor": "#0F172A", "noteBorderColor": "#16A34A"}, "sequence": {"showSequenceNumbers": true, "mirrorActors": false}}}%%
 sequenceDiagram
-  participant Worker
-  participant Proposal
-  participant Manifest
-  participant Backup
-  participant Vault
-  participant Verify
+  autonumber
+  participant Worker as 🤖 Worker
+  participant Proposal as 📦 Proposal bundle
+  participant Safety as 🛡️ Safety gate
+  participant Human as 👤 Dmitry approval
+  participant Backup as 🧰 Backup plan
+  participant Vault as 🗄️ Vault / sandbox
+  participant Verify as 🔎 Fresh verify
+  participant Report as 🧾 Report
 
-  Worker->>Proposal: emit proposal bundle only
-  Proposal->>Manifest: wait for explicit approval
-  Manifest->>Backup: create scoped backup plan
-  Backup->>Vault: apply approved targets only
-  Vault->>Verify: fresh observe and compare
-  Verify-->>Worker: report PASS/FAIL evidence
+  Worker->>Proposal: emit proposal.json + proposal.md only
+  Note over Worker,Proposal: dry-run default • evidence • risk • target list
+  Proposal->>Safety: validate protected paths and output location
+  alt unsafe path / missing evidence / no approval phrase
+    Safety-->>Worker: refuse with issues[]
+    Worker->>Report: write failure evidence
+  else safe proposal
+    Safety->>Human: request explicit approval phrase
+    alt no approval
+      Human-->>Report: pending / rejected decision
+    else approved
+      Human->>Backup: approve narrow target set
+      Backup->>Vault: create scoped backup before apply
+      Vault->>Vault: apply approved targets only
+      Vault->>Verify: run fresh observe + compare
+      Verify-->>Report: PASS/FAIL with commands and artifacts
+    end
+  end
