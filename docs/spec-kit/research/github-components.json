@@ -1,0 +1,92 @@
+[
+  {
+    "full_name": "cyanheads/obsidian-mcp-server",
+    "url": "https://github.com/cyanheads/obsidian-mcp-server",
+    "description": "Read, write, search, and surgically edit Obsidian vault notes, tags, and frontmatter via MCP. STDIO or Streamable HTTP.",
+    "stars": 608,
+    "language": "TypeScript",
+    "license": "Apache-2.0",
+    "updated_at": "2026-06-27T14:29:23Z",
+    "bucket": "ready_component_candidate"
+  },
+  {
+    "full_name": "rps321321/obsidian-mcp-pro",
+    "url": "https://github.com/rps321321/obsidian-mcp-pro",
+    "description": "The most feature-complete MCP server for Obsidian vaults — 23 tools + 3 resources for search, read, write, tags, link analysis, graph traversal, and canvas. Also ships as an Obsidian plugin (github.com/rps321321/obsidian-mcp-pro-plugin).",
+    "stars": 24,
+    "language": "TypeScript",
+    "license": "MIT",
+    "updated_at": "2026-06-21T22:51:55Z",
+    "bucket": "ready_component_candidate"
+  },
+  {
+    "full_name": "smith-and-web/obsidian-mcp-server",
+    "url": "https://github.com/smith-and-web/obsidian-mcp-server",
+    "description": "MCP server for Obsidian vault management - enables Claude and other AI assistants to read, write, search, and organize your notes",
+    "stars": 17,
+    "language": "TypeScript",
+    "license": "MIT",
+    "updated_at": "2026-06-25T11:42:49Z",
+    "bucket": "ready_component_candidate"
+  },
+  {
+    "full_name": "bettyguo/obsidian_mcp",
+    "url": "https://github.com/bettyguo/obsidian_mcp",
+    "description": " MCP server + 7 Claude skills for Obsidian vaults — read, search, write, and link notes from Claude / Cursor / ChatGPT. Filesystem-direct, local-first, round-trip safe.",
+    "stars": 8,
+    "language": "Python",
+    "license": "MIT",
+    "updated_at": "2026-06-20T19:50:39Z",
+    "bucket": "ready_component_candidate"
+  },
+  {
+    "full_name": "swarmclawai/swarmvault",
+    "url": "https://github.com/swarmclawai/swarmvault",
+    "description": "The local-first LLM Wiki: open-source knowledge graph builder, RAG knowledge base, and agent memory store. Built on Andrej Karpathy's pattern. An Obsidian alternative for personal knowledge management, AI second brain, and durable Claude Code / Codex / OpenClaw memory.",
+    "stars": 588,
+    "language": "TypeScript",
+    "license": "MIT",
+    "updated_at": "2026-06-28T04:07:22Z",
+    "bucket": "ready_component_candidate"
+  },
+  {
+    "full_name": "benmaster82/Kwipu",
+    "url": "https://github.com/benmaster82/Kwipu",
+    "description": "Ask questions across your Markdown notes using a fully local Graph RAG engine. Built for Obsidian vaults, works with any folder of Markdown files. Extracts entity-relation triples from wikilinks & YAML frontmatter, retrieves answers via hybrid search (vector + BM25 + temporal). Multilingual. No cloud. Runs on Ollama.",
+    "stars": 255,
+    "language": "Python",
+    "license": "MIT",
+    "updated_at": "2026-06-25T04:16:48Z",
+    "bucket": "ready_component_candidate"
+  },
+  {
+    "full_name": "takeshy/obsidian-local-llm-hub",
+    "url": "https://github.com/takeshy/obsidian-local-llm-hub",
+    "description": "All-in-one local AI hub for Obsidian — LLM chat with vault tools, MCP servers, RAG, workflow automation, encryption, and edit history. Fully private, no cloud required.",
+    "stars": 50,
+    "language": "TypeScript",
+    "license": "MIT",
+    "updated_at": "2026-06-28T03:55:37Z",
+    "bucket": "ready_component_candidate"
+  },
+  {
+    "full_name": "deeflect/dory",
+    "url": "https://github.com/deeflect/dory",
+    "description": "One memory layer for every AI agent. Local-first, markdown source of truth, and CLI/HTTP/MCP native. Your agent forgot who you are. Again. Dory fixes that.",
+    "stars": 16,
+    "language": "Python",
+    "license": "MIT",
+    "updated_at": "2026-06-26T21:59:52Z",
+    "bucket": "ready_component_candidate"
+  },
+  {
+    "full_name": "noduslabs/infranodus-obsidian-plugin",
+    "url": "https://github.com/noduslabs/infranodus-obsidian-plugin",
+    "description": "Advanced graph view for Obsidian: text analysis, topic modeling, and AI with InfraNodus AI text analysis tool: https://infranodus.com",
+    "stars": 152,
+    "language": "TypeScript",
+    "license": "AGPL-3.0",
+    "updated_at": "2026-06-24T14:32:09Z",
+    "bucket": "ready_component_candidate"
+  }
+]

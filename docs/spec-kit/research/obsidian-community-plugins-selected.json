@@ -1,0 +1,650 @@
+[
+  {
+    "id": "templater-obsidian",
+    "name": "Templater",
+    "author": "silentvoid13",
+    "description": "Create and use dynamic templates.",
+    "repo": "silentvoid13/Templater",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "dataview",
+    "name": "Dataview",
+    "author": "blacksmithgu",
+    "description": "Run advanced queries over your vault.",
+    "repo": "blacksmithgu/obsidian-dataview",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "tag-wrangler",
+    "name": "Tag Wrangler",
+    "author": "pjeby",
+    "description": "Rename, merge, toggle, and search tags from the tag pane.",
+    "repo": "pjeby/tag-wrangler",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "various-complements",
+    "name": "Various Complements",
+    "author": "tadashi-aikawa",
+    "description": "Complete words similar to auto-completion in an IDE.",
+    "repo": "tadashi-aikawa/obsidian-various-complements-plugin",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "obsidian-tasks-plugin",
+    "name": "Tasks",
+    "author": "obsidian-tasks-group",
+    "description": "Track tasks across your vault. Supports due dates, recurring tasks, done dates, sub-set of checklist items, and filtering. Maintained by Clare Macrae and Ilyas Landikov, created by Martin Schenck.",
+    "repo": "obsidian-tasks-group/obsidian-tasks",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "obsidian-linter",
+    "name": "Linter",
+    "author": "platers",
+    "description": "Format and style your notes. Linter can be used to format YAML tags, aliases, arrays, and metadata; footnotes; headings; spacing; math blocks; regular Markdown contents like list, italics, and bold styles; and more with the use of custom rule options.",
+    "repo": "platers/obsidian-linter",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "auto-note-mover",
+    "name": "Auto Note Mover",
+    "author": "farux",
+    "description": "Automatically move the active notes to their respective folders according to rules you set.",
+    "repo": "farux/obsidian-auto-note-mover",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "big-calendar",
+    "name": "Big Calendar",
+    "author": "quorafind",
+    "description": "A big calendar for Obsidian. All events from your daily notes OR tasks used TASKS/DATAVIEW/KANBAN format.",
+    "repo": "quorafind/Obsidian-Big-Calendar",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "heatmap-calendar",
+    "name": "Heatmap Calendar",
+    "author": "richardsl",
+    "description": "Activity Year Overview for DataviewJS, Github style – Track Goals, Progress, Habits, Tasks, Exercise, Finances, \"Dont Break the Chain\" etc.",
+    "repo": "richardsl/heatmap-calendar-obsidian",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "omnisearch",
+    "name": "Omnisearch",
+    "author": "Simon Cambier",
+    "description": "Intelligent search for your notes, PDFs, and OCR for images.",
+    "repo": "scambier/obsidian-omnisearch",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "obsidian-release-timeline",
+    "name": "Release Timeline",
+    "author": "cakechaser",
+    "description": "Release timeline rendered based on notes metadata with a Dataview-like syntax.",
+    "repo": "cakechaser/obsidian-release-timeline",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "metadata-menu",
+    "name": "Metadata Menu",
+    "author": "mdelobelle",
+    "description": "For data quality enthusiasts and Dataview users: access and manage the metadata of your notes.",
+    "repo": "mdelobelle/metadatamenu",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "obsidian-file-cooker",
+    "name": "File Cooker",
+    "author": "ivaneye",
+    "description": "Deal batch notes from search results,current file, or Dataview query string.",
+    "repo": "ivaneye/obsidian-files-cooker",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "better-inline-fields",
+    "name": "Better Inline Fields",
+    "author": "dsarman",
+    "description": "Enhance Dataview-style inline fields.",
+    "repo": "dsarman/better-inline-fields",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "double-colon-conceal",
+    "name": "Double Colon Conceal",
+    "author": "msrch",
+    "description": "Display double colon (i.e. Dataview inline fields) as a single colon for more natural reading experience.",
+    "repo": "msrch/obsidian-double-colon-conceal",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "habit-calendar",
+    "name": "Habit Calendar",
+    "author": "hedonihilist",
+    "description": "Monthly Habit Calendar for DataviewJS. Render a calendar inside DataviewJS code block, showing your habit status within a month.",
+    "repo": "hedonihilist/obsidian-habit-calendar",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "meld-build",
+    "name": "Meld Build",
+    "author": "meld-cp",
+    "description": "Write and execute (sandboxed) JavaScript to render templates, query DataView and create dynamic notes.",
+    "repo": "meld-cp/obsidian-build",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "time-ruler",
+    "name": "Time Ruler",
+    "author": "j-palindrome",
+    "description": "A drag-and-drop time ruler combining the best of a task list and a calendar view (integrates with Tasks, Full Calendar, and Dataview).",
+    "repo": "j-palindrome/obsidian-time-ruler",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "ics",
+    "name": "ICS",
+    "author": "open-horizon-labs",
+    "description": "Add events from calendar ics on the web to daily notes on demand. Includes vdir support. Daily Planner, Templater and Dataview friendly.",
+    "repo": "open-horizon-labs/obsidian-ics",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "moviegrabber",
+    "name": "Moviegrabber",
+    "author": "superschnizel",
+    "description": "Grab movie data from public APIs and transform it into notes that can be used with dataview and properties.",
+    "repo": "superschnizel/Obsidian-Moviegrabber",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "run",
+    "name": "Run",
+    "author": "hananoshikayomaru",
+    "description": "Generate Markdown from dataview query and JavaScript.",
+    "repo": "hananoshikayomaru/obsidian-run",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "desk",
+    "name": "Desk",
+    "author": "davidlandry93",
+    "description": "A desk to see notes at a glance. Requires Dataview.",
+    "repo": "davidlandry93/obsidian-desk",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "ai-templater",
+    "name": "AI for Templater",
+    "author": "tfthacker",
+    "description": "AI Extension for the Templater plugin with the OpenAI Client Library.",
+    "repo": "tfthacker/obsidian-ai-templater",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "dataview-publisher",
+    "name": "Dataview Publisher",
+    "author": "udus122",
+    "description": "Output markdown from your Dataview queries and keep them up to date. You can also publish them.",
+    "repo": "udus122/dataview-publisher",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "dataview-serializer",
+    "name": "Dataview Serializer",
+    "author": "Sébastien Dubois",
+    "description": "Serialize Dataview queries to Markdown, and keep the Markdown representation up to date",
+    "repo": "dsebastien/obsidian-dataview-serializer",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "todoist-context-bridge",
+    "name": "Todoist Context Bridge",
+    "author": "wenlzhang",
+    "description": "Bridge your note-taking and Todoist task management workflows with contextual connections. Seamlessly integrate with Dataview and Tasks plugins.",
+    "repo": "wenlzhang/obsidian-todoist-context-bridge",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "dataview-autocompletion",
+    "name": "Dataview Autocompletion",
+    "author": "dnlbauer",
+    "description": "Adds autocompletion to Dataview metadata fields",
+    "repo": "dnlbauer/obsidian-dataview-autocompletion",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "querydash",
+    "name": "QueryDash",
+    "author": "liufree",
+    "description": "Add new views and enhanced features for bases. Inspired by Dataview and bases, this includes search, sorting, and pagination functionalities similar to Notion.",
+    "repo": "liufree/obsidian-querydash",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "data-cards",
+    "name": "DataCards",
+    "author": "sophokles187",
+    "description": "Transform Dataview query results into visually appealing, customizable card layouts.",
+    "repo": "sophokles187/data-cards",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "virtual-footer",
+    "name": "Virtual Content",
+    "author": "signynt",
+    "description": "Display markdown text (including dataview queries or Bases) at the bottom, top or in the sidebar for all notes which match a specified rule, without modifying them.",
+    "repo": "signynt/virtual-content",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "dataview-properties",
+    "name": "Dataview to Properties",
+    "author": "Mara",
+    "description": "Automagically copy dataview inline field (and their values, even calculated!) into frontmatter properties and keep them sync.",
+    "repo": "mara-li/obsidian-dataview-properties",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "move-cursor-on-startup",
+    "name": "Move Cursor On Startup",
+    "author": "treadder",
+    "description": "Move cursor right then left briefly on startup --> first opened note. Makes DataView expressions 'activate' automatically instead of waiting for user interaction.",
+    "repo": "treadder/move-cursor-on-startup",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "workout-logger",
+    "name": "Workout Logger",
+    "author": "viscosenpai",
+    "description": "Log weight training sessions to notes in a Dataview-friendly format. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "viscosenpai/obsidian-workout-logger",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "activity-graph",
+    "name": "Activity Graph",
+    "author": "rwyattwalker",
+    "description": "Render activity heatmaps from Dataview query results. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "rwyattwalker/obsidian-activity-graph",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "dropdown-vars",
+    "name": "Dropdown Vars",
+    "author": "majid-khonji",
+    "description": "Dropdowns in Reading and Live Preview; sync to frontmatter or inline Dataview. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "majid-khonji/obsidian-dropdown-vars",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "dataview-toggle",
+    "name": "Dataview Toggle",
+    "author": "p1tt1",
+    "description": "Toggle Dataview auto-refresh on/off from the status bar or command palette. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "p1tt1/obsidian-dataview-toggle",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "alchemist",
+    "name": "Alchemist",
+    "author": "ksawl",
+    "description": "Modular super-plugin for TextBundle, Audio conversion, and Dataview exports. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "ksawl/obsidian-alchemist",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "embedded-omnisearch",
+    "name": "Embedded-Omnisearch",
+    "author": "Fozi",
+    "description": "Inline search UI powered by Omnisearch, with configurable page size, highlight color, and highlight opacity. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "fnsign/embedded-omnisearch",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "jira-weaver",
+    "name": "Jira Weaver",
+    "author": "HJ",
+    "description": "Sync Jira issues into your vault and weave them into your knowledge graph via wiki-links, Frontmatter, and Dataview. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "gs-ax/obsidian-jira-weaver",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "gantt-calendar",
+    "name": "Gantt Calendar",
+    "author": "Sugar",
+    "description": "A powerful visual task management plugin. Visualize and manage tasks created by the Tasks plugin, supporting both emoji and Dataview task formats. Support Feishu Task syncing. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "sustcsugar/obsidian-gantt-calendar",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "annotation-manager",
+    "name": "Annotation Manager",
+    "author": "Josh",
+    "description": "Annotate text inline with {={id}text=} syntax, view all annotations in a sidebar, and query them via Dataview. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "jsglazer/annotation-manager",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "bases-buttons",
+    "name": "Bases Buttons",
+    "author": "Imed Ghomari",
+    "description": "Adds configurable Templater-powered buttons to Obsidian Bases. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "imed-ghomari/obsidian-bases-buttons",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "stardust-importer",
+    "name": "Stardust Importer",
+    "author": "Sonophage",
+    "description": "Pulls watched movies (Trakt) and full-album listens (Last.fm) into reference notes via Templater. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "sonophage/stardust-importer",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "deck-dashboard",
+    "name": "Deck",
+    "author": "Yuto Takagi",
+    "description": "Draggable widget-grid dashboards that combine tasks, Dataview queries, Bases, notes, calendar, and mail. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "yut0takagi/obsidian-deck-dashboard",
+    "bucket": "core_ready_plugins"
+  },
+  {
+    "id": "obsidian-textgenerator-plugin",
+    "name": "Text Generator",
+    "author": "nhaouari",
+    "description": "Generate text content using GPT-3 (OpenAI).",
+    "repo": "nhaouari/obsidian-textgenerator-plugin",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "smart-connections",
+    "name": "Smart Connections",
+    "author": "🌴 Brian",
+    "description": "Find related notes and excerpts while writing. Your AI link building copilot displays relevant content in graph + list view. A local embedding model powers semantic search. Zero setup. No API key.",
+    "repo": "brianpetro/obsidian-smart-connections",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "companion",
+    "name": "Companion",
+    "author": "rizerphe",
+    "description": "Autocomplete with AI, including ChatGPT, through a copilot-like interface.",
+    "repo": "rizerphe/obsidian-companion",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "ai-assistant",
+    "name": "AI Assistant",
+    "author": "qgrail",
+    "description": "Chat with OpenAI and Anthropic models or run prompt-based edits directly from notes.",
+    "repo": "qgrail/obsidian-ai-assistant",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "copilot",
+    "name": "Copilot",
+    "author": "Logan Yang",
+    "description": "Your AI Copilot: Chat with Your Second Brain, Learn Faster, Work Smarter.",
+    "repo": "logancyang/obsidian-copilot",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "copilot-auto-completion",
+    "name": "Copilot auto completion",
+    "author": "j0rd1smit",
+    "description": "A highly configurable copilot-like auto-completion using the ChatGPT API.",
+    "repo": "j0rd1smit/obsidian-copilot-auto-completion",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "local-gpt",
+    "name": "Local GPT",
+    "author": "pfrankov",
+    "description": "Local Ollama and OpenAI-like GPT's assistance for maximum privacy and offline access.",
+    "repo": "pfrankov/obsidian-local-gpt",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "github-copilot",
+    "name": "GitHub Copilot",
+    "author": "pierrad",
+    "description": "Implement suggestions from Github Copilot directly in your editor.",
+    "repo": "pierrad/obsidian-github-copilot",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "ayanite",
+    "name": "Ayanite",
+    "author": "jemstelos",
+    "description": "An integrated thinking environment - advanced AI chat and knowledge copilot (Closed source).",
+    "repo": "jemstelos/obsidian-ayanite",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "smart-connections-visualizer",
+    "name": "Smart Connections Visualizer",
+    "author": "mossy1022",
+    "description": "View your Smart Connections in a visualized format.",
+    "repo": "mossy1022/Smart-Connections-Visualizer",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "monokakido-copilot",
+    "name": "Monokakido Copilot",
+    "author": "noheartpen",
+    "description": "During editing, simply double-press the option key to search with the Dictionaries by Monokakido.",
+    "repo": "noheartpen/obsidian-monokakido-copilot-plugin",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "ai-companion",
+    "name": "AI Companion",
+    "author": "kowshik24",
+    "description": "AI companion accessible with /ai command in notes. Supports OpenAI integration.",
+    "repo": "kowshik24/obsidian-ai-assistant",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "ai-copilot",
+    "name": "AI Copilot",
+    "author": "alexjiaguo",
+    "description": "Your intelligent writing and thinking assistant. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "alexjiaguo/obsidian-ai-copilot",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "github-copilot-integration",
+    "name": "GitHub Copilot Integration",
+    "author": "go2engle",
+    "description": "Integrate GitHub Copilot for AI-powered text generation and assistance. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "go2engle/obsidian-github-copilot-integration",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "ima-copilot-sync",
+    "name": "ima.copilot Sync",
+    "author": "chenxiccc",
+    "description": "Sync ima notes & knowledge-base to Obsidian - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "chenxiccc/obsidian-ima.copilot-sync",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "vault-operator",
+    "name": "Vault Operator",
+    "author": "Sebastian Hanke",
+    "description": "Real AI agent for your vault. Coworker, Copilot & thinking partner, that maintains your memory & knowledge, adapts to your workflows, uses plugins, skills & tools with full safety controls. BYOK & MCP - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "pssah4/vault-operator",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "superpower-inside",
+    "name": "Superpower Inside",
+    "author": "Superpower Inside Team",
+    "description": "Desktop AI copilot for Obsidian with LLM chat, RAG, MCP tools, and source-aware context - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "magnitus99/Superpower-Inside",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "note-copilot",
+    "name": "Note Copilot",
+    "author": "Lebenswille",
+    "description": "AI copilot in the right side panel - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "lebenswille/note-copilot",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "language-learn",
+    "name": "Language Learn",
+    "author": "",
+    "description": "AI-powered language learning with word analysis, relation graphs, hover tooltips, and structured note-taking. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "mizu1/obsidian-languageLearnCopilot",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "copilot-auto-completion-plus",
+    "name": "Copilot Auto Completion Plus",
+    "author": "Daniil Shipilov",
+    "description": "Adds configurable AI auto-completion to Obsidian using OpenAI, Anthropic, Gemini, Azure OpenAI, or Ollama. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "yetanotherrepo/obsidian-copilot-auto-completion-plus",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "copilot-personal",
+    "name": "Copilot Personal",
+    "author": "Josef",
+    "description": "AI agent with 17 tools, multi-provider LLM (11 providers), RAG semantic search, PDF extraction, web search, and autonomous note creation. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "josefbelzer/Copilot-Personal",
+    "bucket": "ai_retrieval_plugins"
+  },
+  {
+    "id": "find-unlinked-files",
+    "name": "Find orphaned files and broken links",
+    "author": "Vinzent",
+    "description": "Find files that are not linked anywhere and would otherwise be lost in your vault. In other words: files with no backlinks.",
+    "repo": "vinzent03/find-unlinked-files",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "obsidian-dangling-links",
+    "name": "Dangling links",
+    "author": "graydon",
+    "description": "Add a sidebar showing any dangling links in a vault. Dangling links are orphaned links that don't point to anything in the vault.",
+    "repo": "graydon/obsidian-dangling-links",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "consistent-attachments-and-links",
+    "name": "Consistent Attachments and Links",
+    "author": "dy-sh",
+    "description": "Move note attachments and update links automatically.",
+    "repo": "dy-sh/obsidian-consistent-attachments-and-links",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "metadata-extractor",
+    "name": "Metadata Extractor",
+    "author": "kometenstaub",
+    "description": "Metadata export (on a schedule) for integration with third-party apps like launchers or graph analysis software.",
+    "repo": "kometenstaub/metadata-extractor",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "obsidian-link-converter",
+    "name": "Link Converter",
+    "author": "ozntel",
+    "description": "Scan all your links in the vault and convert them to your desired format.",
+    "repo": "ozntel/obsidian-link-converter",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "nuke-orphans",
+    "name": "Nuke Orphans",
+    "author": "sandorex",
+    "description": "Trash orphaned files and attachments.",
+    "repo": "sandorex/nuke-orphans-plugin",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "janitor",
+    "name": "Janitor",
+    "author": "canna71",
+    "description": "Perform cleanup tasks on your vault.",
+    "repo": "canna71/obsidian-janitor",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "broken-links",
+    "name": "Broken Links",
+    "author": "ipshing",
+    "description": "Find broken links in your vault that don't connect to notes.",
+    "repo": "ipshing/obsidian-broken-links",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "find-orphaned-images",
+    "name": "Find Orphaned Images",
+    "author": "josmarcristello",
+    "description": "Finds images in the vault that are not linked to any notes. Either lists, or deletes them.",
+    "repo": "josmarcristello/Obsidian-Find-Orphaned-Images",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "moc-link-helper",
+    "name": "MOC Link Helper",
+    "author": "bogdancodreanu",
+    "description": "Helps with some MOC janitor-linking tasks.",
+    "repo": "bogdancodreanu/obsidian-moc-link-helper",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "random-broken-link",
+    "name": "Random broken link",
+    "author": "jantatesa",
+    "description": "Expand your knowledge by visiting random broken links.",
+    "repo": "jantatesa/obsidian-open-random-broken-link",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "file-commander",
+    "name": "File Commander",
+    "author": "fengshuzi",
+    "description": "Batch file operations - select, delete, move, tag, rename images, find broken links and orphan notes. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "fengshuzi/file-commander",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "vault-plus",
+    "name": "Vault Plus",
+    "author": "jabaho9523",
+    "description": "Vault health dashboard — orphans, broken links, empty and oversized notes, duplicates, unused tags, unreferenced attachments — with one-click fixes. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "jabaho9523/obsidian-vault-plus",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "vault-inspector",
+    "name": "Vault Inspector",
+    "author": "rogerdigital",
+    "description": "Scan your vault for maintenance problems: broken links, orphan attachments, duplicate files, frontmatter inconsistencies, unused tags, and large files. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "rogerdigital/vault-inspector",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "wlunan-vault-cleaner",
+    "name": "Vault Cleanup Dashboard",
+    "author": "lunan",
+    "description": "Visual dashboard for intelligently cleaning orphaned files and attachments with scheduled auto-cleanup and file protection. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "wlunan/vault-cleaner",
+    "bucket": "maintenance_plugins"
+  },
+  {
+    "id": "consistent-attachments",
+    "name": "Consistent Attachments",
+    "author": "Lars Bücker",
+    "description": "Keep attachment locations consistent when notes are moved. - This plugin has not been manually reviewed by Obsidian staff.",
+    "repo": "bueckerlars/obsidian-consistent-attachments",
+    "bucket": "maintenance_plugins"
+  }
+]
