@@ -17,7 +17,7 @@
     "secret-read"
   ],
   "kind": "mcp-server",
-  "license": "unknown-confirm-before-promotion",
+  "license": "Apache-2.0",
   "name": "cyanheads/obsidian-mcp-server",
   "outputs": [
     "finding-json",

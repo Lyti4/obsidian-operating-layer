@@ -17,7 +17,7 @@
     "secret-read"
   ],
   "kind": "rag-engine",
-  "license": "unknown-confirm-before-promotion",
+  "license": "MIT",
   "name": "benmaster82/Kwipu",
   "outputs": [
     "finding-json",
@@ -30,7 +30,7 @@
     "Run indexing against copied vault data only during evaluation.",
     "Duplicate, merge, move, and cleanup suggestions must remain proposal-only."
   ],
-  "runtime": "local",
+  "runtime": "python/local-ollama",
   "sandbox_required": true,
   "source": {
     "id": "benmaster82/Kwipu",
