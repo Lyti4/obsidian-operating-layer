@@ -1,92 +1,1347 @@
-[
-  {
-    "full_name": "cyanheads/obsidian-mcp-server",
-    "url": "https://github.com/cyanheads/obsidian-mcp-server",
-    "description": "Read, write, search, and surgically edit Obsidian vault notes, tags, and frontmatter via MCP. STDIO or Streamable HTTP.",
-    "stars": 608,
-    "language": "TypeScript",
-    "license": "Apache-2.0",
-    "updated_at": "2026-06-27T14:29:23Z",
-    "bucket": "ready_component_candidate"
+{
+  "generated_at": "2026-06-28T05:22:57+00:00",
+  "source": "gh api only; no generic web search; no repository clones",
+  "searches": {
+    "mcp_bridge": "obsidian mcp server in:name,description,readme archived:false",
+    "rag_graph": "obsidian markdown graph rag in:name,description,readme archived:false",
+    "local_llm": "obsidian local llm rag in:name,description,readme archived:false",
+    "markdown_memory": "markdown mcp memory local-first in:name,description,readme archived:false"
   },
-  {
-    "full_name": "rps321321/obsidian-mcp-pro",
-    "url": "https://github.com/rps321321/obsidian-mcp-pro",
-    "description": "The most feature-complete MCP server for Obsidian vaults — 23 tools + 3 resources for search, read, write, tags, link analysis, graph traversal, and canvas. Also ships as an Obsidian plugin (github.com/rps321321/obsidian-mcp-pro-plugin).",
-    "stars": 24,
-    "language": "TypeScript",
-    "license": "MIT",
-    "updated_at": "2026-06-21T22:51:55Z",
-    "bucket": "ready_component_candidate"
-  },
-  {
-    "full_name": "smith-and-web/obsidian-mcp-server",
-    "url": "https://github.com/smith-and-web/obsidian-mcp-server",
-    "description": "MCP server for Obsidian vault management - enables Claude and other AI assistants to read, write, search, and organize your notes",
-    "stars": 17,
-    "language": "TypeScript",
-    "license": "MIT",
-    "updated_at": "2026-06-25T11:42:49Z",
-    "bucket": "ready_component_candidate"
-  },
-  {
-    "full_name": "bettyguo/obsidian_mcp",
-    "url": "https://github.com/bettyguo/obsidian_mcp",
-    "description": " MCP server + 7 Claude skills for Obsidian vaults — read, search, write, and link notes from Claude / Cursor / ChatGPT. Filesystem-direct, local-first, round-trip safe.",
-    "stars": 8,
-    "language": "Python",
-    "license": "MIT",
-    "updated_at": "2026-06-20T19:50:39Z",
-    "bucket": "ready_component_candidate"
-  },
-  {
-    "full_name": "swarmclawai/swarmvault",
-    "url": "https://github.com/swarmclawai/swarmvault",
-    "description": "The local-first LLM Wiki: open-source knowledge graph builder, RAG knowledge base, and agent memory store. Built on Andrej Karpathy's pattern. An Obsidian alternative for personal knowledge management, AI second brain, and durable Claude Code / Codex / OpenClaw memory.",
-    "stars": 588,
-    "language": "TypeScript",
-    "license": "MIT",
-    "updated_at": "2026-06-28T04:07:22Z",
-    "bucket": "ready_component_candidate"
-  },
-  {
-    "full_name": "benmaster82/Kwipu",
-    "url": "https://github.com/benmaster82/Kwipu",
-    "description": "Ask questions across your Markdown notes using a fully local Graph RAG engine. Built for Obsidian vaults, works with any folder of Markdown files. Extracts entity-relation triples from wikilinks & YAML frontmatter, retrieves answers via hybrid search (vector + BM25 + temporal). Multilingual. No cloud. Runs on Ollama.",
-    "stars": 255,
-    "language": "Python",
-    "license": "MIT",
-    "updated_at": "2026-06-25T04:16:48Z",
-    "bucket": "ready_component_candidate"
-  },
-  {
-    "full_name": "takeshy/obsidian-local-llm-hub",
-    "url": "https://github.com/takeshy/obsidian-local-llm-hub",
-    "description": "All-in-one local AI hub for Obsidian — LLM chat with vault tools, MCP servers, RAG, workflow automation, encryption, and edit history. Fully private, no cloud required.",
-    "stars": 50,
-    "language": "TypeScript",
-    "license": "MIT",
-    "updated_at": "2026-06-28T03:55:37Z",
-    "bucket": "ready_component_candidate"
-  },
-  {
-    "full_name": "deeflect/dory",
-    "url": "https://github.com/deeflect/dory",
-    "description": "One memory layer for every AI agent. Local-first, markdown source of truth, and CLI/HTTP/MCP native. Your agent forgot who you are. Again. Dory fixes that.",
-    "stars": 16,
-    "language": "Python",
-    "license": "MIT",
-    "updated_at": "2026-06-26T21:59:52Z",
-    "bucket": "ready_component_candidate"
-  },
-  {
-    "full_name": "noduslabs/infranodus-obsidian-plugin",
-    "url": "https://github.com/noduslabs/infranodus-obsidian-plugin",
-    "description": "Advanced graph view for Obsidian: text analysis, topic modeling, and AI with InfraNodus AI text analysis tool: https://infranodus.com",
-    "stars": 152,
-    "language": "TypeScript",
-    "license": "AGPL-3.0",
-    "updated_at": "2026-06-24T14:32:09Z",
-    "bucket": "ready_component_candidate"
-  }
-]
+  "components": [
+    {
+      "full_name": "cyanheads/obsidian-mcp-server",
+      "url": "https://github.com/cyanheads/obsidian-mcp-server",
+      "description": "Read, write, search, and surgically edit Obsidian vault notes, tags, and frontmatter via MCP. STDIO or Streamable HTTP.",
+      "stars": 608,
+      "forks": 92,
+      "open_issues": 20,
+      "language": "TypeScript",
+      "license": "Apache-2.0",
+      "updated_at": "2026-06-27T14:29:23Z",
+      "pushed_at": "2026-06-20T08:43:02Z",
+      "archived": false,
+      "topics": [
+        "ai-tools",
+        "knowledge-base",
+        "mcp",
+        "model-context-protocol",
+        "note-taking",
+        "obsidian",
+        "typescript",
+        "cyanheads"
+      ],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": "primary_mcp_sandbox_candidate",
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "write-like capability mentioned; wrap as write-request/proposal-only",
+        "local-first/markdown/vault fit signal"
+      ],
+      "readme_probe": {
+        "available": true,
+        "bytes": 25927,
+        "signals": [
+          "local",
+          "markdown",
+          "mcp",
+          "obsidian",
+          "rag",
+          "read",
+          "search",
+          "vault",
+          "write"
+        ]
+      }
+    },
+    {
+      "full_name": "swarmclawai/swarmvault",
+      "url": "https://github.com/swarmclawai/swarmvault",
+      "description": "The local-first LLM Wiki: open-source knowledge graph builder, RAG knowledge base, and agent memory store. Built on Andrej Karpathy's pattern. An Obsidian alternative for personal knowledge management, AI second brain, and durable Claude Code / Codex / OpenClaw memory.",
+      "stars": 588,
+      "forks": 73,
+      "open_issues": 4,
+      "language": "TypeScript",
+      "license": "MIT",
+      "updated_at": "2026-06-28T04:07:22Z",
+      "pushed_at": "2026-06-12T10:39:15Z",
+      "archived": false,
+      "topics": [
+        "local-first",
+        "obsidian",
+        "karpathy",
+        "knowledge-graph",
+        "claude-code",
+        "codex",
+        "llm-wiki",
+        "mcp-server",
+        "opencode",
+        "openclaw",
+        "ai-agents",
+        "llm",
+        "mcp",
+        "pkm",
+        "rag",
+        "wiki",
+        "agent-memory",
+        "claude-code-memory",
+        "obsidian-alternative",
+        "personal-knowledge-management"
+      ],
+      "kind_hint": "knowledge-graph/memory-layer",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": "knowledge_graph_pattern_reference",
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal"
+      ],
+      "readme_probe": {
+        "available": true,
+        "bytes": 48653,
+        "signals": [
+          "graph",
+          "local",
+          "markdown",
+          "mcp",
+          "obsidian",
+          "ollama",
+          "rag",
+          "read",
+          "search",
+          "vault",
+          "write"
+        ]
+      }
+    },
+    {
+      "full_name": "benmaster82/Kwipu",
+      "url": "https://github.com/benmaster82/Kwipu",
+      "description": "Ask questions across your Markdown notes using a fully local Graph RAG engine. Built for Obsidian vaults, works with any folder of Markdown files. Extracts entity-relation triples from wikilinks & YAML frontmatter, retrieves answers via hybrid search (vector + BM25 + temporal). Multilingual. No cloud. Runs on Ollama.",
+      "stars": 255,
+      "forks": 36,
+      "open_issues": 1,
+      "language": "Python",
+      "license": "MIT",
+      "updated_at": "2026-06-25T04:16:48Z",
+      "pushed_at": "2026-05-18T14:20:43Z",
+      "archived": false,
+      "topics": [
+        "llm",
+        "md",
+        "natural-language",
+        "obsidian",
+        "ollama",
+        "rag",
+        "rag-chatbot",
+        "terminal-ui",
+        "embeddings",
+        "llama-index",
+        "help-wanted",
+        "knowledge-graph",
+        "markdown",
+        "graph-rag",
+        "obsidian-notes",
+        "obsidian-vault",
+        "offline",
+        "offline-first",
+        "claude-code",
+        "mcp"
+      ],
+      "kind_hint": "rag-engine",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": "primary_rag_graph_sandbox_candidate",
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal",
+        "check network/API/secret exposure before promotion"
+      ],
+      "readme_probe": {
+        "available": true,
+        "bytes": 10877,
+        "signals": [
+          "graph",
+          "local",
+          "markdown",
+          "mcp",
+          "obsidian",
+          "ollama",
+          "rag",
+          "read",
+          "search",
+          "vault"
+        ]
+      }
+    },
+    {
+      "full_name": "takeshy/obsidian-local-llm-hub",
+      "url": "https://github.com/takeshy/obsidian-local-llm-hub",
+      "description": "All-in-one local AI hub for Obsidian — LLM chat with vault tools, MCP servers, RAG, workflow automation, encryption, and edit history. Fully private, no cloud required.",
+      "stars": 50,
+      "forks": 4,
+      "open_issues": 0,
+      "language": "TypeScript",
+      "license": "MIT",
+      "updated_at": "2026-06-28T03:55:37Z",
+      "pushed_at": "2026-06-28T03:56:52Z",
+      "archived": false,
+      "topics": [
+        "local-llm",
+        "memo-app",
+        "obsidian-plugin",
+        "rag",
+        "workflow-automation"
+      ],
+      "kind_hint": "obsidian-plugin/local-ai-hub",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": "obsidian_local_ai_reference_candidate",
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "write-like capability mentioned; wrap as write-request/proposal-only",
+        "local-first/markdown/vault fit signal",
+        "check network/API/secret exposure before promotion"
+      ],
+      "readme_probe": {
+        "available": true,
+        "bytes": 13848,
+        "signals": [
+          "graph",
+          "local",
+          "markdown",
+          "mcp",
+          "obsidian",
+          "ollama",
+          "rag",
+          "read",
+          "search",
+          "vault"
+        ]
+      }
+    },
+    {
+      "full_name": "rps321321/obsidian-mcp-pro",
+      "url": "https://github.com/rps321321/obsidian-mcp-pro",
+      "description": "The most feature-complete MCP server for Obsidian vaults — 23 tools + 3 resources for search, read, write, tags, link analysis, graph traversal, and canvas. Also ships as an Obsidian plugin (github.com/rps321321/obsidian-mcp-pro-plugin).",
+      "stars": 24,
+      "forks": 4,
+      "open_issues": 0,
+      "language": "TypeScript",
+      "license": "MIT",
+      "updated_at": "2026-06-21T22:51:55Z",
+      "pushed_at": "2026-06-21T22:51:52Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": "secondary_mcp_sandbox_candidate",
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "write-like capability mentioned; wrap as write-request/proposal-only",
+        "local-first/markdown/vault fit signal"
+      ],
+      "readme_probe": {
+        "available": true,
+        "bytes": 47837,
+        "signals": [
+          "graph",
+          "local",
+          "markdown",
+          "mcp",
+          "obsidian",
+          "ollama",
+          "rag",
+          "read",
+          "search",
+          "vault",
+          "write"
+        ]
+      }
+    },
+    {
+      "full_name": "deeflect/dory",
+      "url": "https://github.com/deeflect/dory",
+      "description": "One memory layer for every AI agent. Local-first, markdown source of truth, and CLI/HTTP/MCP native. Your agent forgot who you are. Again. Dory fixes that.",
+      "stars": 16,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "MIT",
+      "updated_at": "2026-06-26T21:59:52Z",
+      "pushed_at": "2026-06-10T00:18:09Z",
+      "archived": false,
+      "topics": [
+        "agents",
+        "ai-agents",
+        "claude-code",
+        "codex",
+        "docker",
+        "fastapi",
+        "knowledge-graph",
+        "llm",
+        "local-first",
+        "markdown",
+        "mcp",
+        "memory",
+        "memory-palace",
+        "model-context-protocol",
+        "obsidian",
+        "python",
+        "rag",
+        "semantic-search",
+        "sqlite",
+        "vector-search"
+      ],
+      "kind_hint": "memory-layer",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": "agent_memory_pattern_reference",
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal"
+      ],
+      "readme_probe": {
+        "available": true,
+        "bytes": 13897,
+        "signals": [
+          "graph",
+          "local",
+          "markdown",
+          "mcp",
+          "obsidian",
+          "ollama",
+          "rag",
+          "read",
+          "search",
+          "write"
+        ]
+      }
+    },
+    {
+      "full_name": "bettyguo/obsidian_mcp",
+      "url": "https://github.com/bettyguo/obsidian_mcp",
+      "description": " MCP server + 7 Claude skills for Obsidian vaults — read, search, write, and link notes from Claude / Cursor / ChatGPT. Filesystem-direct, local-first, round-trip safe.",
+      "stars": 8,
+      "forks": 0,
+      "open_issues": 1,
+      "language": "Python",
+      "license": "MIT",
+      "updated_at": "2026-06-20T19:50:39Z",
+      "pushed_at": "2026-06-05T23:41:35Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": "python_mcp_reference_candidate",
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "write-like capability mentioned; wrap as write-request/proposal-only",
+        "local-first/markdown/vault fit signal"
+      ],
+      "readme_probe": {
+        "available": true,
+        "bytes": 13643,
+        "signals": [
+          "graph",
+          "local",
+          "markdown",
+          "mcp",
+          "obsidian",
+          "rag",
+          "read",
+          "search",
+          "vault",
+          "write"
+        ]
+      }
+    },
+    {
+      "full_name": "mustbeperfect/definitive-opensource",
+      "url": "https://github.com/mustbeperfect/definitive-opensource",
+      "description": "The definitive list of the best of (consumer facing) open source.",
+      "stars": 3286,
+      "forks": 127,
+      "open_issues": 10,
+      "language": "Python",
+      "license": "MIT",
+      "updated_at": "2026-06-28T05:19:43Z",
+      "pushed_at": "2026-06-28T05:19:39Z",
+      "archived": false,
+      "topics": [
+        "list",
+        "opensource"
+      ],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm",
+        "markdown_memory",
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "noduslabs/infranodus-obsidian-plugin",
+      "url": "https://github.com/noduslabs/infranodus-obsidian-plugin",
+      "description": "Advanced graph view for Obsidian: text analysis, topic modeling, and AI with InfraNodus AI text analysis tool: https://infranodus.com",
+      "stars": 152,
+      "forks": 18,
+      "open_issues": 4,
+      "language": "TypeScript",
+      "license": "AGPL-3.0",
+      "updated_at": "2026-06-24T14:32:09Z",
+      "pushed_at": "2026-05-28T14:42:40Z",
+      "archived": false,
+      "topics": [
+        "graph-visualization",
+        "obsidian",
+        "obsidian-graph",
+        "obsidian-plugin",
+        "obsidian-plugins",
+        "pkm",
+        "text-analysis",
+        "text-visualization",
+        "thinking-tool",
+        "thinking-tools",
+        "infranodus"
+      ],
+      "kind_hint": "obsidian-plugin/graph-analysis",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "rajudandigam/agent-inspect",
+      "url": "https://github.com/rajudandigam/agent-inspect",
+      "description": "Local execution trees for TypeScript AI agents.  agent-inspect helps you understand what happened inside an AI agent run — locally. It turns manual steps, tool calls, LLM calls, structured logs, failures, durations, and run metadata into readable execution trees you can inspect from the terminal.  It is built for TypeScript/Node.js developers..",
+      "stars": 95,
+      "forks": 82,
+      "open_issues": 18,
+      "language": "TypeScript",
+      "license": "MIT",
+      "updated_at": "2026-06-28T05:21:42Z",
+      "pushed_at": "2026-06-28T05:21:38Z",
+      "archived": false,
+      "topics": [
+        "agent-observability",
+        "agentic-ai",
+        "ai",
+        "ai-agent",
+        "ai-debugging",
+        "ai-logging-library",
+        "ai-observability",
+        "ai-systems",
+        "braintrust",
+        "langfuse",
+        "langsmith",
+        "local-logging",
+        "logging",
+        "multi-agent",
+        "no-cloud",
+        "no-cost",
+        "observability",
+        "opentelemetry",
+        "typescript"
+      ],
+      "kind_hint": "local-ai-tool",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "markdown_memory"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal"
+      ]
+    },
+    {
+      "full_name": "jxzzlfh/awesome-stars",
+      "url": "https://github.com/jxzzlfh/awesome-stars",
+      "description": "",
+      "stars": 94,
+      "forks": 15,
+      "open_issues": 0,
+      "language": "unknown",
+      "license": "CC0-1.0",
+      "updated_at": "2026-06-28T05:10:51Z",
+      "pushed_at": "2026-06-28T05:10:48Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "Dicklesworthstone/frankenlibc",
+      "url": "https://github.com/Dicklesworthstone/frankenlibc",
+      "description": "Rust interposition layer for glibc: transparent safety membrane that incrementally replaces C library functions with memory-safe Rust implementations",
+      "stars": 48,
+      "forks": 3,
+      "open_issues": 0,
+      "language": "Rust",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:19:28Z",
+      "pushed_at": "2026-06-28T05:19:26Z",
+      "archived": false,
+      "topics": [
+        "libc",
+        "linux",
+        "memory-safety",
+        "rust",
+        "systems-programming"
+      ],
+      "kind_hint": "memory-layer",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "markdown_memory"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "griffinwork40/agent-afk",
+      "url": "https://github.com/griffinwork40/agent-afk",
+      "description": "Start a run in your terminal and walk away. Get pinged when it finishes, or needs you. Every step is a readable trace you check before anything ships.",
+      "stars": 37,
+      "forks": 6,
+      "open_issues": 33,
+      "language": "TypeScript",
+      "license": "Apache-2.0",
+      "updated_at": "2026-06-28T05:20:44Z",
+      "pushed_at": "2026-06-28T05:20:41Z",
+      "archived": false,
+      "topics": [
+        "afk",
+        "agent-framework",
+        "agents",
+        "ai",
+        "anthropic",
+        "autonomous-agent",
+        "claude",
+        "claude-code",
+        "cli",
+        "coding-agent",
+        "daemon",
+        "harness-engineering",
+        "llm",
+        "mcp",
+        "model-context-protocol",
+        "openai",
+        "self-improving",
+        "subagent",
+        "telegram-bot",
+        "typescript"
+      ],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "markdown_memory"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "smith-and-web/obsidian-mcp-server",
+      "url": "https://github.com/smith-and-web/obsidian-mcp-server",
+      "description": "MCP server for Obsidian vault management - enables Claude and other AI assistants to read, write, search, and organize your notes",
+      "stars": 17,
+      "forks": 3,
+      "open_issues": 0,
+      "language": "TypeScript",
+      "license": "MIT",
+      "updated_at": "2026-06-25T11:42:49Z",
+      "pushed_at": "2026-06-23T17:30:18Z",
+      "archived": false,
+      "topics": [
+        "ai",
+        "claude",
+        "markdown",
+        "mcp",
+        "model-context-protocol",
+        "notes",
+        "obsidian",
+        "sse",
+        "vault"
+      ],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "pinned_refresh"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "write-like capability mentioned; wrap as write-request/proposal-only",
+        "local-first/markdown/vault fit signal"
+      ]
+    },
+    {
+      "full_name": "chainlesschain/chainlesschain",
+      "url": "https://github.com/chainlesschain/chainlesschain",
+      "description": "",
+      "stars": 8,
+      "forks": 5,
+      "open_issues": 2,
+      "language": "JavaScript",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:20:55Z",
+      "pushed_at": "2026-06-28T05:20:52Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm",
+        "mcp_bridge",
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "linny006/llm-agents-radar",
+      "url": "https://github.com/linny006/llm-agents-radar",
+      "description": "Live-updating index of LLM agent frameworks shipping on GitHub, refreshed every 15 minutes",
+      "stars": 4,
+      "forks": 2,
+      "open_issues": 4,
+      "language": "Python",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:15:24Z",
+      "pushed_at": "2026-06-28T05:15:20Z",
+      "archived": false,
+      "topics": [
+        "agent-tooling",
+        "agentic",
+        "agentic-ai",
+        "ai-agent",
+        "ai-agents",
+        "ai-engineering",
+        "ai-tools",
+        "auto-updated",
+        "autonomous-agents",
+        "awesome-agents",
+        "awesome-list",
+        "crewai",
+        "developer-tools",
+        "generative-ai",
+        "langchain",
+        "live-data",
+        "llm-development",
+        "llm-stack",
+        "machine-learning"
+      ],
+      "kind_hint": "local-ai-tool",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "strikersam/autonomous-ai-agency",
+      "url": "https://github.com/strikersam/autonomous-ai-agency",
+      "description": "Autonomous AI Agent Infrastructure Platform — OpenAI-compatible AI gateway with MCP support, multi-agent orchestration, tool calling, observability, memory, RAG, AI workflows, and unified infrastructure for any LLM provider.",
+      "stars": 4,
+      "forks": 0,
+      "open_issues": 9,
+      "language": "Python",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:22:04Z",
+      "pushed_at": "2026-06-28T05:22:01Z",
+      "archived": false,
+      "topics": [
+        "agentic-ai",
+        "ai-agents",
+        "ai-automation",
+        "ai-infrastructure",
+        "ai-runtime",
+        "ai-workflows",
+        "autonomous-agency",
+        "autonomous-agents",
+        "llm-orchestration",
+        "local-ai",
+        "mcp",
+        "model-context-protocol",
+        "multi-agent",
+        "observability",
+        "ollama",
+        "openai-compatible",
+        "rag",
+        "self-hosted-ai",
+        "tool-calling"
+      ],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm",
+        "mcp_bridge"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "check network/API/secret exposure before promotion"
+      ]
+    },
+    {
+      "full_name": "maqibg/Stargazer",
+      "url": "https://github.com/maqibg/Stargazer",
+      "description": "",
+      "stars": 3,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "unknown",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:17:10Z",
+      "pushed_at": "2026-06-28T05:17:07Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm",
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "Collinstudied660/mcp-hub",
+      "url": "https://github.com/Collinstudied660/mcp-hub",
+      "description": "Build and use production-ready MCP servers for Claude, Cursor, Windsurf, and more with one-line install and ready-to-run tools",
+      "stars": 1,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "MIT",
+      "updated_at": "2026-06-28T05:19:46Z",
+      "pushed_at": "2026-06-28T05:19:43Z",
+      "archived": false,
+      "topics": [
+        "chatgpt",
+        "claude-ai",
+        "crm",
+        "docker",
+        "faiss-vector-database",
+        "hubspot",
+        "llm",
+        "local-development",
+        "mcp",
+        "mcp-hub",
+        "mcp-management",
+        "mcp-proxy",
+        "model-context-protocol",
+        "nmap",
+        "nuclei",
+        "osint",
+        "sdk",
+        "vulnerability-scanner"
+      ],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "mcp_bridge"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "linny006/rag-radar",
+      "url": "https://github.com/linny006/rag-radar",
+      "description": "Live tracker of new RAG implementations, tools, and patterns — updated every 15 minutes",
+      "stars": 1,
+      "forks": 0,
+      "open_issues": 3,
+      "language": "Python",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:15:25Z",
+      "pushed_at": "2026-06-28T05:15:21Z",
+      "archived": false,
+      "topics": [
+        "ai-development",
+        "ai-engineering",
+        "ai-tools",
+        "auto-updated",
+        "awesome-list",
+        "awesome-rag",
+        "knowledge-base",
+        "live-data",
+        "llm-rag",
+        "llm-stack",
+        "llm-tools",
+        "machine-learning",
+        "rag",
+        "rag-tools",
+        "retrieval-augmented",
+        "retrieval-augmented-generation",
+        "semantic-search",
+        "vector-database",
+        "vector-search"
+      ],
+      "kind_hint": "rag-engine/graph-tool",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "addxiaoyi/FullADDMAX-mcp",
+      "url": "https://github.com/addxiaoyi/FullADDMAX-mcp",
+      "description": "Multi-agent MCP server: 4 mega tools / 31 ops, LLM autodetect (Claude/Cursor/Ollama), zero-config offline stub mode, one-command SVG panel. v0.6.0",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "MIT",
+      "updated_at": "2026-06-27T16:50:24Z",
+      "pushed_at": "2026-06-28T05:22:50Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "mcp_bridge"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal"
+      ]
+    },
+    {
+      "full_name": "AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse",
+      "url": "https://github.com/AI-Nurse-Solutions/ai-operating-system-heart-of-a-nurse",
+      "description": "",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:20:40Z",
+      "pushed_at": "2026-06-28T05:20:37Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "mcp_bridge"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "anarion80/awesome-from-stars",
+      "url": "https://github.com/anarion80/awesome-from-stars",
+      "description": "",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:18:51Z",
+      "pushed_at": "2026-06-28T05:18:47Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "markdown_memory"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "Andre151989/obsidian-lilbee",
+      "url": "https://github.com/Andre151989/obsidian-lilbee",
+      "description": "Enhance Obsidian search by indexing deleted files to keep them visible and searchable within your vault.",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "TypeScript",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:15:24Z",
+      "pushed_at": "2026-06-28T05:15:21Z",
+      "archived": false,
+      "topics": [
+        "ai",
+        "ai-assistant",
+        "chatbot",
+        "embeddings",
+        "generative-ai",
+        "knowledge-base",
+        "large-language-models",
+        "llm",
+        "local-first",
+        "local-llm",
+        "obsidian-md",
+        "obsidian-plugin",
+        "ocr",
+        "offline",
+        "ollama",
+        "pdf",
+        "privacy",
+        "rag",
+        "self-hosted",
+        "semantic-search"
+      ],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "write-like capability mentioned; wrap as write-request/proposal-only",
+        "local-first/markdown/vault fit signal"
+      ]
+    },
+    {
+      "full_name": "Ansellwaxlike187/cowork-semantic-search",
+      "url": "https://github.com/Ansellwaxlike187/cowork-semantic-search",
+      "description": "Search your local documents with semantic search in any MCP client, no API keys, no cloud access",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "AGPL-3.0",
+      "updated_at": "2026-06-28T05:20:07Z",
+      "pushed_at": "2026-06-28T05:20:03Z",
+      "archived": false,
+      "topics": [
+        "agent-framework",
+        "ai-agent",
+        "ai-coding",
+        "aiagents",
+        "anthropic",
+        "desktop-app",
+        "eclectron-app",
+        "electron",
+        "keep",
+        "lancedb",
+        "mcp",
+        "rag",
+        "search",
+        "skills",
+        "vector-search",
+        "workflow-automation"
+      ],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "mcp_bridge"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal",
+        "check network/API/secret exposure before promotion"
+      ]
+    },
+    {
+      "full_name": "carloslfu/db.md",
+      "url": "https://github.com/carloslfu/db.md",
+      "description": "Your database is a folder of markdown files, and the agent is the engine. The open standard for databases in plain files. No vector store, ever.",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Rust",
+      "license": "Apache-2.0",
+      "updated_at": "2026-06-28T05:22:41Z",
+      "pushed_at": "2026-06-28T05:22:37Z",
+      "archived": false,
+      "topics": [
+        "agent-memory",
+        "agentic",
+        "agentic-ai",
+        "ai",
+        "ai-agents",
+        "cli",
+        "database",
+        "knowledge-base",
+        "llm",
+        "markdown",
+        "note-taking",
+        "obsidian",
+        "pkm",
+        "plaintext",
+        "rust",
+        "second-brain"
+      ],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm",
+        "mcp_bridge",
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal"
+      ]
+    },
+    {
+      "full_name": "desonglll/my-awesome-stars",
+      "url": "https://github.com/desonglll/my-awesome-stars",
+      "description": "",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "unknown",
+      "license": "CC0-1.0",
+      "updated_at": "2026-06-28T05:22:08Z",
+      "pushed_at": "2026-06-28T05:22:05Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "mcp_bridge"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "leizd/DeepSeek-Infra",
+      "url": "https://github.com/leizd/DeepSeek-Infra",
+      "description": "Local-first Agentic AI Infrastructure Platform with LLM Gateway, Agent DAG Runtime, MCP Tool Hub, A2A Agent Mesh, Local RAG, Tool Sandbox and Observability.",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 7,
+      "language": "Python",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:20:28Z",
+      "pushed_at": "2026-06-28T05:20:24Z",
+      "archived": false,
+      "topics": [
+        "a2a",
+        "agent-runtime",
+        "ai-infra",
+        "deepseek",
+        "fastapi",
+        "llm-gateway",
+        "local-first",
+        "mcp",
+        "observability",
+        "openai-compatible",
+        "rag",
+        "tool-calling"
+      ],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "markdown_memory"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal"
+      ]
+    },
+    {
+      "full_name": "lukibahr/stars",
+      "url": "https://github.com/lukibahr/stars",
+      "description": "My starred GitHub projects",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "unknown",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:19:35Z",
+      "pushed_at": "2026-06-28T05:19:31Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "markdown_memory"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "madeinoz67/go-rag",
+      "url": "https://github.com/madeinoz67/go-rag",
+      "description": "",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Go",
+      "license": "Apache-2.0",
+      "updated_at": "2026-06-28T05:19:00Z",
+      "pushed_at": "2026-06-28T05:18:57Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "rag-engine/graph-tool",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "Natebreynolds/clemmy",
+      "url": "https://github.com/Natebreynolds/clemmy",
+      "description": "Lightweight background agent system — proactive, customizable, runs out of the box",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 1,
+      "language": "TypeScript",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:19:14Z",
+      "pushed_at": "2026-06-28T05:19:12Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "markdown_memory"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "robsavage619/savage-labs",
+      "url": "https://github.com/robsavage619/savage-labs",
+      "description": "Personal health OS: fuses WHOOP, Apple Health, Hevy, and DUPR into a single readiness signal with drug-adjusted HRV, a self-learning hypertrophy engine, and deterministic LLM gates.",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "MIT",
+      "updated_at": "2026-06-28T05:22:15Z",
+      "pushed_at": "2026-06-28T05:22:12Z",
+      "archived": false,
+      "topics": [
+        "biometrics",
+        "claude-api",
+        "duckdb",
+        "fastapi",
+        "health-analytics",
+        "nextjs",
+        "python",
+        "quantified-self",
+        "sports-science",
+        "whoop"
+      ],
+      "kind_hint": "local-ai-tool",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "sigma7863/my-awesome-stars",
+      "url": "https://github.com/sigma7863/my-awesome-stars",
+      "description": "",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "unknown",
+      "license": "CC0-1.0",
+      "updated_at": "2026-06-28T05:19:48Z",
+      "pushed_at": "2026-06-28T05:19:45Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm",
+        "markdown_memory",
+        "mcp_bridge",
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "SinuxLee/awesome-stars",
+      "url": "https://github.com/SinuxLee/awesome-stars",
+      "description": "A curated list of my GitHub stars",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "unknown",
+      "license": "CC0-1.0",
+      "updated_at": "2026-06-28T05:18:32Z",
+      "pushed_at": "2026-06-28T05:18:29Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "local_llm",
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "Vaan21th/daemonkey-agent",
+      "url": "https://github.com/Vaan21th/daemonkey-agent",
+      "description": "A local-first AI companion daemon — remembers you, grows with you, extends and repairs itself. 跑在你自己电脑上的 AI 搭档守护进程:会记住你、随你成长、能自加技能、能自我修复。",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "AGPL-3.0",
+      "updated_at": "2026-06-28T05:20:32Z",
+      "pushed_at": "2026-06-28T05:20:27Z",
+      "archived": false,
+      "topics": [
+        "ai-agent",
+        "ai-companion",
+        "daemon",
+        "llm",
+        "local-first",
+        "personal-assistant",
+        "python",
+        "self-hosted",
+        "wechat"
+      ],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "markdown_memory"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use",
+        "local-first/markdown/vault fit signal"
+      ]
+    },
+    {
+      "full_name": "wang-er-s/interesting_repo",
+      "url": "https://github.com/wang-er-s/interesting_repo",
+      "description": "",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "NOASSERTION",
+      "updated_at": "2026-06-28T05:12:50Z",
+      "pushed_at": "2026-06-28T05:12:46Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "github-component",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "rag_graph"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    },
+    {
+      "full_name": "wuruiqi/zo-bridge",
+      "url": "https://github.com/wuruiqi/zo-bridge",
+      "description": "zo-bridge — an MCP server bridging Zotero and Obsidian into one AI-assisted workflow. Compatible with Claude Code, Codex, OpenClaw, Cursor.",
+      "stars": 0,
+      "forks": 0,
+      "open_issues": 0,
+      "language": "Python",
+      "license": "MIT",
+      "updated_at": "2026-06-28T05:22:33Z",
+      "pushed_at": "2026-06-28T05:22:34Z",
+      "archived": false,
+      "topics": [],
+      "kind_hint": "mcp-server",
+      "bucket": "ready_component_candidate",
+      "buckets": [
+        "mcp_bridge"
+      ],
+      "selected_for_spec_kit": null,
+      "safety_notes": [
+        "evaluate in sandbox copy before live use"
+      ]
+    }
+  ],
+  "selected_for_spec_kit": [
+    "cyanheads/obsidian-mcp-server",
+    "swarmclawai/swarmvault",
+    "benmaster82/Kwipu",
+    "takeshy/obsidian-local-llm-hub",
+    "rps321321/obsidian-mcp-pro",
+    "deeflect/dory",
+    "bettyguo/obsidian_mcp"
+  ],
+  "integration_decisions": [
+    "Keep cyanheads/obsidian-mcp-server as primary MCP sandbox candidate; direct write tools must remain disabled/wrapped.",
+    "Use benmaster82/Kwipu as primary Phase 04 RAG/graph sandbox candidate because it targets Markdown/Obsidian, wikilinks/YAML, hybrid retrieval, and local Ollama operation.",
+    "Keep rps321321/obsidian-mcp-pro and bettyguo/obsidian_mcp as secondary MCP/API-shape references, not live write paths.",
+    "Use swarmvault/dory/obsidian-local-llm-hub as pattern references for local-first memory/graph/agent integration; do not install into live vault in this slice."
+  ],
+  "safety_policy": "External components are read/search/analyze/propose/render only; all write-like capabilities become obslayer proposal/apply requests."
+}

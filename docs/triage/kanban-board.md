@@ -1,6 +1,6 @@
 # Obsidian Operating Layer — real Hermes Kanban/Triage board
 
-Updated: 2026-06-28T05:20:03Z
+Updated: 2026-06-28T05:23:50Z
 
 This is the GitHub-visible mirror of the real local Hermes Kanban board shown at `127.0.0.1:19119/kanban`.
 
@@ -17,8 +17,8 @@ This is the GitHub-visible mirror of the real local Hermes Kanban board shown at
 
 1. `t_2bf7f62f` / `ool-phase03-readonly-mcp-adapter` — **done** — OOL: Phase 03 — read-only MCP adapter sandbox evaluation — assignee `default`
 2. `t_141c87d4` / `ool-community-plugin-review` — **done** — OOL: Community plugin review — ready Obsidian components — assignee `default`
-3. `t_9aae34b0` / `ool-github-components-refresh` — **running** — OOL: GitHub components refresh via gh API — assignee `default`
-4. `t_10d14d0e` / `ool-phase04-rag-graph-adapter` — **todo** — OOL: Phase 04 — RAG/graph adapter sandbox evaluation — assignee `default`
+3. `t_9aae34b0` / `ool-github-components-refresh` — **done** — OOL: GitHub components refresh via gh API — assignee `default`
+4. `t_10d14d0e` / `ool-phase04-rag-graph-adapter` — **ready** — OOL: Phase 04 — RAG/graph adapter sandbox evaluation — assignee `default`
 5. `t_9be6781d` / `ool-phase05-diagram-pdf-poc` — **todo** — OOL: Phase 05 — diagram/PDF proof of concept — assignee `default`
 6. `t_71341c88` / `ool-phase06-proposal-normalization` — **todo** — OOL: Phase 06 — proposal normalization worker — assignee `default`
 7. `t_43281d63` / `ool-phase07-obsidian-review-dashboard` — **todo** — OOL: Phase 07 — Obsidian review dashboard — assignee `default`
@@ -26,15 +26,15 @@ This is the GitHub-visible mirror of the real local Hermes Kanban board shown at
 
 ## Current active card
 
-- `t_9aae34b0` — OOL: GitHub components refresh via gh API — `running` — assignee `default`
+- `t_10d14d0e` — OOL: Phase 04 — RAG/graph adapter sandbox evaluation — `ready` — assignee `default`
 
 ## Full chain semantics
 
 ```text
 ool-phase03-readonly-mcp-adapter(done, default)
   -> ool-community-plugin-review(done, default)
-  -> ool-github-components-refresh(running, default)
-  -> ool-phase04-rag-graph-adapter(todo, default)
+  -> ool-github-components-refresh(done, default)
+  -> ool-phase04-rag-graph-adapter(ready, default)
   -> ool-phase05-diagram-pdf-poc(todo, default)
   -> ool-phase06-proposal-normalization(todo, default)
   -> ool-phase07-obsidian-review-dashboard(todo, default)
