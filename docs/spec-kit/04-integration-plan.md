@@ -9,6 +9,8 @@
 
 ## Phase 2 — sandbox
 
+2026-06-28 Phase 04 result: `benmaster82/Kwipu` evaluated through a local sandbox-only RAG/graph wrapper. Promote the normalized finding schema and CLI wrapper; defer full Kwipu install/Ollama indexing until a larger copied-vault benchmark is explicitly scheduled.
+
 - Install/clone only into sandbox after explicit scope decision.
 - Run against a copied test vault, not live vault.
 - Disable direct write or wrap writes into proposal worker.

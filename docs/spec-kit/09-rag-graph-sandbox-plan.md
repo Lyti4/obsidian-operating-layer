@@ -67,3 +67,14 @@ turn write-like suggestions into proposal only
 - Can export machine-readable findings or parseable markdown.
 - Does not mutate vault directly.
 - Runtime/resource cost is acceptable.
+
+## Phase 04 sandbox result
+
+2026-06-28 result: `benmaster82/Kwipu` remains the primary ready RAG/graph candidate, evaluated through the local wrapper `tools/obsidian_rag_graph_adapter.py` against a copied sandbox vault only.
+
+- adapter record: `docs/spec-kit/research/sample-adapter-records/benmaster82-kwipu.json`
+- implementation: `src/obslayer/rag_graph_adapter.py`
+- tests: `tests/test_rag_graph_adapter.py`
+- human report: `docs/spec-kit/phase04-rag-graph-evaluation-2026-06-28.md`
+
+The current slice normalizes findings only: nonexistent links, orphan notes, candidate backlinks, MOC clusters, duplicate candidates, and graph summaries. All write-like outcomes are proposal-only and record `executed=false`; no live vault path is used.

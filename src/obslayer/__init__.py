@@ -30,6 +30,14 @@ from .mcp_adapter import (
     normalize_mcp_tool_request,
     write_mcp_adapter_evaluation,
 )
+from .rag_graph_adapter import (
+    RagGraphAdapterEvaluation,
+    build_rag_graph_adapter_evaluation,
+    load_rag_graph_adapter_record,
+    normalize_rag_graph_findings,
+    rag_graph_evaluation_to_markdown,
+    write_rag_graph_adapter_evaluation,
+)
 from .sandbox import SandboxCopyReport, create_sandbox_vault
 
 __all__ = [
@@ -43,9 +51,11 @@ __all__ = [
     "DEFAULT_PROTECTED_RELATIVE",
     "GuardrailError",
     "McpAdapterEvaluation",
+    "RagGraphAdapterEvaluation",
     "SandboxCopyReport",
     "build_approval_manifest",
     "build_mcp_adapter_evaluation",
+    "build_rag_graph_adapter_evaluation",
     "canonical_run_commands",
     "canonical_workspace_layout",
     "classify_mcp_tool",
@@ -54,13 +64,17 @@ __all__ = [
     "is_protected_relative",
     "load_json",
     "load_mcp_adapter_record",
+    "load_rag_graph_adapter_record",
     "manifest_backup_plan",
     "normalize_mcp_tool_request",
+    "normalize_rag_graph_findings",
     "normalize_vault_root",
     "parse_paths",
     "planned_backup_dir",
+    "rag_graph_evaluation_to_markdown",
     "validate_approval_manifest",
     "validate_targets",
     "write_json",
     "write_mcp_adapter_evaluation",
+    "write_rag_graph_adapter_evaluation",
 ]
