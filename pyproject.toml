@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Read-only-first observe/propose/apply/verify tools for Obsidian"
 readme = "README.md"
 requires-python = ">=3.11"
+dependencies = ["jsonschema>=4"]
 authors = [{ name = "Hermes Agent" }]
 license = { text = "Private" }
 classifiers = [

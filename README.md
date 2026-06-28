@@ -13,8 +13,10 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `tools/obsidian_apply.py` — dry-run by default; live apply only with an explicit approval manifest.
 - `tools/obsidian_verify.py` — verify observation/proposal consistency.
 - `tools/obsidian_backfill_report.py` — write an operator report into Obsidian Reports.
+- `tools/obsidian_sandbox.py` — create/reset protected-path-excluding sandbox vault copies under `out/`.
 - `obsidian_*.py` — compatibility wrappers for the canonical tools.
 - `src/obslayer/guardrails.py` — shared guardrails, approval manifest validation, protected path policy, backup policy.
+- `src/obslayer/sandbox.py` — sandbox vault copy/reset harness for read-only component evaluation.
 - `tests/` — unit/regression tests for dry-run, approval gating, protected paths, CLI wrappers, and report generation.
 - `docs/` — operator guide and report template.
 - `manifests/` — checked-in manifest examples only; real manifests belong in task-specific working dirs.
@@ -29,6 +31,7 @@ From the Obsidian task context and GitHub scan, this package adopts patterns rat
 - Markdown for humans and JSON for automation;
 - deterministic local inspection, no LLM in the tool layer;
 - strict capability boundary: observe/propose/apply/verify are separate phases;
+- ready components run through sandbox copies first; external adapters stay read/search/analyze/propose/render only;
 - live apply requires exact `proposal ↔ approval manifest ↔ vault_root ↔ targets` binding;
 - protected namespaces are blocked for proposal targets: `.obsidian`, `_Backups`, `_Archive`, `.trash`, Soul-protected paths;
 - backups stay under `_Backups/obsidian-operating-layer` and are created before writes.

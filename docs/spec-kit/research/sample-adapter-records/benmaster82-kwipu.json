@@ -1,0 +1,49 @@
+{
+  "capabilities": [
+    "read",
+    "search",
+    "graph",
+    "analyze",
+    "propose"
+  ],
+  "direct_write_enabled": false,
+  "forbidden_capabilities": [
+    "write-direct",
+    "delete-direct",
+    "move-direct",
+    "merge-direct",
+    "patch-direct",
+    "execute-live-mutation",
+    "secret-read"
+  ],
+  "kind": "rag-engine",
+  "license": "unknown-confirm-before-promotion",
+  "name": "benmaster82/Kwipu",
+  "outputs": [
+    "finding-json",
+    "proposal-json",
+    "markdown-report",
+    "log"
+  ],
+  "risk_level": "medium",
+  "risk_notes": [
+    "Run indexing against copied vault data only during evaluation.",
+    "Duplicate, merge, move, and cleanup suggestions must remain proposal-only."
+  ],
+  "runtime": "local",
+  "sandbox_required": true,
+  "source": {
+    "id": "benmaster82/Kwipu",
+    "type": "github",
+    "url": "https://github.com/benmaster82/Kwipu"
+  },
+  "vault_scope": "sandbox-copy",
+  "verification": {
+    "expected_outputs": [
+      "related note findings",
+      "graph/backlink findings",
+      "proposal-compatible finding records"
+    ],
+    "sandbox_command": "python tools/obsidian_sandbox.py --source-vault /home/hermesadmin/Obsidian --sandbox-root out/sandbox-vaults --name rag-kwipu --reset"
+  }
+}

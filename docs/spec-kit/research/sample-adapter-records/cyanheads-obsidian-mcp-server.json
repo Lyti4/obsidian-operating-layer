@@ -1,0 +1,49 @@
+{
+  "capabilities": [
+    "read",
+    "search",
+    "metadata-read",
+    "graph",
+    "write-request"
+  ],
+  "direct_write_enabled": false,
+  "forbidden_capabilities": [
+    "write-direct",
+    "delete-direct",
+    "move-direct",
+    "merge-direct",
+    "patch-direct",
+    "execute-live-mutation",
+    "secret-read"
+  ],
+  "kind": "mcp-server",
+  "license": "unknown-confirm-before-promotion",
+  "name": "cyanheads/obsidian-mcp-server",
+  "outputs": [
+    "finding-json",
+    "proposal-json",
+    "markdown-report",
+    "log"
+  ],
+  "risk_level": "medium",
+  "risk_notes": [
+    "MCP tools must be wrapped as read/search/proposal-only before use against live vaults.",
+    "Any write-like MCP operation must be converted into an obslayer proposal."
+  ],
+  "runtime": "node",
+  "sandbox_required": true,
+  "source": {
+    "id": "cyanheads/obsidian-mcp-server",
+    "type": "github",
+    "url": "https://github.com/cyanheads/obsidian-mcp-server"
+  },
+  "vault_scope": "sandbox-copy",
+  "verification": {
+    "expected_outputs": [
+      "read/search result JSON",
+      "no direct filesystem mutation",
+      "proposal-only write request"
+    ],
+    "sandbox_command": "python tools/obsidian_sandbox.py --source-vault /home/hermesadmin/Obsidian --sandbox-root out/sandbox-vaults --name mcp-cyanheads --reset"
+  }
+}

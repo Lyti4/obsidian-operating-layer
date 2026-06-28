@@ -21,6 +21,7 @@ from .guardrails import (
     validate_targets,
     write_json,
 )
+from .sandbox import SandboxCopyReport, create_sandbox_vault
 
 __all__ = [
     "ApprovalManifest",
@@ -32,9 +33,11 @@ __all__ = [
     "DEFAULT_PROJECT_SLUG",
     "DEFAULT_PROTECTED_RELATIVE",
     "GuardrailError",
+    "SandboxCopyReport",
     "canonical_run_commands",
     "canonical_workspace_layout",
     "build_approval_manifest",
+    "create_sandbox_vault",
     "is_protected_relative",
     "load_json",
     "manifest_backup_plan",

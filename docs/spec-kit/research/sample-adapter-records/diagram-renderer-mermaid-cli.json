@@ -1,0 +1,45 @@
+{
+  "capabilities": [
+    "read",
+    "render"
+  ],
+  "direct_write_enabled": false,
+  "forbidden_capabilities": [
+    "write-direct",
+    "delete-direct",
+    "move-direct",
+    "merge-direct",
+    "patch-direct",
+    "execute-live-mutation",
+    "secret-read"
+  ],
+  "kind": "diagram-renderer",
+  "license": "MIT",
+  "name": "mermaid-cli",
+  "outputs": [
+    "diagram-source",
+    "svg",
+    "pdf",
+    "log"
+  ],
+  "risk_level": "low",
+  "risk_notes": [
+    "Render only from repo-tracked text sources or approved report inputs.",
+    "Generated PDFs must land in out/reports before any Obsidian publication."
+  ],
+  "runtime": "node",
+  "sandbox_required": true,
+  "source": {
+    "id": "@mermaid-js/mermaid-cli",
+    "type": "package-registry",
+    "url": "https://github.com/mermaid-js/mermaid-cli"
+  },
+  "vault_scope": "approved-output-only",
+  "verification": {
+    "expected_outputs": [
+      "rendered SVG/PDF under out/reports",
+      "no direct vault publication"
+    ],
+    "sandbox_command": "npx -y @mermaid-js/mermaid-cli --help"
+  }
+}
