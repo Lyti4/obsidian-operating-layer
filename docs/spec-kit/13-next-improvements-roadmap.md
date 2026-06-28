@@ -112,6 +112,8 @@ python3 tools/obsidian_review_dashboard.py list --proposal-root out/proposals --
 
 ### P1.2 Human explanation for a proposal
 
+Status: implemented via `tools/obsidian_review_dashboard.py explain` and regression-tested.
+
 Goal: explain a proposal in Telegram/Obsidian-friendly language.
 
 Acceptance:
@@ -214,7 +216,7 @@ The roadmap is considered executed only when:
 - P0 items are implemented and verified;
 - at least one P1 daily-use UX flow is usable by Дмитрий;
 - one P2 field slice has produced a real proposal/review artifact;
-- all evidence is linked from a final acceptance report;
+- all evidence is linked from `14-operational-acceptance-report.md`;
 - GitHub is clean and synchronized.
 
 ## Stop conditions

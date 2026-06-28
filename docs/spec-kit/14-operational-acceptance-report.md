@@ -1,0 +1,201 @@
+# Operational Acceptance Report
+
+## Purpose
+
+This report closes the first operational-acceptance pass after the MVP baseline and `13-next-improvements-roadmap.md`. It records what was implemented, what was verified by commands, and what still requires explicit human/UI review.
+
+## Scope
+
+Acceptance scope covered in this pass:
+
+- proposal-only field slice;
+- pending proposal listing;
+- human-readable proposal explanation;
+- disposable sandbox apply rehearsal;
+- controlled-autonomy report format clarity;
+- diagram/PDF generation acceptance;
+- dashboard static acceptance.
+
+The real live vault was not mutated. Live apply to `/home/hermesadmin/Obsidian` remains outside this acceptance pass.
+
+## Delivered acceptance items
+
+### P0.2 Controlled-autonomy report format clarity
+
+Status: accepted.
+
+Evidence:
+
+- `tools/obsidian_controlled_autonomy.py report --help` documents that `--out` writes Markdown and `--json-out` writes JSON.
+- `tests/test_controlled_autonomy.py` covers both outputs in one run.
+
+Acceptance result:
+
+- Markdown and JSON report formats are no longer ambiguous.
+
+### P0.3 Disposable sandbox apply rehearsal
+
+Status: accepted.
+
+Evidence:
+
+- `tests/test_apply_rehearsal.py` creates a disposable vault in a test temp directory.
+- The test creates a narrow proposal and approval manifest.
+- Live apply is executed only against the disposable sandbox vault.
+- Backup and post-observe evidence are verified.
+
+Acceptance result:
+
+- Apply semantics are rehearsed without touching the real vault.
+
+### P1.1 Pending proposals command
+
+Status: accepted.
+
+Command:
+
+```bash
+python3 tools/obsidian_review_dashboard.py list --proposal-root out/proposals --json
+```
+
+Evidence:
+
+- `tests/test_review_dashboard_cli.py` verifies JSON and Markdown list output.
+- Applied/rejected proposals are excluded from pending output.
+
+Acceptance result:
+
+- There is a daily-use command to see proposals that need review.
+
+### P1.2 Human explanation for a proposal
+
+Status: accepted.
+
+Command:
+
+```bash
+python3 tools/obsidian_review_dashboard.py explain --proposal out/proposals/example/proposal.json
+```
+
+Evidence:
+
+- `tests/test_review_dashboard_cli.py` verifies that explanations include risk, target list, approval phrase, summary, and next safe step.
+- Unsafe non-dry-run proposals are refused.
+
+Acceptance result:
+
+- Dmitry can ask for a human-readable proposal explanation before any approval/apply decision.
+
+### P1.3 Dashboard field review
+
+Status: static acceptance complete; live Obsidian UI review remains manual.
+
+Evidence:
+
+- `docs/obsidian-review-dashboard/index.md` contains Dataview sections for review queue, proposal index, report index, and task index.
+- Status labels are constrained to `proposed`, `needs-review`, `applied`, and `rejected`.
+- `tests/test_phase07_review_dashboard_docs.py` verifies dashboard safety wording and status coverage.
+
+Acceptance result:
+
+- Dashboard source is ready to copy/publish through the normal approval gate.
+- Manual Obsidian UI rendering is still a human acceptance step because this CLI run cannot open Dmitry's Obsidian UI.
+
+### P1.4 Diagram readability acceptance
+
+Status: technical acceptance complete; visual taste review remains human.
+
+Evidence:
+
+- `docs/diagrams/architecture.mmd`
+- `docs/diagrams/worker-flow.mmd`
+- `docs/diagrams/safety-sequence.mmd`
+- Generated SVG/PDF artifacts under `out/diagrams/` and `out/reports/` during acceptance runs.
+- `tests/test_diagram_pdf_adapter.py` verifies render-only policy and artifact generation.
+
+Acceptance result:
+
+- Diagrams are reproducible from committed sources.
+- Human visual approval can now focus on wording/layout, not pipeline correctness.
+
+### P2.1 Proposal-only field-test slice
+
+Status: accepted.
+
+Command:
+
+```bash
+python3 tools/obsidian_field_slice.py \
+  --vault /tmp/approved-vault-subset \
+  --out-root out/field-slices/example \
+  --decision pending
+```
+
+Evidence:
+
+- `tools/obsidian_field_slice.py` implements observe -> finding -> proposal -> verify -> dashboard list -> decision record.
+- `tests/test_field_slice.py` verifies the flow on a disposable vault subset.
+- Field-slice decisions record `live_apply: not-run` and `mutation_boundary: proposal-only`.
+
+Acceptance result:
+
+- The project has a safe end-to-end proposal-only field scenario.
+
+## Verification commands
+
+Canonical verification for this acceptance state:
+
+```bash
+make verify
+python3 tools/obsidian_review_dashboard.py list --proposal-root out/proposals --json
+python3 tools/obsidian_controlled_autonomy.py report --help
+python3 tools/obsidian_field_slice.py --vault /tmp/approved-vault-subset --out-root out/field-slices/example --decision pending
+```
+
+Expected canonical result:
+
+- pytest passes;
+- ruff passes;
+- compileall passes;
+- review dashboard list is read-only;
+- controlled-autonomy report help clearly separates Markdown and JSON;
+- field slice produces proposal/review/decision artifacts without live apply.
+
+## Remaining gaps
+
+### Human/manual acceptance
+
+These are not safe or meaningful to automate from the CLI agent alone:
+
+1. Open dashboard in Obsidian and confirm visual usability.
+2. Open generated SVG/PDF and approve wording/layout.
+3. Decide whether any specific real proposal should be approved for live apply.
+
+### Future capability expansion
+
+These remain future roadmap work, not blockers for the current operational acceptance baseline:
+
+1. `P2.2` RAG/graph candidate benchmark on sandbox data.
+2. `P2.3` MCP read-only adapter expansion.
+3. Scheduled observe/index reports, only after explicit cron approval.
+4. Better Telegram summary templates and command aliases.
+
+## Safety boundary
+
+Accepted live-write boundary:
+
+- real vault: observe/read-only/proposal-only/dry-run;
+- disposable sandbox: live apply rehearsal allowed by tests;
+- real live apply: explicit approval manifest, exact target binding, backup, and post-verify required.
+
+## Final acceptance decision
+
+Operational acceptance baseline: accepted for field use in safety-first mode.
+
+Use the project for real work as:
+
+```text
+observe -> proposal -> dashboard/explain -> human decision -> dry-run/apply gate
+```
+
+Do not treat it as unsupervised production autonomy.
