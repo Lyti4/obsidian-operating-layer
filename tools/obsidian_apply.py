@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import shutil
+import sys
 from pathlib import Path
 
 from _bootstrap import SRC  # noqa: F401
@@ -156,5 +157,13 @@ def main() -> int:
     return 0
 
 
+def cli() -> int:
+    try:
+        return main()
+    except GuardrailError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(cli())
