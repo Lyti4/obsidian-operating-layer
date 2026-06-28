@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -137,3 +139,48 @@ def test_acceptance_report_distinguishes_dry_run_applied_and_rollback_evidence(t
     assert "applied_targets" in text
     assert "Rollback evidence" in text
     assert json_path is not None and json_path.is_file()
+
+
+def test_controlled_autonomy_report_cli_writes_markdown_out_and_json_out_separately(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[1]
+    vault = make_vault(tmp_path)
+    queue_root = tmp_path / "queue"
+    create_controlled_job(queue_root=queue_root, kind="report", vault_root=vault, task_id="phase08-cli-report")
+    run_controlled_job(queue_root, "phase08-cli-report")
+
+    markdown_out = tmp_path / "acceptance-report.md"
+    json_out = tmp_path / "acceptance-report.json"
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_controlled_autonomy.py"),
+            "--queue-root",
+            str(queue_root),
+            "report",
+            "--out",
+            str(markdown_out),
+            "--json-out",
+            str(json_out),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr + completed.stdout
+    stdout = json.loads(completed.stdout)
+    assert stdout["out"] == str(markdown_out.resolve())
+    assert stdout["json_out"] == str(json_out.resolve())
+    assert markdown_out.read_text(encoding="utf-8").startswith("# Controlled Autonomy Acceptance Report")
+    payload = json.loads(json_out.read_text(encoding="utf-8"))
+    assert payload["job_counts"] == {"done": 1}
+
+    help_run = subprocess.run(
+        [sys.executable, str(repo / "tools" / "obsidian_controlled_autonomy.py"), "report", "--help"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert help_run.returncode == 0
+    assert "Markdown report output path" in help_run.stdout
+    assert "Optional JSON report output path" in help_run.stdout

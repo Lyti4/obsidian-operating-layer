@@ -14,8 +14,10 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `tools/obsidian_apply.py` — dry-run by default; live apply only with an explicit approval manifest.
 - `tools/obsidian_verify.py` — verify observation/proposal consistency.
 - `tools/obsidian_backfill_report.py` — write an operator report into Obsidian Reports.
+- `tools/obsidian_review_dashboard.py` — list/explain pending dry-run proposals for human review without vault mutation.
 - `tools/obsidian_sandbox.py` — create/reset protected-path-excluding sandbox vault copies under `out/`.
 - `tools/obsidian_controlled_autonomy.py` — explicit Phase 08 observe/index/report queue jobs and acceptance reports; no scheduler is installed.
+- `tools/obsidian_field_slice.py` — proposal-only field acceptance slice: observe → finding → proposal → verify → dashboard list → decision record.
 - `docs/controlled-autonomy.md` — Phase 08 controlled-autonomy operator notes and safety model.
 - `docs/obsidian-review-dashboard/` — Dataview/Templater-friendly Phase 7 review dashboard source notes.
 - `obsidian_*.py` — compatibility wrappers for the canonical tools.
@@ -95,6 +97,35 @@ python3 tools/obsidian_proposal_worker.py \
 ```
 
 The findings JSON may be either a list of finding objects or an object with `source_id` and `findings`. Each finding target must include `path` and `new_text`; protected namespaces are refused before `proposal.json` is written. The generated proposal stays dry-run by default and still needs an approval manifest before live apply.
+
+List pending proposals for review:
+
+```bash
+python3 tools/obsidian_review_dashboard.py list \
+  --proposal-root out/proposals \
+  --json
+```
+
+Explain one proposal in human-readable form:
+
+```bash
+python3 tools/obsidian_review_dashboard.py explain \
+  --proposal out/proposals/example/proposal.json
+```
+
+Both review-dashboard commands are read-only: they inspect proposal bundles and write only to an explicit `--out` path if requested.
+
+Run a proposal-only field slice on an approved vault subset or disposable sandbox:
+
+```bash
+python3 tools/obsidian_field_slice.py \
+  --vault /tmp/approved-vault-subset \
+  --out-root out/field-slices/example \
+  --task-id example-field-slice \
+  --decision pending
+```
+
+This creates observation, findings, proposal, verification, pending-proposals list, and decision records. It never runs live apply.
 
 Dry-run an apply:
 

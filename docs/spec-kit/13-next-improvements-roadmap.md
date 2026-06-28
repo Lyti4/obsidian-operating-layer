@@ -55,6 +55,8 @@ pytest tests/test_proposal_normalization.py
 
 ### P0.2 Controlled-autonomy report format clarity
 
+Status: implemented and regression-tested.
+
 Problem found during field run: `controlled_autonomy report --out file.json` writes Markdown unless `--json-out` is supplied.
 
 Acceptance:
@@ -72,6 +74,8 @@ python3 tools/obsidian_controlled_autonomy.py report --help
 
 ### P0.3 Apply rehearsal only on disposable sandbox
 
+Status: implemented as a regression-tested disposable sandbox rehearsal.
+
 Acceptance:
 
 - create a disposable sandbox vault;
@@ -82,12 +86,15 @@ Acceptance:
 
 Verification target:
 
-- report under `out/reports/apply-rehearsal-*`;
+- report under `out/reports/apply-rehearsal-*` for manual runs;
+- regression test `tests/test_apply_rehearsal.py` verifies backup and post-observe evidence;
 - no changes under `/home/hermesadmin/Obsidian`.
 
 ## P1 — daily-use UX improvements
 
 ### P1.1 Pending proposals command
+
+Status: implemented via `tools/obsidian_review_dashboard.py list` and regression-tested.
 
 Goal: one command to list proposals that need human review.
 
@@ -97,7 +104,7 @@ Acceptance:
 - supports JSON output for dashboard use;
 - does not read secrets or mutate vault.
 
-Suggested command shape:
+Command:
 
 ```bash
 python3 tools/obsidian_review_dashboard.py list --proposal-root out/proposals --json
@@ -139,6 +146,8 @@ Acceptance:
 
 ### P2.1 Real field-test slice
 
+Status: implemented as proposal-only CLI flow via `tools/obsidian_field_slice.py` and regression-tested on a disposable vault subset.
+
 Goal: run one small real scenario end-to-end without live mutation.
 
 Flow:
@@ -153,6 +162,12 @@ Acceptance:
 - produces proposal bundle and review note;
 - decision is recorded as reject/approve/pending;
 - no live apply unless separately approved.
+
+Command:
+
+```bash
+python3 tools/obsidian_field_slice.py --vault /tmp/approved-vault-subset --out-root out/field-slices/example --decision pending
+```
 
 ### P2.2 RAG/graph candidate benchmark
 
