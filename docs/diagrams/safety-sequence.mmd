@@ -1,0 +1,14 @@
+sequenceDiagram
+  participant Worker
+  participant Proposal
+  participant Manifest
+  participant Backup
+  participant Vault
+  participant Verify
+
+  Worker->>Proposal: emit proposal bundle only
+  Proposal->>Manifest: wait for explicit approval
+  Manifest->>Backup: create scoped backup plan
+  Backup->>Vault: apply approved targets only
+  Vault->>Verify: fresh observe and compare
+  Verify-->>Worker: report PASS/FAIL evidence

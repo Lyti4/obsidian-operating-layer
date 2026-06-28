@@ -1,0 +1,14 @@
+flowchart TB
+  Human[Human / Obsidian UI]
+  Plugins[Ready Obsidian plugins\nDataview / Templater / Search]
+  Workers[Worker layer\nMCP / RAG / Graph / Diagram]
+  Safety[Obslayer safety core\nobserve -> propose -> verify -> apply]
+  Vault[Approved vaults and sandbox copies]
+  Reports[out/reports\nPDF / Markdown / JSON]
+
+  Human --> Plugins
+  Plugins --> Workers
+  Workers --> Safety
+  Safety --> Vault
+  Workers --> Reports
+  Safety --> Reports

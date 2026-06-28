@@ -1,0 +1,14 @@
+flowchart LR
+  Intake[Approved phase item]
+  Queue[Local durable queue]
+  Code[code_slice worker]
+  Verify[verification worker]
+  Final[final_report worker]
+  Human[Human acceptance]
+
+  Intake --> Queue
+  Queue --> Code
+  Code --> Verify
+  Verify --> Final
+  Final --> Human
+  Verify -. failed evidence .-> Code
