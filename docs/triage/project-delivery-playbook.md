@@ -1,6 +1,6 @@
 # Project delivery playbook — spec kit → GitHub → multi-agent triage Kanban
 
-Updated: 2026-06-28T05:20:03Z
+Updated: 2026-06-28T05:26:12Z
 
 This document records what was done for Obsidian Operating Layer and the correct reusable process for future projects.
 
@@ -60,8 +60,8 @@ Required workflow markers: Spec kit, GitHub, multi-agent triage sandbox, Real Ka
 
 1. `t_2bf7f62f` / `ool-phase03-readonly-mcp-adapter` — **done** — OOL: Phase 03 — read-only MCP adapter sandbox evaluation — assignee `default`
 2. `t_141c87d4` / `ool-community-plugin-review` — **done** — OOL: Community plugin review — ready Obsidian components — assignee `default`
-3. `t_9aae34b0` / `ool-github-components-refresh` — **running** — OOL: GitHub components refresh via gh API — assignee `default`
-4. `t_10d14d0e` / `ool-phase04-rag-graph-adapter` — **todo** — OOL: Phase 04 — RAG/graph adapter sandbox evaluation — assignee `default`
+3. `t_9aae34b0` / `ool-github-components-refresh` — **done** — OOL: GitHub components refresh via gh API — assignee `default`
+4. `t_10d14d0e` / `ool-phase04-rag-graph-adapter` — **running** — OOL: Phase 04 — RAG/graph adapter sandbox evaluation — assignee `default`
 5. `t_9be6781d` / `ool-phase05-diagram-pdf-poc` — **todo** — OOL: Phase 05 — diagram/PDF proof of concept — assignee `default`
 6. `t_71341c88` / `ool-phase06-proposal-normalization` — **todo** — OOL: Phase 06 — proposal normalization worker — assignee `default`
 7. `t_43281d63` / `ool-phase07-obsidian-review-dashboard` — **todo** — OOL: Phase 07 — Obsidian review dashboard — assignee `default`
@@ -69,7 +69,7 @@ Required workflow markers: Spec kit, GitHub, multi-agent triage sandbox, Real Ka
 
 Current active card:
 
-- `t_9aae34b0` — OOL: GitHub components refresh via gh API — `running` — assignee `default`
+- `t_10d14d0e` — OOL: Phase 04 — RAG/graph adapter sandbox evaluation — `running` — assignee `default`
 
 ## Correct process for future projects
 
