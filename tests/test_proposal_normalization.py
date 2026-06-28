@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from obslayer import GuardrailError, normalize_findings_to_proposal
+from obslayer import GuardrailError, normalize_findings_to_proposal, write_normalized_proposal
 
 
 def make_vault(tmp_path: Path) -> Path:
@@ -80,6 +80,35 @@ def test_normalize_findings_to_proposal_refuses_protected_targets(tmp_path: Path
 
     with pytest.raises(GuardrailError, match="protected path"):
         normalize_findings_to_proposal(vault_root=vault, findings=findings, source_id="unsafe")
+
+
+def test_write_normalized_proposal_refuses_out_dir_inside_vault_root_without_writing(tmp_path: Path) -> None:
+    vault = make_vault(tmp_path)
+    proposal = normalize_findings_to_proposal(
+        vault_root=vault,
+        findings=[
+            {
+                "id": "finding-inside-vault",
+                "type": "metadata-suggestion",
+                "evidence": "alpha note is missing a status field",
+                "targets": [
+                    {
+                        "path": "Notes/alpha.md",
+                        "old_text": "# Alpha\n",
+                        "new_text": "---\nstatus: proposed\n---\n# Alpha\n",
+                    }
+                ],
+            }
+        ],
+        source_id="inside-vault-test",
+    )
+    out_dir = vault / "proposal-output"
+
+    with pytest.raises(GuardrailError, match="inside vault root"):
+        write_normalized_proposal(proposal, out_dir)
+
+    assert not (out_dir / "proposal.json").exists()
+    assert not (out_dir / "proposal.md").exists()
 
 
 def test_proposal_worker_cli_writes_proposal_and_apply_dry_run_accepts_it(tmp_path: Path) -> None:

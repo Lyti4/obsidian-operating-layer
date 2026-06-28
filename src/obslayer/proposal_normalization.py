@@ -175,6 +175,13 @@ def proposal_to_markdown(proposal: dict[str, Any]) -> str:
 
 def write_normalized_proposal(proposal: dict[str, Any], out_dir: str | Path) -> tuple[Path, Path]:
     root = Path(out_dir).expanduser().resolve()
+    vault_root = normalize_vault_root(proposal["vault_root"])
+    try:
+        root.relative_to(vault_root)
+    except ValueError:
+        pass
+    else:
+        raise GuardrailError(f"Refusing proposal output inside vault root: {root}")
     root.mkdir(parents=True, exist_ok=True)
     json_path = root / "proposal.json"
     markdown_path = root / "proposal.md"
