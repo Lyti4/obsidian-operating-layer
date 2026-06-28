@@ -50,9 +50,11 @@ From the Obsidian task context and GitHub scan, this package adopts patterns rat
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -U pip pytest ruff
-python3 -m pytest -q
-python3 -m ruff check .
+make verify
+make smoke
 ```
+
+`make smoke` creates a timestamped `out/smoke-*` directory and runs the full safe pipeline against `/home/hermesadmin/Obsidian`: observe → propose → verify → apply dry-run. It does not delete previous artifacts and does not mutate the vault.
 
 Repository hygiene:
 
