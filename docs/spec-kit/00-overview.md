@@ -36,5 +36,6 @@ Obsidian vault
 - `10-diagram-pdf-pipeline.md` — pipeline красивых схем и PDF.
 - `11-implementation-roadmap.md` — порядок реализации по фазам.
 - `12-full-functional-and-diagram-test-plan.md` — план полного функционального и diagram/PDF тестирования.
+- `13-next-improvements-roadmap.md` — следующий roadmap улучшений после MVP baseline.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.
