@@ -21,7 +21,7 @@
     "name": {"type": "string", "minLength": 1},
     "kind": {
       "type": "string",
-      "enum": ["mcp-server", "obsidian-plugin", "rag-engine", "diagram-renderer", "local-cli", "python-library", "node-package"]
+      "enum": ["mcp-server", "obsidian-plugin", "rag-engine", "diagram-renderer", "local-cli", "python-library", "node-package", "knowledge-indexer"]
     },
     "source": {
       "type": "object",
@@ -53,6 +53,48 @@
       "items": {"type": "string", "enum": ["finding-json", "proposal-json", "markdown-report", "diagram-source", "svg", "pdf", "log"]},
       "uniqueItems": true
     },
+    "exposed_tools": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "protected_paths": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "provenance_fields": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "wrapper_required_provenance_fields": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "derived_storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "rebuildable"],
+      "properties": {
+        "type": {"type": "string", "minLength": 1},
+        "default_path": {"type": "string"},
+        "rebuildable": {"type": "boolean"}
+      }
+    },
+    "embedding_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "local_only"],
+      "properties": {
+        "provider": {"type": "string", "minLength": 1},
+        "default_model": {"type": "string"},
+        "local_only": {"type": "boolean"},
+        "allowed_base_urls": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "remote_endpoint_requires_explicit_approval": {"type": "boolean"}
+      }
+    },
     "risk_level": {"type": "string", "enum": ["low", "medium", "high"]},
     "risk_notes": {"type": "array", "items": {"type": "string"}},
     "sandbox_required": {"type": "boolean"},
@@ -61,7 +103,8 @@
       "additionalProperties": false,
       "properties": {
         "sandbox_command": {"type": "string"},
-        "expected_outputs": {"type": "array", "items": {"type": "string"}}
+        "expected_outputs": {"type": "array", "items": {"type": "string"}},
+        "static_review": {"type": "string"}
       }
     }
   },

@@ -1,0 +1,1167 @@
+{
+  "queries_initial": [
+    "obsidian mcp vector search",
+    "obsidian semantic search mcp",
+    "obsidian ollama embeddings search",
+    "markdown vault mcp fts5 semantic",
+    "markdown vector search mcp",
+    "obsidian graph rag mcp",
+    "obsidian smart connections mcp",
+    "obsidian local rest api mcp",
+    "topic:obsidian-plugin semantic search embeddings",
+    "topic:mcp-server obsidian markdown vault",
+    "obsidian RAG markdown Ollama MCP",
+    "sqlite fts5 markdown mcp"
+  ],
+  "queries_extra": [
+    "\"no write tools\" obsidian mcp",
+    "\"SQLite FTS5\" \"Obsidian\" MCP",
+    "\"sqlite-vec\" obsidian MCP",
+    "\"local Ollama embeddings\" Obsidian MCP",
+    "\"frontmatter-aware\" markdown MCP",
+    "\"incremental reindex\" markdown MCP",
+    "\"Smart Connections\" MCP Obsidian",
+    "\"Obsidian\" \"Graph RAG\" Ollama",
+    "\"vault\" \"FTS5\" \"MCP server\" markdown",
+    "\"Obsidian\" \"read-only\" \"semantic retrieval\" MCP"
+  ],
+  "errors_initial": [
+    {
+      "query": "markdown vector search mcp",
+      "error": "parse Expecting ',' delimiter: line 5 column 14 (char 10084) {\"total_count\":19,\"incomplete_results\":false,\"items\":[{\"id\":1217116393,\"node_id\":\"R_kgDOSIu46Q\",\"name\":\"Kwipu\",\"full_name\":\"benmaster82/Kwipu\",\"private\":false,\"owner\":{\"login\":\"benmaster82\",\"id\":197789506,\"node_id\":\"U_kgDOC8oHQg\",\"avatar_url\":\"https://avatars.githubusercontent.com/u/197789506?v=4\",\""
+    },
+    {
+      "query": "obsidian smart connections mcp",
+      "error": "parse Expecting ',' delimiter: line 5 column 6 (char 10076) {\"total_count\":8,\"incomplete_results\":false,\"items\":[{\"id\":1075052572,\"node_id\":\"R_kgDOQBQAHA\",\"name\":\"smart-connections-mcp\",\"full_name\":\"msdanyg/smart-connections-mcp\",\"private\":false,\"owner\":{\"login\":\"msdanyg\",\"id\":28771685,\"node_id\":\"MDQ6VXNlcjI4NzcxNjg1\",\"avatar_url\":\"https://avatars.githubuser"
+    },
+    {
+      "query": "topic:obsidian-plugin semantic search embeddings",
+      "error": "parse Expecting ',' delimiter: line 5 column 12 (char 10082) {\"total_count\":14,\"incomplete_results\":false,\"items\":[{\"id\":582432706,\"node_id\":\"R_kgDOIrc3wg\",\"name\":\"obsidian-smart-connections\",\"full_name\":\"brianpetro/obsidian-smart-connections\",\"private\":false,\"owner\":{\"login\":\"brianpetro\",\"id\":1886014,\"node_id\":\"MDQ6VXNlcjE4ODYwMTQ=\",\"avatar_url\":\"https://ava"
+    }
+  ],
+  "errors_extra": [
+    {
+      "query": "\"SQLite FTS5\" \"Obsidian\" MCP",
+      "error": "parse Expecting ':' delimiter: line 5 column 46 (char 10116)"
+    },
+    {
+      "query": "\"Smart Connections\" MCP Obsidian",
+      "error": "parse Expecting ',' delimiter: line 5 column 3 (char 10073)"
+    }
+  ],
+  "repo_count": 38,
+  "selected": [
+    {
+      "full_name": "DalecB/obsidian-semantic-mcp",
+      "html_url": "https://github.com/DalecB/obsidian-semantic-mcp",
+      "description": "Read-only semantic retrieval MCP for Obsidian vaults. Local Ollama embeddings, SQLite FTS5, no write tools.",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "updated_at": "2026-06-03T13:31:41Z",
+      "license": "MIT",
+      "topics": [
+        "ai-agents",
+        "bge-m3",
+        "claude-desktop",
+        "codex",
+        "fts5",
+        "knowledge-management",
+        "local-first",
+        "markdown",
+        "mcp",
+        "model-context-protocol",
+        "obsidian",
+        "obsidian-md",
+        "ollama",
+        "rag",
+        "retrieval",
+        "semantic-search",
+        "sqlite"
+      ],
+      "queries": [
+        "markdown vault mcp fts5 semantic",
+        "\"no write tools\" obsidian mcp",
+        "\"local Ollama embeddings\" Obsidian MCP",
+        "\"Obsidian\" \"read-only\" \"semantic retrieval\" MCP"
+      ]
+    },
+    {
+      "full_name": "pvliesdonk/markdown-vault-mcp",
+      "html_url": "https://github.com/pvliesdonk/markdown-vault-mcp",
+      "description": "Generic markdown collection MCP server with FTS5 + semantic search, frontmatter-aware indexing, and incremental reindexing",
+      "stars": 18,
+      "forks": 10,
+      "language": "Python",
+      "updated_at": "2026-06-27T17:47:18Z",
+      "license": "MIT",
+      "topics": [
+        "claude",
+        "embeddings",
+        "fastmcp",
+        "fts5",
+        "knowledge-base",
+        "markdown",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "obsidian",
+        "python",
+        "search",
+        "semantic-search",
+        "sqlite",
+        "vault"
+      ],
+      "queries": [
+        "markdown vault mcp fts5 semantic",
+        "\"frontmatter-aware\" markdown MCP",
+        "\"vault\" \"FTS5\" \"MCP server\" markdown"
+      ]
+    },
+    {
+      "full_name": "benmaster82/Kwipu",
+      "html_url": "https://github.com/benmaster82/Kwipu",
+      "description": "Ask questions across your Markdown notes using a fully local Graph RAG engine. Built for Obsidian vaults, works with any folder of Markdown files. Extracts entity-relation triples from wikilinks & YAML frontmatter, retrieves answers via hybrid search (vector + BM25 + temporal). Multilingual. No cloud. Runs on Ollama.",
+      "stars": 255,
+      "forks": 36,
+      "language": "Python",
+      "updated_at": "2026-06-25T04:16:48Z",
+      "license": "MIT",
+      "topics": [
+        "claude-code",
+        "embeddings",
+        "graph-rag",
+        "help-wanted",
+        "knowledge-graph",
+        "llama-index",
+        "llm",
+        "markdown",
+        "mcp",
+        "md",
+        "natural-language",
+        "obsidian",
+        "obsidian-notes",
+        "obsidian-vault",
+        "offline",
+        "offline-first",
+        "ollama",
+        "rag",
+        "rag-chatbot",
+        "terminal-ui"
+      ],
+      "queries": [
+        "obsidian mcp vector search",
+        "obsidian ollama embeddings search",
+        "obsidian RAG markdown Ollama MCP",
+        "\"Obsidian\" \"Graph RAG\" Ollama"
+      ]
+    },
+    {
+      "full_name": "Gustav-Proxi/cortex",
+      "html_url": "https://github.com/Gustav-Proxi/cortex",
+      "description": "Local-first MCP server giving any LLM client semantic + literal search and full read/write over an Obsidian/markdown vault. Local embeddings via Ollama, sqlite-vec index.",
+      "stars": 0,
+      "forks": 0,
+      "language": "Swift",
+      "updated_at": "2026-06-09T06:08:33Z",
+      "license": "Apache-2.0",
+      "topics": [
+        "knowledge-base",
+        "llm",
+        "mcp",
+        "model-context-protocol",
+        "obsidian",
+        "ollama",
+        "rag",
+        "second-brain",
+        "semantic-search",
+        "sqlite-vec"
+      ],
+      "queries": [
+        "obsidian RAG markdown Ollama MCP"
+      ]
+    },
+    {
+      "full_name": "jacksteamdev/obsidian-mcp-tools",
+      "html_url": "https://github.com/jacksteamdev/obsidian-mcp-tools",
+      "description": "Add Obsidian integrations like semantic search and custom Templater prompts to Claude or any MCP client.",
+      "stars": 18,
+      "forks": 10,
+      "language": "Python",
+      "updated_at": "2026-06-27T17:47:18Z",
+      "license": "MIT",
+      "topics": [
+        "claude",
+        "embeddings",
+        "fastmcp",
+        "fts5",
+        "knowledge-base",
+        "markdown",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "obsidian",
+        "python",
+        "search",
+        "semantic-search",
+        "sqlite",
+        "vault"
+      ],
+      "queries": [
+        "obsidian semantic search mcp"
+      ]
+    },
+    {
+      "full_name": "apresai/2ndbrain",
+      "html_url": "https://github.com/apresai/2ndbrain",
+      "description": "AI-native markdown knowledge base with semantic search, RAG, and MCP server",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "updated_at": "2026-06-03T13:31:41Z",
+      "license": "MIT",
+      "topics": [
+        "ai-agents",
+        "bge-m3",
+        "claude-desktop",
+        "codex",
+        "fts5",
+        "knowledge-management",
+        "local-first",
+        "markdown",
+        "mcp",
+        "model-context-protocol",
+        "obsidian",
+        "obsidian-md",
+        "ollama",
+        "rag",
+        "retrieval",
+        "semantic-search",
+        "sqlite"
+      ],
+      "queries": [
+        "obsidian RAG markdown Ollama MCP"
+      ]
+    },
+    {
+      "full_name": "zbl1998-sdjn/MASE-agent-memory",
+      "html_url": "https://github.com/zbl1998-sdjn/MASE-agent-memory",
+      "description": "Anti-RAG dual-whitebox memory for LLM agents. 2.72 MB SQLite + Markdown kernel, no vector DB, no embeddings. Lifts qwen2.5:7b from 1.79% to 60.71% on NoLiMa-32k (+58.9pp), 88.71% on LV-Eval EN 256k, 84.8% on LongMemEval-S. Restart-safe, concurrency-bullet-proof, 100% transparent.",
+      "stars": 0,
+      "forks": 0,
+      "language": "Python",
+      "updated_at": "2026-06-14T06:50:49Z",
+      "license": "NOASSERTION",
+      "topics": [
+        "agent",
+        "ai-agent",
+        "context-window",
+        "hallucination",
+        "langchain",
+        "llm",
+        "local-llm",
+        "long-context",
+        "longmemeval",
+        "lv-eval",
+        "mcp",
+        "memory",
+        "memory-management",
+        "nolima",
+        "obsidian",
+        "ollama",
+        "qwen",
+        "rag",
+        "sqlite",
+        "vector-database-alternative"
+      ],
+      "queries": [
+        "obsidian RAG markdown Ollama MCP"
+      ]
+    },
+    {
+      "full_name": "uhop/vault-storage",
+      "html_url": "https://github.com/uhop/vault-storage",
+      "description": "AI-agent-first knowledge base over markdown. SQLite + sqlite-vec for fast lookup, semantic search, and typed-edge traversal; BGE embeddings; REST server (MCP planned).",
+      "stars": 0,
+      "forks": 0,
+      "language": "Python",
+      "updated_at": "2026-06-05T09:20:20Z",
+      "license": null,
+      "topics": [],
+      "queries": [
+        "\"sqlite-vec\" obsidian MCP"
+      ]
+    },
+    {
+      "full_name": "roomi-fields/rtfm",
+      "html_url": "https://github.com/roomi-fields/rtfm",
+      "description": "The open retrieval layer for AI coding agents. Indexes code, docs, legal, research, data — 22 parsers (incl. EPUB, DOCX, ODT), FTS5 + semantic search, knowledge graph. Serves surgical context via MCP. Open source, local, free.",
+      "stars": 16,
+      "forks": 4,
+      "language": "Python",
+      "updated_at": "2026-06-28T12:19:44Z",
+      "license": "MIT",
+      "topics": [
+        "ai-agents",
+        "claude",
+        "claude-code",
+        "code-search",
+        "context-engineering",
+        "developer-tools",
+        "embeddings",
+        "fts",
+        "json-schema",
+        "knowledge-base",
+        "knowledge-graph",
+        "mcp",
+        "mcp-server",
+        "notebooklm",
+        "obsidian",
+        "python",
+        "rag",
+        "retrieval",
+        "semantic-search",
+        "sqlite"
+      ],
+      "queries": [
+        "obsidian semantic search mcp"
+      ]
+    },
+    {
+      "full_name": "swarmclawai/swarmvault",
+      "html_url": "https://github.com/swarmclawai/swarmvault",
+      "description": "The local-first LLM Wiki: open-source knowledge graph builder, RAG knowledge base, and agent memory store. Built on Andrej Karpathy's pattern. An Obsidian alternative for personal knowledge management, AI second brain, and durable Claude Code / Codex / OpenClaw memory.",
+      "stars": 3,
+      "forks": 2,
+      "language": "TypeScript",
+      "updated_at": "2026-06-28T15:23:59Z",
+      "license": "MIT",
+      "topics": [
+        "3d-visualization",
+        "ai",
+        "anthropic",
+        "claude",
+        "cli",
+        "cursor",
+        "fsrs",
+        "knowledge-graph",
+        "local-first",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "obsidian",
+        "ollama",
+        "rag",
+        "second-brain",
+        "semantic-search",
+        "typescript",
+        "vector-search",
+        "zettelkasten"
+      ],
+      "queries": [
+        "obsidian graph rag mcp"
+      ]
+    },
+    {
+      "full_name": "sgx-labs/statelessagent",
+      "html_url": "https://github.com/sgx-labs/statelessagent",
+      "description": "Your AI forgets everything between sessions. SAME fixes that. Local-first, no API keys, single binary.",
+      "stars": 19,
+      "forks": 0,
+      "language": "Go",
+      "updated_at": "2026-05-23T21:45:21Z",
+      "license": "NOASSERTION",
+      "topics": [
+        "ai-agent",
+        "ai-memory",
+        "claude-code",
+        "context-surfacing",
+        "cursor",
+        "golang",
+        "llm-memory",
+        "local-first",
+        "mcp",
+        "mcp-server",
+        "model-context-protocol",
+        "obsidian",
+        "rag",
+        "semantic-search",
+        "sqlite",
+        "sqlite-vec",
+        "vector-search",
+        "windsurf"
+      ],
+      "queries": [
+        "\"sqlite-vec\" obsidian MCP"
+      ]
+    },
+    {
+      "full_name": "dan6684/smart-connections-mcp",
+      "html_url": "https://github.com/dan6684/smart-connections-mcp",
+      "description": "MCP server that exposes Obsidian Smart Connections vector database to Claude Code via semantic search",
+      "stars": 6,
+      "forks": 0,
+      "language": null,
+      "updated_at": "2026-06-25T11:22:06Z",
+      "license": "NOASSERTION",
+      "topics": [],
+      "queries": [
+        "obsidian mcp vector search"
+      ]
+    },
+    {
+      "full_name": "Detective-XH/DocGraph",
+      "html_url": "https://github.com/Detective-XH/DocGraph",
+      "description": "Govern your documents like code. MCP server that indexes .md/.docx/.html/.pdf into a SQLite knowledge graph and runs drift audits — stale policies, conflicting research claims, superseded docs, undocumented code exports. 12 MCP tools incl. cross-reference graph, governance + provenance metadata, topic similarity. Single binary, zero runtime deps.",
+      "stars": 3,
+      "forks": 0,
+      "language": "Go",
+      "updated_at": "2026-06-15T19:59:37Z",
+      "license": "MIT",
+      "topics": [
+        "agent",
+        "claude",
+        "codex",
+        "documentation",
+        "docx",
+        "golang",
+        "hermes",
+        "html",
+        "knowledge-graph",
+        "llm",
+        "markdown",
+        "mcp",
+        "mcp-server",
+        "obsidian",
+        "opencode",
+        "pdf",
+        "rag",
+        "semantic-search",
+        "sqlite"
+      ],
+      "queries": [
+        "obsidian graph rag mcp"
+      ]
+    },
+    {
+      "full_name": "TT-Wang/memem",
+      "html_url": "https://github.com/TT-Wang/memem",
+      "description": "A Claude Code plugin that gives Claude persistent memory across sessions — stores lessons and decisions as markdown in your Obsidian vault, searches them with SQLite FTS5, and mines past transcripts automatically.",
+      "stars": 1,
+      "forks": 0,
+      "language": "Python",
+      "updated_at": "2026-05-23T11:04:43Z",
+      "license": "MIT",
+      "topics": [],
+      "queries": [
+        "sqlite fts5 markdown mcp"
+      ]
+    },
+    {
+      "full_name": "jagoff/memo",
+      "html_url": "https://github.com/jagoff/memo",
+      "description": "Persistent semantic memory for AI agents — 100% local on Apple Silicon (MLX). Markdown source of truth + sqlite-vec hybrid search, with an MCP server and CLI. No cloud, no keys.",
+      "stars": 0,
+      "forks": 1,
+      "language": "Python",
+      "updated_at": "2026-06-28T01:58:58Z",
+      "license": "MIT",
+      "topics": [
+        "ai-agents",
+        "apple-silicon",
+        "claude-code",
+        "local-first",
+        "mcp",
+        "mcp-server",
+        "memory",
+        "mlx",
+        "model-context-protocol",
+        "obsidian",
+        "qwen",
+        "rag",
+        "sqlite-vec"
+      ],
+      "queries": [
+        "\"sqlite-vec\" obsidian MCP"
+      ]
+    },
+    {
+      "full_name": "jpoindexter/obsidian-vault-mcp",
+      "html_url": "https://github.com/jpoindexter/obsidian-vault-mcp",
+      "description": "MCP server that turns any Obsidian vault into a self-improving AI knowledge base. 10 tools: read, search, self-ingest, semantic similarity. Zero dependencies, local ollama embeddings. Works with Claude Code, Vanta, Cursor.",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "updated_at": "2026-06-17T05:08:51Z",
+      "license": null,
+      "topics": [],
+      "queries": [
+        "\"local Ollama embeddings\" Obsidian MCP"
+      ]
+    },
+    {
+      "full_name": "M0nkeyFl0wer/second-brain-hybrid-graph",
+      "html_url": "https://github.com/M0nkeyFl0wer/second-brain-hybrid-graph",
+      "description": "A second brain in 3D: local-first hybrid graph-RAG. Flat vector search → graph traversal. Embedded DuckDB + LadybugDB, Ollama, NetworkX. Makes small local models punch above their weight via context efficiency.",
+      "stars": 5,
+      "forks": 0,
+      "language": "Python",
+      "updated_at": "2026-06-18T06:20:31Z",
+      "license": "MIT",
+      "topics": [
+        "graph-rag",
+        "knowledge-graph",
+        "ladybugdb",
+        "local-first",
+        "mcp",
+        "networkx",
+        "obsidian",
+        "personal-knowledge-management",
+        "second-brain",
+        "topology"
+      ],
+      "queries": [
+        "obsidian mcp vector search",
+        "\"Obsidian\" \"Graph RAG\" Ollama"
+      ]
+    },
+    {
+      "full_name": "forloopcodes/contextplus",
+      "html_url": "https://github.com/forloopcodes/contextplus",
+      "description": "Semantic Intelligence for Large-Scale Engineering. Context+ is an MCP server designed for developers who demand 99% accuracy. By combining RAG, Tree-sitter AST, Spectral Clustering, and Obsidian-style linking, Context+ turns a massive codebase into a searchable, hierarchical feature graph.",
+      "stars": 1924,
+      "forks": 162,
+      "language": "TypeScript",
+      "updated_at": "2026-06-26T05:35:48Z",
+      "license": "MIT",
+      "topics": [
+        "mcp-server"
+      ],
+      "queries": [
+        "obsidian semantic search mcp",
+        "obsidian graph rag mcp"
+      ]
+    },
+    {
+      "full_name": "benbjurstrom/ezrag",
+      "html_url": "https://github.com/benbjurstrom/ezrag",
+      "description": "Turns your Obsidian vault into a Gemini-powered RAG index with semantic search, in-app chat, and an MCP endpoint ",
+      "stars": 18,
+      "forks": 2,
+      "language": "TypeScript",
+      "updated_at": "2026-05-12T00:34:16Z",
+      "license": "0BSD",
+      "topics": [],
+      "queries": [
+        "obsidian semantic search mcp"
+      ]
+    },
+    {
+      "full_name": "edwin-hao-ai/Awareness-Local",
+      "html_url": "https://github.com/edwin-hao-ai/Awareness-Local",
+      "description": "Local-first AI agent memory — one command, works offline, no account needed. Give your Claude Code, Cursor, Windsurf, OpenClaw agent persistent memory. Markdown storage, hybrid search (FTS5 + embedding), MCP protocol, Web dashboard.",
+      "stars": 213,
+      "forks": 2,
+      "language": "JavaScript",
+      "updated_at": "2026-06-11T15:13:50Z",
+      "license": "MIT",
+      "topics": [
+        "ai-agent",
+        "ai-memory",
+        "claude-code",
+        "cursor",
+        "llm",
+        "local-first",
+        "markdown",
+        "mcp",
+        "offline",
+        "openclaw",
+        "persistent-memory",
+        "sqlite",
+        "windsurf"
+      ],
+      "queries": [
+        "sqlite fts5 markdown mcp"
+      ]
+    },
+    {
+      "full_name": "apswin/memory-layer-kit",
+      "html_url": "https://github.com/apswin/memory-layer-kit",
+      "description": "A DIY kit to build your own local AI memory layer — an Obsidian + GitHub note vault Openclaw or any AI agent can read and write, with local semantic (RAG) search so it finds things by meaning. Hand the guide to your agent and it builds the whole thing from scratch.",
+      "stars": 1,
+      "forks": 0,
+      "language": "Python",
+      "updated_at": "2026-06-02T18:42:04Z",
+      "license": "MIT",
+      "topics": [
+        "ai",
+        "embeddings",
+        "llm",
+        "memory",
+        "obsidian",
+        "ollama",
+        "personal-knowledge-management",
+        "rag",
+        "seamntic-search"
+      ],
+      "queries": [
+        "obsidian ollama embeddings search"
+      ]
+    },
+    {
+      "full_name": "coddingtonbear/obsidian-local-rest-api",
+      "html_url": "https://github.com/coddingtonbear/obsidian-local-rest-api",
+      "description": "A secure REST API and Model Context Protocol (MCP) server for your vault.",
+      "stars": 2540,
+      "forks": 305,
+      "language": "TypeScript",
+      "updated_at": "2026-06-28T13:36:38Z",
+      "license": "MIT",
+      "topics": [],
+      "queries": [
+        "obsidian local rest api mcp"
+      ]
+    },
+    {
+      "full_name": "Epistates/turbovault",
+      "html_url": "https://github.com/Epistates/turbovault",
+      "description": "Markdown and OFM SDK w/ MCP server that transforms your Obsidian vault into an intelligent knowledge system",
+      "stars": 132,
+      "forks": 24,
+      "language": "Rust",
+      "updated_at": "2026-06-24T14:06:03Z",
+      "license": "MIT",
+      "topics": [
+        "ai",
+        "markdown",
+        "mcp",
+        "mcp-server",
+        "ofm",
+        "rust"
+      ],
+      "queries": [
+        "topic:mcp-server obsidian markdown vault"
+      ]
+    },
+    {
+      "full_name": "raphasouthall/neurostack",
+      "html_url": "https://github.com/raphasouthall/neurostack",
+      "description": "Your second brain, starting today. CLI + MCP server that helps you build, maintain, and search a knowledge vault that gets better every day. Works with any AI provider. Local-first, zero-prereq install.",
+      "stars": 10,
+      "forks": 2,
+      "language": "Python",
+      "updated_at": "2026-06-15T13:20:13Z",
+      "license": "MIT",
+      "topics": [
+        "ai-memory",
+        "claude-code",
+        "codex",
+        "coding-agents",
+        "cursor",
+        "knowledge-management",
+        "mcp",
+        "mcp-server",
+        "obsidian",
+        "qmd",
+        "windsurf",
+        "zettelkasten"
+      ],
+      "queries": [
+        "topic:mcp-server obsidian markdown vault"
+      ]
+    },
+    {
+      "full_name": "ngmeyer/librarian-mcp",
+      "html_url": "https://github.com/ngmeyer/librarian-mcp",
+      "description": "The Karpathy LLM Wiki pattern, productionized. MCP server that gives Claude a librarian for your Obsidian vault — graph traversal, auto-wikilinks, trigram search.",
+      "stars": 9,
+      "forks": 2,
+      "language": "Rust",
+      "updated_at": "2026-06-01T05:35:13Z",
+      "license": "MIT",
+      "topics": [
+        "claude",
+        "claude-code",
+        "karpathy",
+        "knowledge-graph",
+        "knowledge-management",
+        "llm-wiki",
+        "markdown",
+        "mcp",
+        "mcp-server",
+        "obsidian",
+        "rust",
+        "wiki"
+      ],
+      "queries": [
+        "topic:mcp-server obsidian markdown vault"
+      ]
+    },
+    {
+      "full_name": "Fawzy-AI-Explorer/ObsidianMate",
+      "html_url": "https://github.com/Fawzy-AI-Explorer/ObsidianMate",
+      "description": "AI second brain that converts chat & media to clean Markdown notes and manages your Obsidian vault using natural language.",
+      "stars": 7,
+      "forks": 2,
+      "language": "Python",
+      "updated_at": "2026-03-21T09:27:58Z",
+      "license": "MIT",
+      "topics": [
+        "agents",
+        "docker",
+        "fastapi",
+        "google-adk",
+        "mcp-server",
+        "python"
+      ],
+      "queries": [
+        "topic:mcp-server obsidian markdown vault"
+      ]
+    },
+    {
+      "full_name": "AstinSeverino/obsidian-mcp-server",
+      "html_url": "https://github.com/AstinSeverino/obsidian-mcp-server",
+      "description": "Custom MCP (Model Context Protocol) server exposing an Obsidian vault: hybrid search (BM25 + sqlite-vec KNN with RRF), wikilink graph traversal, CRUD, and the three MCP primitives — Tools, Resources, Prompts.   TypeScript + Node, 26 tests, structured logging, idempotency, permission scoping.",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "updated_at": "2026-05-30T14:54:52Z",
+      "license": "MIT",
+      "topics": [],
+      "queries": [
+        "\"sqlite-vec\" obsidian MCP"
+      ]
+    },
+    {
+      "full_name": "notoriouslab/vault-curate",
+      "html_url": "https://github.com/notoriouslab/vault-curate",
+      "description": "Hybrid semantic search and AI curation for your vault. Combines BM25 keyword, on-device WebGPU embeddings, and fuzzy title matching. Multilingual, with particularly strong Chinese/CJK support. Opt-in AI features auto-generate note descriptions and topic-grouped Maps of Content. Local-first, no API keys.",
+      "stars": 1,
+      "forks": 0,
+      "language": "TypeScript",
+      "updated_at": "2026-03-14T12:48:18Z",
+      "license": "MIT",
+      "topics": [
+        "ai",
+        "embeddings",
+        "local-ai",
+        "obsidian",
+        "obsidian-plugin",
+        "ollama",
+        "privacy",
+        "semantic-search"
+      ],
+      "queries": [
+        "obsidian ollama embeddings search"
+      ]
+    },
+    {
+      "full_name": "GhostPawJS/telegram",
+      "html_url": "https://github.com/GhostPawJS/telegram",
+      "description": "Telegram bot engine — grammy transport, SQLite mirror with FTS5, eager file BLOB storage, webhook support, markdown rendering, and a structured LLM tool facade. Node 24+.",
+      "stars": 1,
+      "forks": 0,
+      "language": "TypeScript",
+      "updated_at": "2026-04-06T09:39:09Z",
+      "license": "MIT",
+      "topics": [
+        "ai-agent",
+        "blob-storage",
+        "bot-framework",
+        "fts5",
+        "ghostpaw",
+        "grammy",
+        "llm-tools",
+        "local-first",
+        "mcp",
+        "sqlite",
+        "telegram",
+        "telegram-bot",
+        "typescript",
+        "webhook"
+      ],
+      "queries": [
+        "sqlite fts5 markdown mcp"
+      ]
+    },
+    {
+      "full_name": "zbrooklyn-claude-labs/vault",
+      "html_url": "https://github.com/zbrooklyn-claude-labs/vault",
+      "description": "Institutional memory MCP server for Claude Code — SQLite + FTS5 full-text search over markdown. Auto-indexes a directory, survives sessions.",
+      "stars": 0,
+      "forks": 0,
+      "language": "JavaScript",
+      "updated_at": "2026-04-14T22:10:07Z",
+      "license": "MIT",
+      "topics": [],
+      "queries": [
+        "\"vault\" \"FTS5\" \"MCP server\" markdown"
+      ]
+    },
+    {
+      "full_name": "jarmentor/obsidian-notebook-mcp",
+      "html_url": "https://github.com/jarmentor/obsidian-notebook-mcp",
+      "description": "MCP server to let claude connect to my obsidian notes for vector and full text search",
+      "stars": 5,
+      "forks": 0,
+      "language": "TypeScript",
+      "updated_at": "2026-04-15T06:18:12Z",
+      "license": null,
+      "topics": [
+        "claude-desktop",
+        "mcp",
+        "mcp-server",
+        "obsidian",
+        "qdrant"
+      ],
+      "queries": [
+        "obsidian mcp vector search"
+      ]
+    },
+    {
+      "full_name": "davidsly4954/8-Layer-Knowledge-Graph",
+      "html_url": "https://github.com/davidsly4954/8-Layer-Knowledge-Graph",
+      "description": "8-Layer Knowledge Graph for AI Coding Assistants: A persistent, multi-layered knowledge system that gives AI coding assistants long-term memory, cross-session context, and structured understanding of your codebase. Open-source configs, scripts, and docs to build your own.",
+      "stars": 2,
+      "forks": 0,
+      "language": "Python",
+      "updated_at": "2026-04-30T22:29:19Z",
+      "license": "MIT",
+      "topics": [
+        "ai-memory",
+        "claude",
+        "claude-code",
+        "context-management",
+        "developer-tools",
+        "knowledge-base",
+        "knowledge-graph",
+        "mcp",
+        "neo4j",
+        "obsidian",
+        "qdrant",
+        "rag"
+      ],
+      "queries": [
+        "obsidian graph rag mcp"
+      ]
+    },
+    {
+      "full_name": "pandaAIGC/zotero-llm-wiki",
+      "html_url": "https://github.com/pandaAIGC/zotero-llm-wiki",
+      "description": "Zotero literature semantic search plus Obsidian LLM Wiki workflow, with Ollama local embeddings to reduce API costs",
+      "stars": 1,
+      "forks": 0,
+      "language": "Python",
+      "updated_at": "2026-06-25T10:19:01Z",
+      "license": "MIT",
+      "topics": [],
+      "queries": [
+        "obsidian ollama embeddings search"
+      ]
+    },
+    {
+      "full_name": "escoffier-labs/miseledger",
+      "html_url": "https://github.com/escoffier-labs/miseledger",
+      "description": "MiseLedger is a local-first evidence ledger for AI work history: SQLite FTS search, Markdown export, StationTrail and SourceHarvest imports, and Brigade-ready evidence bundles.",
+      "stars": 1,
+      "forks": 0,
+      "language": "Go",
+      "updated_at": "2026-06-27T05:59:31Z",
+      "license": "MIT",
+      "topics": [
+        "agent-memory",
+        "ai-agents",
+        "brigade",
+        "chatgpt-export",
+        "cli",
+        "evidence",
+        "evidence-ledger",
+        "fts5",
+        "full-text-search",
+        "go",
+        "local-first",
+        "mcp",
+        "miseledger",
+        "sqlite"
+      ],
+      "queries": [
+        "sqlite fts5 markdown mcp"
+      ]
+    },
+    {
+      "full_name": "PublikPrinciple/obsidian-mcp-rest",
+      "html_url": "https://github.com/PublikPrinciple/obsidian-mcp-rest",
+      "description": "An MCP server implementation for accessing Obsidian via local REST API",
+      "stars": 7,
+      "forks": 3,
+      "language": "Dockerfile",
+      "updated_at": "2026-05-25T13:46:19Z",
+      "license": null,
+      "topics": [],
+      "queries": [
+        "obsidian local rest api mcp"
+      ]
+    },
+    {
+      "full_name": "fumi-sagawa/obsidian-mcp-server",
+      "html_url": "https://github.com/fumi-sagawa/obsidian-mcp-server",
+      "description": "MCP Server for Obsidian Local REST API integration",
+      "stars": 7,
+      "forks": 2,
+      "language": "TypeScript",
+      "updated_at": "2026-05-17T01:12:47Z",
+      "license": null,
+      "topics": [],
+      "queries": [
+        "obsidian local rest api mcp"
+      ]
+    },
+    {
+      "full_name": "duquesnay/obsidian-mcp-ts",
+      "html_url": "https://github.com/duquesnay/obsidian-mcp-ts",
+      "description": "TypeScript MCP server for Obsidian via Local REST API - port of the original Python mcp-obsidian",
+      "stars": 5,
+      "forks": 0,
+      "language": "TypeScript",
+      "updated_at": "2026-05-28T11:37:25Z",
+      "license": "MIT",
+      "topics": [],
+      "queries": [
+        "obsidian local rest api mcp"
+      ]
+    },
+    {
+      "full_name": "dquigles/localsidian",
+      "html_url": "https://github.com/dquigles/localsidian",
+      "description": "graph-RAG AI using Ollama in Obsidian",
+      "stars": 0,
+      "forks": 0,
+      "language": "TypeScript",
+      "updated_at": "2025-04-09T00:05:20Z",
+      "license": null,
+      "topics": [],
+      "queries": [
+        "\"Obsidian\" \"Graph RAG\" Ollama"
+      ]
+    }
+  ],
+  "readme_reviews": [
+    {
+      "repo": "DalecB/obsidian-semantic-mcp",
+      "status": "ok",
+      "flags": [
+        "write",
+        "delete",
+        "move",
+        "create",
+        "patch",
+        "cloud",
+        "ollama",
+        "sqlite",
+        "fts5",
+        "vector",
+        "mcp",
+        "read-only",
+        "incremental"
+      ],
+      "snippets": [
+        "<h1 align=\"center\">Obsidian Semantic Search MCP</h1>",
+        "Read-only semantic retrieval for agents that need to find the right Obsidian note without write access.",
+        "<a href=\"https://www.npmjs.com/package/@dalecb/obsidian-semantic-mcp\"><img alt=\"npm\" src=\"https://img.shields.io/npm/v/@dalecb/obsidian-semantic-mcp?color=111827\"></a>",
+        "<a href=\"https://registry.modelcontextprotocol.io/v0.1/servers?search=io.github.DalecB/obsidian-semantic-mcp\"><img alt=\"MCP Registry\" src=\"https://img.shields.io/badge/MCP%20Registry-active-111827\"></a>",
+        "local Obsidian vault -> read-only scanner -> local SQLite index -> MCP search/read tools",
+        "No note writes. No cloud embeddings. No Obsidian plugin runtime. No sync service.",
+        "| Find the note an agent should read | Hybrid semantic + keyword search over Markdown notes |",
+        "| Keep the vault safe | Exposes search/read/index/status only; no write, patch, move, rename, or delete tools |"
+      ]
+    },
+    {
+      "repo": "pvliesdonk/markdown-vault-mcp",
+      "status": "ok",
+      "flags": [
+        "write",
+        "delete",
+        "move",
+        "create",
+        "patch",
+        "openai",
+        "ollama",
+        "sqlite",
+        "fts5",
+        "vector",
+        "mcp",
+        "frontmatter",
+        "incremental"
+      ],
+      "snippets": [
+        "A generic markdown vault [MCP](https://modelcontextprotocol.io/) server with FTS5 full-text search, semantic vector search, frontmatter-aware indexing, incremental reindexing, and non-markdown attachment support.",
+        "Point it at a directory of Markdown files (an Obsidian vault, a docs folder, a Zettelkasten, a PARA vault) and it exposes search, read, write, and edit tools over the Model Context Protocol.",
+        "- **Full-text search** — SQLite FTS5 with BM25 scoring, porter stemming",
+        "- **Semantic search** — cosine similarity over embedding vectors (FastEmbed, Ollama, or OpenAI)",
+        "- **Hybrid search** — Reciprocal Rank Fusion combining FTS5 and vector results",
+        "- **Frontmatter-aware** — indexes YAML frontmatter fields, supports required field enforcement",
+        "- **Write operations** — create, edit, delete, rename documents, and move entire folder subtrees with automatic index updates",
+        "- **Attachment support** — read, write, delete, and list non-markdown files (PDFs, images, etc.)"
+      ]
+    },
+    {
+      "repo": "benmaster82/Kwipu",
+      "status": "ok",
+      "flags": [
+        "delete",
+        "create",
+        "cloud",
+        "ollama",
+        "vector",
+        "mcp",
+        "frontmatter",
+        "incremental"
+      ],
+      "snippets": [
+        "[![Ollama](https://img.shields.io/badge/LLM-Ollama-orange.svg)](https://ollama.ai/)",
+        "[![MCP Server](https://img.shields.io/badge/MCP-compatible-blue.svg)](https://modelcontextprotocol.io/)",
+        "- **MCP Server** - use Kwipu as a tool inside Claude Desktop, Cursor, Windsurf, or any MCP-compatible agent. All processing runs locally via Ollama.",
+        "- **Incremental updates** - editing a note no longer rebuilds the entire graph. Modified files are updated in-place in seconds.",
+        "- **Startup validation** - checks that Ollama is running and models are available before starting. Clear error messages with suggested commands.",
+        "- **Obsidian-native** - automatically parses `[[wikilinks]]` and YAML frontmatter into structured graph triples",
+        "- Vector similarity search",
+        "- **Real-time sync** - watches your folder for changes and updates the graph incrementally"
+      ]
+    },
+    {
+      "repo": "coddingtonbear/obsidian-local-rest-api",
+      "status": "ok",
+      "flags": [
+        "write",
+        "delete",
+        "move",
+        "create",
+        "patch",
+        "mcp",
+        "frontmatter"
+      ],
+      "snippets": [
+        "Access your vault through the **REST API** or the **built-in [MCP server](https://modelcontextprotocol.io/)** — both interfaces expose the same core capabilities, so scripts, browser extensions, and AI agents all speak the same language.",
+        "- **Read, create, update, or delete notes** — full CRUD on any file in your vault, including binary files",
+        "- **Surgically patch specific sections** — target a heading, block reference, or frontmatter key and append, prepend, or replace just that section without touching the rest of the file",
+        "- **Search your vault** — simple full-text search or structured [JsonLogic](https://jsonlogic.com/) queries against note metadata (frontmatter, tags, path, content)",
+        "- **Access the active file** — read or write whatever note is currently open in Obsidian",
+        "Claude Desktop does not natively support remote HTTP MCP servers, but you can bridge it with [`mcp-remote`](https://www.npmjs.com/package/mcp-remote) (requires Node.js). Add the following to `claude_desktop_config.json`:",
+        "| `/vault/{path}` | GET PUT PATCH POST DELETE | Read, write, or delete any file in your vault |",
+        "| `/active/` | GET PUT PATCH POST DELETE | Operate on the currently open file |"
+      ]
+    },
+    {
+      "repo": "jacksteamdev/obsidian-mcp-tools",
+      "status": "ok",
+      "flags": [
+        "create",
+        "mcp"
+      ],
+      "snippets": [
+        "2. A local MCP server that handles communication with AI applications",
+        "- **Semantic Search**: AI assistants can search your vault based on meaning and context, not just keywords [^5]",
+        "- [Smart Connections](https://smartconnections.app/) plugin for semantic search capabilities",
+        "4. Click \"Install Server\" to download and configure the MCP server",
+        "- Download the appropriate MCP server binary for your platform",
+        "1. Download the appropriate MCP server binary",
+        "3. Configure Claude Desktop to use the MCP server",
+        "- The MCP server runs with minimal required permissions"
+      ]
+    },
+    {
+      "repo": "dan6684/smart-connections-mcp",
+      "status": "decode_error Invalid base64-encoded string: number of data characters (8357) cannot be 1 more than a multiple of 4",
+      "flags": [],
+      "snippets": []
+    },
+    {
+      "repo": "Epistates/turbovault",
+      "status": "decode_error Incorrect padding",
+      "flags": [],
+      "snippets": []
+    },
+    {
+      "repo": "ngmeyer/librarian-mcp",
+      "status": "ok",
+      "flags": [
+        "write",
+        "create",
+        "cloud",
+        "mcp",
+        "frontmatter"
+      ],
+      "snippets": [
+        "> **Runs entirely locally.** Your vault data never leaves your machine. Librarian reads and writes files on disk and communicates with Claude over stdio. No network calls, no telemetry, no cloud storage.",
+        "`--setup` writes the MCP server config into Claude Desktop and Claude Code (with backups), and installs the `/librarian` skill so you get 12 slash commands out of the box.",
+        "| Auto-wikilinks on write | No | No | No | **Yes** |",
+        "| `library_write` | Write a file with auto-wikilink detection |",
+        "| `library_metadata` | Read YAML frontmatter from a file |",
+        "When Claude writes files via `library_write`, Librarian scans for mentions of existing note titles and wraps them in `[[wikilinks]]`. This happens **only on explicit writes** — Librarian never modifies files you didn't ask it to write.",
+        "- Reads and writes standard `[[wikilinks]]` and `[[note|display text]]`",
+        "- Respects YAML frontmatter and `aliases`"
+      ]
+    },
+    {
+      "repo": "Gustav-Proxi/cortex",
+      "status": "ok",
+      "flags": [
+        "write",
+        "delete",
+        "move",
+        "create",
+        "patch",
+        "cloud",
+        "ollama",
+        "sqlite",
+        "vector",
+        "mcp",
+        "frontmatter",
+        "incremental"
+      ],
+      "snippets": [
+        "**The local-first brain for your notes — one MCP server that gives every LLM client your entire Obsidian vault.**",
+        "[![MCP server](https://img.shields.io/badge/MCP-server-7C3AED?style=flat-square)](#connect-it-to-an-mcp-client)",
+        "[![Embeddings: Ollama](https://img.shields.io/badge/embeddings-Ollama-000000?style=flat-square&logo=ollama&logoColor=white)](https://ollama.com)",
+        "[![Vectors: sqlite-vec](https://img.shields.io/badge/vectors-sqlite--vec-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://github.com/asg017/sqlite-vec)",
+        "- 🔎 **Search** — semantic (local embeddings), literal (grep), and **hybrid** (keyword ⊕ vector); plus frontmatter/property filters and the `[[wikilink]]` graph (`backlinks` / `outgoing_links`).",
+        "- ✍️ **Read & write** — full note CRUD, frontmatter, templates, daily notes. The LLM can *file answers back into the wiki*, so knowledge **compounds** instead of vanishing into chat history.",
+        "- 🕸️ **Graph intelligence** — shortest path between notes, \"god nodes\" (hubs), topical communities, and **semantic bridges** (notes that read as related but aren't `[[linked]]`); export to mermaid/cypher/graphml.",
+        "- ⚡ **Always current** — a background watcher re-embeds changed notes within ~2 s; the index is a single sqlite file."
+      ]
+    },
+    {
+      "repo": "Detective-XH/DocGraph",
+      "status": "ok",
+      "flags": [
+        "write",
+        "delete",
+        "move",
+        "create",
+        "patch",
+        "openai",
+        "sqlite",
+        "fts5",
+        "mcp",
+        "frontmatter",
+        "incremental"
+      ],
+      "snippets": [
+        "### Documentation knowledge graph MCP server for LLM agents",
+        "**MCP-native for LLM agents · CJK + Latin FTS5 · Multi-format graph**",
+        "Your `.docx` / `.pdf` / `.html` archive has no frontmatter, so it can't be governed. DocGraph fixes that without compromising authority:",
+        "- **CJK + Latin search that actually works** — FTS5 trigram, not English-only",
+        "- **Workspace fan-out** — one MCP server, N projects, one query",
+        "docgraph sync [--threshold N] [--no-gitignore] [--no-history] <path>             # Incremental hash-based update",
+        "docgraph heal [--project <path>] [--fix] [--owner <name>] [--git-timeout <dur>]  # Infer and patch missing status/owner frontmatter fields in .md files",
+        "`auto` always writes project-local Claude Code config and also writes Codex,"
+      ]
+    },
+    {
+      "repo": "roomi-fields/rtfm",
+      "status": "decode_error Incorrect padding",
+      "flags": [],
+      "snippets": []
+    }
+  ]
+}

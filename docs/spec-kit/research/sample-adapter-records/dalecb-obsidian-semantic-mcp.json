@@ -1,0 +1,91 @@
+{
+  "capabilities": [
+    "read",
+    "search",
+    "metadata-read"
+  ],
+  "derived_storage": {
+    "default_path": "~/.obsidian-semantic-mcp/data/semantic.sqlite",
+    "type": "sqlite-fts5",
+    "rebuildable": true
+  },
+  "direct_write_enabled": false,
+  "embedding_policy": {
+    "allowed_base_urls": [
+      "http://localhost:11434",
+      "http://127.0.0.1:11434"
+    ],
+    "default_model": "bge-m3",
+    "provider": "ollama",
+    "local_only": true,
+    "remote_endpoint_requires_explicit_approval": true
+  },
+  "exposed_tools": [
+    "search_notes",
+    "read_note",
+    "index_vault",
+    "index_status"
+  ],
+  "forbidden_capabilities": [
+    "write-direct",
+    "delete-direct",
+    "move-direct",
+    "merge-direct",
+    "patch-direct",
+    "execute-live-mutation",
+    "secret-read"
+  ],
+  "kind": "knowledge-indexer",
+  "license": "MIT",
+  "name": "DalecB/obsidian-semantic-mcp",
+  "outputs": [
+    "finding-json",
+    "markdown-report",
+    "log"
+  ],
+  "protected_paths": [
+    ".obsidian",
+    "_Backups",
+    ".trash",
+    ".smart-env",
+    ".claude",
+    ".codex-*",
+    "node_modules",
+    "cache",
+    "logs"
+  ],
+  "provenance_fields": [
+    "path",
+    "heading",
+    "lines",
+    "snippet",
+    "reason"
+  ],
+  "risk_level": "medium",
+  "risk_notes": [
+    "Requires Node >=24; current Hermes host may need isolated toolchain.",
+    "OLLAMA_BASE_URL must remain localhost-only to prevent vault chunk exfiltration.",
+    "Full reindex is required after exclude/sensitive/protected-path policy changes.",
+    "Young project; keep sandbox-only until maturity and lockfile/runtime policy are resolved."
+  ],
+  "runtime": "node>=24",
+  "sandbox_required": true,
+  "source": {
+    "id": "DalecB/obsidian-semantic-mcp",
+    "type": "github",
+    "url": "https://github.com/DalecB/obsidian-semantic-mcp"
+  },
+  "vault_scope": "sandbox-copy",
+  "verification": {
+    "expected_outputs": [
+      "read/search result JSON",
+      "source path + matched lines + snippet",
+      "no direct filesystem mutation outside derived SQLite index"
+    ],
+    "sandbox_command": "make indexing-spike",
+    "static_review": "npm test passed 19/19 in isolated clone review"
+  },
+  "wrapper_required_provenance_fields": [
+    "hash_or_version"
+  ]
+}
