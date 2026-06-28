@@ -61,7 +61,7 @@ def _is_relative_to(path: Path, root: Path) -> bool:
 
 def _refuse_live_vault_path(path: Path) -> None:
     live_root = DEFAULT_LIVE_VAULT_ROOT.expanduser().resolve()
-    if live_root.exists() and _is_relative_to(path, live_root):
+    if _is_relative_to(path, live_root):
         raise GuardrailError(f"Indexing spike refuses paths inside live vault: {path}")
 
 def _require_under(path: Path, root: Path, label: str) -> None:

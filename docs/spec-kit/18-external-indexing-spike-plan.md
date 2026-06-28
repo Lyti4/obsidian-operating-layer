@@ -187,3 +187,33 @@ out/reports/external-indexing-spike/external-indexing-spike-safety.json
 - Add a wrapper-level provenance normalizer that injects `hash_or_version`.
 - Add a reindex-required marker when protected-path or embedding policy changes.
 - Keep live writes exclusively in proposal/approval/apply flow.
+
+## Wrapper hardening slice
+
+Status: implemented in project code, pending independent review/full commit.
+
+New wrapper policy lives in `src/obslayer/indexing_wrapper.py` and is covered by `tests/test_indexing_wrapper.py`.
+
+It enforces:
+
+- allowlist-only tools: `index_status`, `index_vault`, `search_notes`, `read_note`;
+- sandbox vault root under repo-local `out/sandbox-vaults/*` and refusal of `/home/hermesadmin/Obsidian`;
+- derived index/cache root under repo-local `out/external-indexing-spike/*` and refusal of live-vault paths;
+- bare loopback Ollama endpoints only: `http://localhost:11434` or `http://127.0.0.1:11434`;
+- JSON-text MCP result parsing for the candidate's `content[].text` payloads, including BOM/whitespace and malformed-text handling;
+- recursive redaction of literal and URL-encoded (case-insensitive percent-escape) live-vault absolute paths from snippets/content/error/result payloads using `<LIVE_VAULT>`;
+- raw path-bearing MCP metadata validation before redaction so live-vault absolute paths are rejected fail-closed rather than accepted as `<LIVE_VAULT>` relative paths;
+- fail-closed path-bearing list validation: unexpected non-string entries/objects under `paths`/`files`-style fields are rejected instead of being recursively accepted through generic nested key names;
+- spike-level live-vault path refusal is deterministic and does not depend on the configured live-vault root existing on the current filesystem;
+- URL-decoded path metadata validation for percent-encoded absolute/traversal/protected paths before provenance is returned;
+- provenance records with `path`, `span`, `snippet`, and `hash_or_version` for `search_notes` and `read_note`.
+
+Independent review notes incorporated:
+
+- Codex acceptance criteria require fail-closed subprocess gating, no raw unredacted MCP text in returned/logged wrapper output, and redaction token `<LIVE_VAULT>`.
+- Subagent audit highlighted JSON-in-text MCP responses, multi-content payloads, URL-encoded path redaction, deterministic `hash_or_version`, and runtime tool-surface checks.
+- Pre-commit review blockers fixed: live-vault refusal no longer depends on live-root existence, and path-bearing metadata is validated across all allowlisted tool payloads, including `index_status` and `index_vault`.
+
+Known remaining limitation:
+
+- this slice normalizes already captured MCP responses; the next slice should wire it into a process-running adapter/CLI so every candidate call is wrapped automatically and `list_tools` is checked at runtime before any MCP tool call.

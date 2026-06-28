@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 from jsonschema import validate
 
+import obslayer.indexing_spike as indexing_spike
 from obslayer import (
     GuardrailError,
     build_indexing_spike_evaluation,
@@ -180,6 +181,18 @@ def test_safe_indexing_report_dir_rejects_live_vault_when_present() -> None:
 
     with pytest.raises(GuardrailError, match="live vault"):
         safe_indexing_report_dir(live_vault / "out" / "reports" / "indexing-spike")
+
+
+def test_safe_indexing_report_dir_rejects_configured_live_vault_even_when_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    missing_live_root = repo_root() / "out" / "reports" / "indexing-spike" / "missing-live-root"
+    if missing_live_root.exists():
+        shutil.rmtree(missing_live_root)
+    monkeypatch.setattr(indexing_spike, "DEFAULT_LIVE_VAULT_ROOT", missing_live_root)
+
+    with pytest.raises(GuardrailError, match="live vault"):
+        safe_indexing_report_dir(missing_live_root / "nested-report")
 
 
 
