@@ -14,8 +14,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_LIVE_VAULT_ROOT = Path("/home/hermesadmin/Obsidian")
 DEFAULT_SANDBOX_ROOT = REPO_ROOT / "out" / "sandbox-vaults"
 DEFAULT_DERIVED_ROOT = REPO_ROOT / "out" / "external-indexing-spike"
+DEFAULT_INDEXING_REPORT_ROOT = REPO_ROOT / "out" / "reports" / "external-indexing-spike"
 INDEXING_WRAPPER_TOOL_ALLOWLIST = ("index_status", "index_vault", "search_notes", "read_note")
 REDACTED_LIVE_VAULT = "<LIVE_VAULT>"
+MAX_SANITIZED_TEXT_CHARS = 2_000
+TRUNCATED_TEXT_SUFFIX = "…<TRUNCATED>"
+MAX_URL_DECODE_ROUNDS = 8
+SAFE_MCP_EXTRA_ENV_KEYS = frozenset({"PATH", "NODE_PATH", "npm_config_cache", "npm_config_prefix"})
+SECRET_ENV_KEY_RE = re.compile(r"(TOKEN|SECRET|PASSWORD|PASS|KEY|CREDENTIAL|COOKIE|AUTH|PROXY)", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -40,6 +46,38 @@ class NormalizedMcpResult:
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+@dataclass(frozen=True)
+class IndexingMcpProcessSpec:
+    command: tuple[str, ...]
+    cwd: str
+    env: dict[str, str]
+    policy: IndexingWrapperPolicy
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class SanitizedMcpTranscript:
+    calls: list[dict[str, Any]]
+    redactions: list[dict[str, str]]
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class IndexingMcpReportBundle:
+    raw_report: str
+    sanitized_report: str
+    sanitized_transcript: SanitizedMcpTranscript
+
+    def to_dict(self) -> dict[str, Any]:
+        data = asdict(self)
+        data["sanitized_transcript"] = self.sanitized_transcript.to_dict()
+        return data
 
 
 def _is_relative_to(path: Path, root: Path) -> bool:
@@ -126,23 +164,201 @@ def build_indexing_wrapper_policy(
     )
 
 
+def _extract_mcp_text_items(message: dict[str, Any]) -> list[str]:
+    content = message.get("result", {}).get("content")
+    if not isinstance(content, list) or not content:
+        return []
+    return [item["text"] for item in content if isinstance(item, dict) and item.get("type") == "text" and isinstance(item.get("text"), str)]
+
+
+def _parse_text_item(text: str) -> Any:
+    clean = text.lstrip("\ufeff").strip()
+    try:
+        return json.loads(clean)
+    except json.JSONDecodeError:
+        return clean
+
+
 def parse_mcp_text_result(message: dict[str, Any]) -> Any:
     if "error" in message:
         return {"error": message["error"]}
-    content = message.get("result", {}).get("content")
-    if not isinstance(content, list) or not content:
-        return message.get("result", message)
-    text_items = [item.get("text", "") for item in content if isinstance(item, dict) and item.get("type") == "text"]
+    text_items = _extract_mcp_text_items(message)
     if not text_items:
-        return content
-    text = text_items[0]
-    if not isinstance(text, str):
-        return text
-    text = text.lstrip("\ufeff").strip()
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError:
-        return text
+        content = message.get("result", {}).get("content")
+        return content if isinstance(content, list) and content else message.get("result", message)
+    parsed_items = [_parse_text_item(text) for text in text_items]
+    if len(parsed_items) == 1:
+        return parsed_items[0]
+    raise GuardrailError("MCP text result contains multiple text payloads; refusing ambiguous merge semantics")
+
+
+def list_indexing_runtime_tools(message: dict[str, Any]) -> list[str]:
+    payload = parse_mcp_text_result(message)
+    raw_tools = payload.get("tools") if isinstance(payload, dict) else payload
+    if not isinstance(raw_tools, list):
+        raise GuardrailError("MCP list_tools response must contain a tools list")
+    tools: list[str] = []
+    for item in raw_tools:
+        if isinstance(item, str):
+            name = item
+        elif isinstance(item, dict) and isinstance(item.get("name"), str):
+            name = item["name"]
+        else:
+            raise GuardrailError("MCP list_tools response contains a tool without a string name")
+        if name in tools:
+            raise GuardrailError(f"MCP list_tools response contains duplicate tool: {name}")
+        tools.append(name)
+    return tools
+
+
+def _validate_safe_extra_env(extra_env: dict[str, str] | None, *, live_vault_root: str | Path) -> dict[str, str]:
+    if not extra_env:
+        return {}
+    safe: dict[str, str] = {}
+    for key, value in extra_env.items():
+        if key not in SAFE_MCP_EXTRA_ENV_KEYS or SECRET_ENV_KEY_RE.search(key):
+            raise GuardrailError(f"MCP process extra env key is not allowlisted: {key}")
+        if not isinstance(value, str):
+            raise GuardrailError(f"MCP process extra env value must be a string: {key}")
+        redacted, redactions = redact_live_vault_paths(value, live_vault_root=live_vault_root)
+        if redactions or redacted != value:
+            raise GuardrailError(f"MCP process extra env value references live vault: {key}")
+        safe[key] = value
+    return safe
+
+
+def verify_indexing_runtime_tools(message: dict[str, Any], policy: IndexingWrapperPolicy) -> list[str]:
+    tools = list_indexing_runtime_tools(message)
+    exposed = set(tools)
+    allowed = set(policy.allowed_tools)
+    extra = sorted(exposed - allowed)
+    missing = sorted(allowed - exposed)
+    if extra:
+        raise GuardrailError(f"MCP server exposed non-allowlisted indexing tools: {extra}")
+    if missing:
+        raise GuardrailError(f"MCP server is missing required indexing tools: {missing}")
+    return tools
+
+
+def build_indexing_mcp_process_spec(
+    *,
+    command: list[str] | tuple[str, ...],
+    policy: IndexingWrapperPolicy,
+    cwd: str | Path = REPO_ROOT,
+    extra_env: dict[str, str] | None = None,
+) -> IndexingMcpProcessSpec:
+    if not command or not all(isinstance(part, str) and part for part in command):
+        raise GuardrailError("MCP process command must be a non-empty string list")
+    resolved_cwd = Path(cwd).expanduser().resolve()
+    require_not_live_vault_path(resolved_cwd, live_vault_root=policy.live_vault_root)
+    env = _validate_safe_extra_env(extra_env, live_vault_root=policy.live_vault_root)
+    env.update(
+        {
+            "OBSIDIAN_VAULT_PATH": policy.vault_root,
+            "OBSIDIAN_VAULT_ROOT": policy.vault_root,
+            "VAULT_ROOT": policy.vault_root,
+            "OLLAMA_BASE_URL": policy.ollama_base_url,
+            "OBSIDIAN_SEMANTIC_MCP_HOME": policy.derived_root,
+            "INDEXING_DERIVED_ROOT": policy.derived_root,
+        }
+    )
+    for key in ("OBSIDIAN_VAULT_PATH", "OBSIDIAN_VAULT_ROOT", "VAULT_ROOT", "OBSIDIAN_SEMANTIC_MCP_HOME", "INDEXING_DERIVED_ROOT"):
+        require_not_live_vault_path(env[key], live_vault_root=policy.live_vault_root)
+    normalize_loopback_ollama_base_url(env["OLLAMA_BASE_URL"])
+    return IndexingMcpProcessSpec(command=tuple(command), cwd=str(resolved_cwd), env=env, policy=policy)
+
+
+def _truncate_sanitized_text(value: Any) -> tuple[Any, list[dict[str, str]]]:
+    redactions: list[dict[str, str]] = []
+
+    def visit(obj: Any) -> Any:
+        if isinstance(obj, str) and len(obj) > MAX_SANITIZED_TEXT_CHARS:
+            redactions.append({"kind": "long-text-truncation", "replacement": TRUNCATED_TEXT_SUFFIX})
+            keep = MAX_SANITIZED_TEXT_CHARS - len(TRUNCATED_TEXT_SUFFIX)
+            return f"{obj[:keep]}{TRUNCATED_TEXT_SUFFIX}"
+        if isinstance(obj, list):
+            return [visit(item) for item in obj]
+        if isinstance(obj, dict):
+            return {str(key): visit(val) for key, val in obj.items()}
+        return obj
+
+    return visit(value), redactions
+
+
+def sanitize_indexing_mcp_transcript(
+    calls: list[dict[str, Any]],
+    *,
+    policy: IndexingWrapperPolicy,
+) -> SanitizedMcpTranscript:
+    sanitized_calls: list[dict[str, Any]] = []
+    all_redactions: list[dict[str, str]] = []
+    tools_verified = False
+    for index, call in enumerate(calls):
+        if not isinstance(call, dict):
+            raise GuardrailError(f"MCP transcript call must be an object at index {index}")
+        kind = call.get("kind", "tool_result")
+        if kind == "list_tools":
+            tools = verify_indexing_runtime_tools(dict(call.get("message") or {}), policy)
+            tools_verified = True
+            sanitized_calls.append({"kind": "list_tools", "tools": tools})
+            continue
+        if kind != "tool_result":
+            raise GuardrailError(f"Unexpected MCP transcript call kind at index {index}: {kind}")
+        if not tools_verified:
+            raise GuardrailError("MCP list_tools must be verified before tool results are accepted")
+        tool = call.get("tool")
+        if not isinstance(tool, str):
+            raise GuardrailError(f"MCP transcript call is missing tool at index {index}")
+        normalized = normalize_indexing_mcp_result(
+            tool=tool,
+            message=dict(call.get("message") or {}),
+            vault_root=policy.vault_root,
+            live_vault_root=policy.live_vault_root,
+        )
+        payload, truncations = _truncate_sanitized_text(normalized.payload)
+        provenance, provenance_truncations = _truncate_sanitized_text(normalized.provenance)
+        all_redactions.extend(normalized.redactions)
+        all_redactions.extend(truncations)
+        all_redactions.extend(provenance_truncations)
+        sanitized_calls.append(
+            {
+                "kind": "tool_result",
+                "tool": normalized.tool,
+                "payload": payload,
+                "provenance": provenance,
+                "redactions": [*normalized.redactions, *truncations, *provenance_truncations],
+            }
+        )
+    if not tools_verified:
+        raise GuardrailError("MCP transcript does not include a verified list_tools call")
+    return SanitizedMcpTranscript(calls=sanitized_calls, redactions=all_redactions)
+
+
+def write_indexing_mcp_report_bundle(
+    *,
+    calls: list[dict[str, Any]],
+    policy: IndexingWrapperPolicy,
+    raw_report: str | Path,
+    sanitized_report: str | Path,
+    report_root: str | Path = DEFAULT_INDEXING_REPORT_ROOT,
+    report_boundary: str | Path = DEFAULT_INDEXING_REPORT_ROOT,
+) -> IndexingMcpReportBundle:
+    root = require_not_live_vault_path(report_root, live_vault_root=policy.live_vault_root)
+    require_under(root, report_boundary, "Indexing MCP report root")
+    raw_path = require_under(raw_report, root, "Raw indexing MCP report")
+    sanitized_path = require_under(sanitized_report, root, "Sanitized indexing MCP report")
+    if raw_path == sanitized_path:
+        raise GuardrailError("Raw and sanitized indexing MCP reports must be separate files")
+    sanitized = sanitize_indexing_mcp_transcript(calls, policy=policy)
+    raw_path.parent.mkdir(parents=True, exist_ok=True)
+    sanitized_path.parent.mkdir(parents=True, exist_ok=True)
+    raw_path.write_text(json.dumps({"calls": calls}, indent=2, sort_keys=True), encoding="utf-8")
+    sanitized_path.write_text(json.dumps(sanitized.to_dict(), indent=2, sort_keys=True), encoding="utf-8")
+    return IndexingMcpReportBundle(
+        raw_report=str(raw_path),
+        sanitized_report=str(sanitized_path),
+        sanitized_transcript=sanitized,
+    )
 
 
 def redact_live_vault_paths(value: Any, *, live_vault_root: str | Path = DEFAULT_LIVE_VAULT_ROOT) -> tuple[Any, list[dict[str, str]]]:
@@ -158,8 +374,10 @@ def redact_live_vault_paths(value: Any, *, live_vault_root: str | Path = DEFAULT
             }:
                 if needle in redacted:
                     redacted = redacted.replace(needle, REDACTED_LIVE_VAULT)
-            for needle in {quote(live, safe=""), quote(live, safe="/")}:
-                redacted = re.sub(re.escape(needle), REDACTED_LIVE_VAULT, redacted, flags=re.IGNORECASE)
+            encoded = live
+            for _ in range(MAX_URL_DECODE_ROUNDS):
+                encoded = quote(encoded, safe="")
+                redacted = re.sub(re.escape(encoded), REDACTED_LIVE_VAULT, redacted, flags=re.IGNORECASE)
             if redacted != obj:
                 redactions.append({"kind": "live-vault-path", "replacement": REDACTED_LIVE_VAULT})
             return redacted
@@ -172,7 +390,7 @@ def redact_live_vault_paths(value: Any, *, live_vault_root: str | Path = DEFAULT
     return visit(value), redactions
 
 
-def _decoded_path_forms(raw: str, *, max_rounds: int = 3) -> list[str]:
+def _decoded_path_forms(raw: str, *, max_rounds: int = MAX_URL_DECODE_ROUNDS) -> list[str]:
     forms = [str(raw)]
     current = str(raw)
     for _ in range(max_rounds):
@@ -181,6 +399,8 @@ def _decoded_path_forms(raw: str, *, max_rounds: int = 3) -> list[str]:
             break
         forms.append(decoded)
         current = decoded
+    if unquote(current) != current:
+        raise GuardrailError(f"Path uses too many URL-encoding rounds: {raw}")
     return forms
 
 

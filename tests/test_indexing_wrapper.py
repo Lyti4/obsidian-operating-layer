@@ -12,12 +12,16 @@ from obslayer.indexing_wrapper import (
     INDEXING_WRAPPER_TOOL_ALLOWLIST,
     REDACTED_LIVE_VAULT,
     assert_indexing_tool_allowed,
+    build_indexing_mcp_process_spec,
     build_indexing_wrapper_policy,
     normalize_indexing_mcp_result,
     normalize_loopback_ollama_base_url,
     parse_mcp_text_result,
     redact_live_vault_paths,
     require_not_live_vault_path,
+    sanitize_indexing_mcp_transcript,
+    verify_indexing_runtime_tools,
+    write_indexing_mcp_report_bundle,
 )
 
 
@@ -94,18 +98,8 @@ def test_parse_mcp_text_result_decodes_json_text_payload() -> None:
     assert parse_mcp_text_result({"result": {"content": [{"type": "text", "text": "plain"}]}}) == "plain"
 
 
-def test_parse_mcp_text_result_handles_bom_whitespace_multiple_content_and_invalid_json() -> None:
-    assert parse_mcp_text_result(
-        {
-            "result": {
-                "content": [
-                    {"type": "image", "data": "ignored"},
-                    {"type": "text", "text": '\ufeff  {"ok": true}  '},
-                    {"type": "text", "text": '{"ignored": true}'},
-                ]
-            }
-        }
-    ) == {"ok": True}
+def test_parse_mcp_text_result_handles_bom_whitespace_and_invalid_json() -> None:
+    assert parse_mcp_text_result({"result": {"content": [{"type": "text", "text": '\ufeff  {"ok": true}  '}]}}) == {"ok": True}
     assert parse_mcp_text_result({"result": {"content": [{"type": "text", "text": "{bad json"}]}}) == "{bad json"
     assert parse_mcp_text_result({"error": {"message": "/home/hermesadmin/Obsidian leaked"}}) == {
         "error": {"message": "/home/hermesadmin/Obsidian leaked"}
@@ -243,3 +237,242 @@ def test_normalize_status_and_index_payloads_reject_unsafe_path_metadata(
 
     with pytest.raises(GuardrailError):
         normalize_indexing_mcp_result(tool=tool, message=mcp_text(payload), vault_root=sandbox)
+
+
+def runtime_policy(tmp_path: Path):
+    sandbox = make_sandbox(tmp_path)
+    derived = repo_root() / "out" / "external-indexing-spike" / f"runtime-{tmp_path.name}"
+    return build_indexing_wrapper_policy(vault_root=sandbox, derived_root=derived)
+
+
+def test_verify_indexing_runtime_tools_rejects_extra_or_missing_tools(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    ok_message = mcp_text({"tools": [{"name": name} for name in INDEXING_WRAPPER_TOOL_ALLOWLIST]})
+    assert verify_indexing_runtime_tools(ok_message, policy) == list(INDEXING_WRAPPER_TOOL_ALLOWLIST)
+
+    with pytest.raises(GuardrailError, match="non-allowlisted"):
+        verify_indexing_runtime_tools(mcp_text({"tools": [*INDEXING_WRAPPER_TOOL_ALLOWLIST, "write_note"]}), policy)
+    with pytest.raises(GuardrailError, match="missing"):
+        verify_indexing_runtime_tools(mcp_text({"tools": ["index_status"]}), policy)
+    with pytest.raises(GuardrailError, match="string name"):
+        verify_indexing_runtime_tools(mcp_text({"tools": [{"name": 123}]}), policy)
+    with pytest.raises(GuardrailError, match="duplicate"):
+        verify_indexing_runtime_tools(mcp_text({"tools": [*INDEXING_WRAPPER_TOOL_ALLOWLIST, "search_notes"]}), policy)
+
+
+def test_build_indexing_mcp_process_spec_injects_safe_env_and_refuses_live_cwd(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    spec = build_indexing_mcp_process_spec(command=["node", "server.js"], policy=policy, extra_env={"PATH": "/usr/bin"})
+
+    assert spec.command == ("node", "server.js")
+    assert spec.env["PATH"] == "/usr/bin"
+    assert spec.env["OBSIDIAN_VAULT_PATH"] == policy.vault_root
+    assert spec.env["OBSIDIAN_VAULT_ROOT"] == policy.vault_root
+    assert spec.env["VAULT_ROOT"] == policy.vault_root
+    assert spec.env["OBSIDIAN_SEMANTIC_MCP_HOME"] == policy.derived_root
+    assert spec.env["INDEXING_DERIVED_ROOT"] == policy.derived_root
+    assert spec.env["OLLAMA_BASE_URL"] == "http://localhost:11434"
+
+    with pytest.raises(GuardrailError, match="live vault"):
+        build_indexing_mcp_process_spec(command=["node"], policy=policy, cwd=Path("/home/hermesadmin/Obsidian"))
+    with pytest.raises(GuardrailError, match="non-empty"):
+        build_indexing_mcp_process_spec(command=[], policy=policy)
+
+
+def test_sanitize_indexing_mcp_transcript_gates_tools_and_returns_only_sanitized_payload(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    transcript = sanitize_indexing_mcp_transcript(
+        [
+            {"kind": "list_tools", "message": mcp_text({"tools": [{"name": name} for name in INDEXING_WRAPPER_TOOL_ALLOWLIST]})},
+            {
+                "tool": "search_notes",
+                "message": mcp_text(
+                    {
+                        "results": [
+                            {
+                                "path": "Notes/alpha.md",
+                                "matched_sections": [
+                                    {"line": 2, "snippet": "mentions /home/hermesadmin/Obsidian in sandbox output"}
+                                ],
+                            }
+                        ]
+                    }
+                ),
+            },
+        ],
+        policy=policy,
+    )
+
+    assert transcript.calls[0] == {"kind": "list_tools", "tools": list(INDEXING_WRAPPER_TOOL_ALLOWLIST)}
+    result = transcript.calls[1]
+    assert result["kind"] == "tool_result"
+    assert result["payload"]["results"][0]["matched_sections"][0]["snippet"] == "mentions <LIVE_VAULT> in sandbox output"
+    assert result["provenance"][0]["snippet"] == "mentions <LIVE_VAULT> in sandbox output"
+    assert transcript.redactions
+    assert "/home/hermesadmin/Obsidian" not in json.dumps(transcript.to_dict())
+
+
+def test_sanitize_indexing_mcp_transcript_rejects_unsafe_runtime_outputs(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    with pytest.raises(GuardrailError, match="non-allowlisted"):
+        sanitize_indexing_mcp_transcript(
+            [{"kind": "list_tools", "message": mcp_text({"tools": [*INDEXING_WRAPPER_TOOL_ALLOWLIST, "delete_note"]})}],
+            policy=policy,
+        )
+    with pytest.raises(GuardrailError):
+        sanitize_indexing_mcp_transcript(
+            [{"tool": "search_notes", "message": mcp_text({"results": [{"path": "%2Ftmp%2Fevil.md"}]})}],
+            policy=policy,
+        )
+
+
+def test_sanitize_indexing_mcp_transcript_requires_list_tools_gate(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    with pytest.raises(GuardrailError, match="list_tools"):
+        sanitize_indexing_mcp_transcript(
+            [{"tool": "index_status", "message": mcp_text({"ok": True})}],
+            policy=policy,
+        )
+    with pytest.raises(GuardrailError, match="Unexpected MCP transcript call kind"):
+        sanitize_indexing_mcp_transcript(
+            [
+                {"kind": "list_tools", "message": mcp_text({"tools": list(INDEXING_WRAPPER_TOOL_ALLOWLIST)})},
+                {"kind": "notification", "message": {}},
+            ],
+            policy=policy,
+        )
+
+
+def test_sanitize_indexing_mcp_transcript_truncates_long_sanitized_text(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    long_snippet = "x" * 2_500
+    transcript = sanitize_indexing_mcp_transcript(
+        [
+            {"kind": "list_tools", "message": mcp_text({"tools": list(INDEXING_WRAPPER_TOOL_ALLOWLIST)})},
+            {
+                "tool": "search_notes",
+                "message": mcp_text(
+                    {"results": [{"path": "Notes/alpha.md", "matched_sections": [{"line": 1, "snippet": long_snippet}]}]}
+                ),
+            },
+        ],
+        policy=policy,
+    )
+
+    dumped = json.dumps(transcript.to_dict())
+    assert len(transcript.calls[1]["payload"]["results"][0]["matched_sections"][0]["snippet"]) == 2_000
+    assert "<TRUNCATED>" in dumped
+    assert any(item["kind"] == "long-text-truncation" for item in transcript.redactions)
+
+
+def test_write_indexing_mcp_report_bundle_splits_raw_and_sanitized_reports(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    calls = [
+        {"kind": "list_tools", "message": mcp_text({"tools": list(INDEXING_WRAPPER_TOOL_ALLOWLIST)})},
+        {
+            "tool": "search_notes",
+            "message": mcp_text(
+                {
+                    "results": [
+                        {
+                            "path": "Notes/alpha.md",
+                            "matched_sections": [{"line": 2, "snippet": "/home/hermesadmin/Obsidian appears"}],
+                        }
+                    ]
+                }
+            ),
+        },
+    ]
+    report_root = Path(policy.derived_root).parents[1] / "reports" / "external-indexing-spike" / f"runtime-{tmp_path.name}"
+    bundle = write_indexing_mcp_report_bundle(
+        calls=calls,
+        policy=policy,
+        raw_report=report_root / "raw" / "transcript.json",
+        sanitized_report=report_root / "sanitized-transcript.json",
+        report_root=report_root,
+    )
+
+    raw_text = Path(bundle.raw_report).read_text(encoding="utf-8")
+    sanitized_text = Path(bundle.sanitized_report).read_text(encoding="utf-8")
+    assert "/home/hermesadmin/Obsidian" in raw_text
+    assert "/home/hermesadmin/Obsidian" not in sanitized_text
+    assert "<LIVE_VAULT>" in sanitized_text
+
+    with pytest.raises(GuardrailError, match="separate files"):
+        write_indexing_mcp_report_bundle(
+            calls=calls,
+            policy=policy,
+            raw_report=report_root / "same.json",
+            sanitized_report=report_root / "same.json",
+            report_root=report_root,
+        )
+    with pytest.raises(GuardrailError, match="report"):
+        write_indexing_mcp_report_bundle(
+            calls=calls,
+            policy=policy,
+            raw_report=tmp_path / "outside.json",
+            sanitized_report=report_root / "safe.json",
+            report_root=report_root,
+        )
+
+
+def test_parse_mcp_text_result_rejects_ambiguous_multi_text_json_objects() -> None:
+    with pytest.raises(GuardrailError, match="multiple text"):
+        parse_mcp_text_result(
+            {
+                "result": {
+                    "content": [
+                        {"type": "text", "text": '{"a": 1}'},
+                        {"type": "text", "text": '{"b": 2}'},
+                    ]
+                }
+            }
+        )
+
+
+def test_sanitize_indexing_mcp_transcript_redacts_deep_url_encoded_live_paths(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    deeply_encoded_live = "%2525252Fhome%2525252Fhermesadmin%2525252FObsidian%2525252FSecret.md"
+
+    transcript = sanitize_indexing_mcp_transcript(
+        [
+            {"kind": "list_tools", "message": mcp_text({"tools": list(INDEXING_WRAPPER_TOOL_ALLOWLIST)})},
+            {
+                "tool": "search_notes",
+                "message": mcp_text({"results": [{"path": "Notes/alpha.md", "matched_sections": [{"snippet": deeply_encoded_live}]}]}),
+            },
+        ],
+        policy=policy,
+    )
+
+    dumped = json.dumps(transcript.to_dict())
+    assert deeply_encoded_live not in dumped
+    assert "/home/hermesadmin/Obsidian" not in dumped
+    assert REDACTED_LIVE_VAULT in dumped
+
+
+def test_write_indexing_mcp_report_bundle_rejects_live_or_outside_report_root(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    calls = [{"kind": "list_tools", "message": mcp_text({"tools": list(INDEXING_WRAPPER_TOOL_ALLOWLIST)})}]
+
+    for unsafe_root in [Path("/home/hermesadmin/Obsidian") / "Reports", tmp_path / "reports"]:
+        with pytest.raises(GuardrailError):
+            write_indexing_mcp_report_bundle(
+                calls=calls,
+                policy=policy,
+                raw_report=unsafe_root / "raw.json",
+                sanitized_report=unsafe_root / "sanitized.json",
+                report_root=unsafe_root,
+            )
+
+
+def test_build_indexing_mcp_process_spec_rejects_secret_or_live_vault_extra_env(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+
+    for extra_env in [
+        {"OPENAI_API_KEY": "secret"},
+        {"HOME": "/home/hermesadmin/Obsidian"},
+        {"HTTP_PROXY": "http://proxy.local:8080"},
+    ]:
+        with pytest.raises(GuardrailError):
+            build_indexing_mcp_process_spec(command=["node"], policy=policy, extra_env=extra_env)

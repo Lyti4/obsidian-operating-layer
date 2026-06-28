@@ -214,6 +214,26 @@ Independent review notes incorporated:
 - Subagent audit highlighted JSON-in-text MCP responses, multi-content payloads, URL-encoded path redaction, deterministic `hash_or_version`, and runtime tool-surface checks.
 - Pre-commit review blockers fixed: live-vault refusal no longer depends on live-root existence, and path-bearing metadata is validated across all allowlisted tool payloads, including `index_status` and `index_vault`.
 
-Known remaining limitation:
+## Runtime wrapper slice
 
-- this slice normalizes already captured MCP responses; the next slice should wire it into a process-running adapter/CLI so every candidate call is wrapped automatically and `list_tools` is checked at runtime before any MCP tool call.
+Status: implemented and full verification passed; independent reviews completed with blockers fixed.
+
+The runtime wrapper extends `src/obslayer/indexing_wrapper.py` and exposes a CLI harness at `tools/obsidian_indexing_runtime.py`.
+
+It adds:
+
+- runtime `list_tools` verification before any tool result is accepted;
+- exact tool-surface checks: extra, missing, malformed, duplicate, or non-allowlisted tools fail closed;
+- safe MCP process spec/env construction for sandbox-only execution, including `OBSIDIAN_VAULT_PATH`, `OBSIDIAN_VAULT_ROOT`, `OBSIDIAN_SEMANTIC_MCP_HOME`, and loopback-only `OLLAMA_BASE_URL`;
+- allowlisted `extra_env` only, rejecting secret/proxy/auth-like keys and live-vault values;
+- hardened parsing for MCP `content[].text` payloads with BOM/whitespace/invalid JSON handling and fail-closed behavior for ambiguous multi-text payloads;
+- transcript sanitization that feeds every tool result through raw path validation, redaction, and provenance normalization;
+- recursive literal and multi-round URL-encoded live-vault path redaction in snippets/content/error/result payloads;
+- long-text truncation in sanitized transcript output so snippets/content cannot flood reports;
+- raw/sanitized report split under `out/reports/external-indexing-spike`; live-vault or outside report roots are refused.
+
+Remaining before production integration:
+
+- commit/push the verified runtime wrapper slice;
+- wire the CLI/harness into the real MCP stdio probe path so every live candidate invocation is wrapped automatically;
+- confirm semantic quality with real local Ollama + `bge-m3` when available.
