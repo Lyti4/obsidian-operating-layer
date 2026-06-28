@@ -50,7 +50,7 @@ Recorded manual decision:
 ```text
 dashboard_visual_acceptance: accepted
 reviewer: Hermes Agent on server, because Dmitry cannot open server files directly
-notes: Dashboard source is readable, Dataview sections cover review/proposal/report/task indexes, status labels are constrained, and review template records safety boundary, evidence, verification result, and explicit decision.
+notes: Dashboard source is readable, Dataview sections cover review/proposal/report/task indexes, status labels are constrained, expected vault paths and empty-state behavior are documented, and review/report templates record safety boundary, evidence, verification result, and explicit decision.
 ```
 
 ## P1.4 Diagram readability checklist
@@ -62,6 +62,11 @@ Source files:
 - `docs/diagrams/architecture.mmd`
 - `docs/diagrams/worker-flow.mmd`
 - `docs/diagrams/safety-sequence.mmd`
+
+Independent subagent note: older `out/diagrams/*.svg` and `out/reports/excellent-acceptance/*.pdf`
+artifacts were identified as source-preview/text-report outputs, not visual diagram renders. This is now
+addressed by the manual-acceptance artifacts below and the Mermaid CLI renderer path in
+`src/obslayer/diagram_pdf_adapter.py`.
 
 Generated artifacts reviewed:
 

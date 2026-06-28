@@ -93,12 +93,14 @@ Status: accepted by server-side manual review; live Obsidian publication remains
 Evidence:
 
 - `docs/obsidian-review-dashboard/index.md` contains Dataview sections for review queue, proposal index, report index, and task index.
+- Dashboard empty-state guidance documents expected vault paths and explains that an empty Dataview block is not approval evidence.
+- `docs/obsidian-review-dashboard/templates/report-template.md` provides a non-empty acceptance report template with safety/evidence/decision fields.
 - Status labels are constrained to `proposed`, `needs-review`, `applied`, and `rejected`.
 - `tests/test_phase07_review_dashboard_docs.py` verifies dashboard safety wording and status coverage.
 
 Acceptance result:
 
-- Dashboard source is readable and ready to copy/publish through the normal approval gate.
+- Dashboard source is readable and ready to copy/publish through the normal approval gate; expected vault structure and empty-state behavior are explicit.
 - Дмитрий cannot open server-local files directly, so Hermes Agent performed the manual file-level review and recorded the decision in `15-manual-and-adapter-acceptance.md`.
 
 ### P1.4 Diagram readability acceptance

@@ -21,6 +21,24 @@ def test_review_dashboard_index_contains_dataview_statuses_and_safety_gate() -> 
     assert "approval manifest" in text
     assert "External workers must not write this note directly into a live vault" in text
     assert "Dashboard rows are review aids only; they are not approval manifests" in text
+    assert "Expected vault structure and empty-state guidance" in text
+    assert "Hermes/Review/Proposals" in text
+    assert "Hermes/Reports" in text
+    assert "An empty block is not approval evidence" in text
+    assert "python3 tools/obsidian_review_dashboard.py list" in text
+
+
+def test_report_template_is_actionable_acceptance_evidence() -> None:
+    template = repo_root() / "docs" / "obsidian-review-dashboard" / "templates" / "report-template.md"
+    text = template.read_text(encoding="utf-8")
+
+    assert "report_type: acceptance" in text
+    assert "Mutation boundary" in text
+    assert "read-only | proposal-only | dry-run | approved-apply" in text
+    assert "No secrets were printed or stored" in text
+    assert "Live vault was not mutated" in text
+    assert "Post-verify evidence" in text
+    assert "decision: accepted | needs-fixes | rejected" in text
 
 
 def test_review_note_template_is_templater_friendly_and_proposal_only() -> None:

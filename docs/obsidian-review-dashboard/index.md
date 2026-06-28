@@ -28,6 +28,28 @@ This note is a Dataview-friendly dashboard source for reviewing Obsidian Operati
 | `applied` | Approved apply completed and verification evidence exists. | Confirm post-verify report and archive/close. |
 | `rejected` | Proposal is not accepted or is superseded. | Record reason and do not apply. |
 
+## Expected vault structure and empty-state guidance
+
+This dashboard expects review notes to live under these vault paths after manual copy or approved apply:
+
+| Path | Purpose |
+| --- | --- |
+| `Hermes/Review` | review queue notes and task checklists |
+| `Hermes/Review/Proposals` | proposal review notes generated from `proposal.json` bundles |
+| `Hermes/Reports` | final reports, acceptance reports, and delivery summaries |
+
+If a Dataview block is empty, treat it as one of these states:
+
+1. no matching review/report notes have been published into the vault yet;
+2. the note is still only in repository/output storage and has not passed the publish gate;
+3. tags/status fields are missing or not using the constrained labels above.
+
+An empty block is not approval evidence. Use the CLI dashboard first when in doubt:
+
+```bash
+python3 tools/obsidian_review_dashboard.py list --proposal-root out/proposals --json
+```
+
 ## Review queue
 
 ```dataview
