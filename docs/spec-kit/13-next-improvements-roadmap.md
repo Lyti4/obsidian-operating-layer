@@ -203,6 +203,7 @@ Acceptance:
 - Cleaner command aliases for common flows — implemented as safe `make` aliases: `dashboard-list`, `field-slice-example`, `render-diagrams`, `rag-benchmark`, `mcp-benchmark`.
 - Scheduled observe/index reports after explicit cron approval — not installed; remains approval-gated by design.
 - More visual themes for diagrams — optional future enhancement; current accepted rendered Mermaid SVG/PDF evidence is recorded in `15-manual-and-adapter-acceptance.md`.
+- Post-P3 sandbox/read-only E2E pass — recorded in `16-sandbox-e2e-evidence.md` with refusal evidence for apply without approval manifest.
 
 ## Proposed next kanban batch
 
@@ -226,7 +227,7 @@ The roadmap is considered executed only when:
 - at least one P1 daily-use UX flow is usable by Дмитрий;
 - one P2 field slice has produced a real proposal/review artifact;
 - all evidence is linked from `14-operational-acceptance-report.md` and
-  `15-manual-and-adapter-acceptance.md`;
+  `15-manual-and-adapter-acceptance.md` / `16-sandbox-e2e-evidence.md`;
 - GitHub is clean and synchronized.
 
 ## Stop conditions

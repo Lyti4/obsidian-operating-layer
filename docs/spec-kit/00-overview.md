@@ -39,5 +39,6 @@ Obsidian vault
 - `13-next-improvements-roadmap.md` — следующий roadmap улучшений после MVP baseline.
 - `14-operational-acceptance-report.md` — отчёт о закрытии первого operational acceptance pass.
 - `15-manual-and-adapter-acceptance.md` — manual dashboard/diagram acceptance checklist and sandbox-only RAG/MCP benchmark contracts.
+- `16-sandbox-e2e-evidence.md` — safe post-P3 sandbox/read-only E2E evidence and refusal checks.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.

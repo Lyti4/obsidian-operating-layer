@@ -14,7 +14,8 @@ Acceptance scope covered in this pass:
 - disposable sandbox apply rehearsal;
 - controlled-autonomy report format clarity;
 - diagram/PDF generation and server-side visual acceptance;
-- dashboard static and server-side usability acceptance.
+- dashboard static and server-side usability acceptance;
+- post-P3 sandbox/read-only E2E evidence and refusal checks.
 
 The real live vault was not mutated. Live apply to `/home/hermesadmin/Obsidian` remains outside this acceptance pass.
 
@@ -191,6 +192,12 @@ Closed after the original acceptance pass:
 
 The sandbox-only benchmark evidence for `P2.2` and `P2.3` is recorded in
 `15-manual-and-adapter-acceptance.md`.
+
+The post-P3 sandbox/read-only E2E pass is recorded in
+`16-sandbox-e2e-evidence.md`. It covers sandbox vault creation, proposal-only
+field slice, dashboard list/explain, diagram render path guardrails, RAG/MCP
+sandbox benchmarks, refusal without `--approval-manifest`, and a fresh
+`make verify` result.
 
 ## Safety boundary
 
