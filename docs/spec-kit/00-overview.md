@@ -29,3 +29,9 @@ Obsidian vault
 - `03-safety-contract.md` — safety contract и adapter contract.
 - `04-integration-plan.md` — phased integration plan.
 - `05-final-desired-architecture.md` — финальная желательная архитектура для реализации.
+- `06-adapter-contracts.md` — contract/schema для внешних компонентов.
+- `07-local-queue-schema.md` — локальная durable queue и worker task schema.
+- `08-mcp-sandbox-plan.md` — sandbox-план для MCP серверов.
+- `09-rag-graph-sandbox-plan.md` — sandbox-план для RAG/graph компонентов.
+- `10-diagram-pdf-pipeline.md` — pipeline красивых схем и PDF.
+- `11-implementation-roadmap.md` — порядок реализации по фазам.
