@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import json
 import sys
 from pathlib import Path
@@ -85,6 +86,26 @@ def render_pending_markdown(rows: list[dict[str, Any]]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _target_diff(target: dict[str, Any], *, max_chars: int = 4000) -> dict[str, str]:
+    target_path = str(target.get("path", "<missing>"))
+    old_text = str(target.get("old_text", ""))
+    new_text = str(target.get("new_text", ""))
+    diff = "".join(
+        difflib.unified_diff(
+            old_text.splitlines(keepends=True),
+            new_text.splitlines(keepends=True),
+            fromfile=f"a/{target_path}",
+            tofile=f"b/{target_path}",
+            n=3,
+        )
+    )
+    if not diff:
+        diff = "# no textual old_text/new_text diff available\n"
+    if len(diff) > max_chars:
+        diff = diff[:max_chars].rstrip() + "\n... [diff truncated]\n"
+    return {"path": target_path, "diff": diff}
+
+
 def explain_proposal(proposal_path: str | Path) -> dict[str, Any]:
     path = Path(proposal_path).expanduser().resolve()
     proposal = load_json(path)
@@ -95,12 +116,14 @@ def explain_proposal(proposal_path: str | Path) -> dict[str, Any]:
     targets = proposal.get("targets", [])
     if not isinstance(targets, list):
         raise GuardrailError("Unsafe proposal explanation refused: targets must be a list")
+    target_dicts = [target for target in targets if isinstance(target, dict)]
     return {
         "proposal_id": _proposal_id(path, proposal),
         "status": _proposal_status(proposal),
         "risk": str(proposal.get("risk_class") or proposal.get("risk") or "unknown"),
         "summary": str(proposal.get("summary") or "No summary provided."),
-        "what_will_change": [str(target.get("path", "<missing>")) for target in targets if isinstance(target, dict)],
+        "what_will_change": [str(target.get("path", "<missing>")) for target in target_dicts],
+        "target_diffs": [_target_diff(target) for target in target_dicts],
         "target_count": len(targets),
         "approval_phrase": proposal.get("approval_phrase"),
         "next_safe_step": proposal.get("next_safe_step"),
@@ -127,6 +150,11 @@ def render_explanation_markdown(explanation: dict[str, Any]) -> str:
         "",
     ]
     lines.extend(f"- `{path}`" for path in paths)
+    diffs = explanation.get("target_diffs") or []
+    if diffs:
+        lines.extend(["", "## Proposed diff", ""])
+        for item in diffs:
+            lines.extend([f"### `{item['path']}`", "", "```diff", item["diff"].rstrip(), "```", ""])
     lines.extend(["", "## Next safe step", "", str(explanation.get("next_safe_step") or "Review before any apply.")])
     return "\n".join(lines) + "\n"
 

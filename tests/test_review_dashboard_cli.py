@@ -133,4 +133,31 @@ def test_review_dashboard_explain_outputs_human_summary(tmp_path: Path) -> None:
     assert explanation["proposal_id"] == "explain-me"
     assert explanation["risk"] == "high"
     assert explanation["what_will_change"] == ["Notes/alpha.md"]
+    assert explanation["target_diffs"][0]["path"] == "Notes/alpha.md"
+    assert "--- a/Notes/alpha.md" in explanation["target_diffs"][0]["diff"]
+    assert "+new" in explanation["target_diffs"][0]["diff"]
     assert explanation["approval_phrase"] == "APPROVE_OBSIDIAN_OPERATING_LAYER_APPLY"
+
+
+def test_review_dashboard_explain_markdown_includes_proposed_diff(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[1]
+    proposal_path = write_proposal(tmp_path / "proposals", "diff-me")
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_review_dashboard.py"),
+            "explain",
+            "--proposal",
+            str(proposal_path),
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr + completed.stdout
+    assert "## Proposed diff" in completed.stdout
+    assert "```diff" in completed.stdout
+    assert "--- a/Notes/alpha.md" in completed.stdout
+    assert "+new" in completed.stdout
