@@ -21,6 +21,15 @@ from .guardrails import (
     validate_targets,
     write_json,
 )
+from .mcp_adapter import (
+    McpAdapterEvaluation,
+    build_mcp_adapter_evaluation,
+    classify_mcp_tool,
+    evaluation_to_markdown,
+    load_mcp_adapter_record,
+    normalize_mcp_tool_request,
+    write_mcp_adapter_evaluation,
+)
 from .sandbox import SandboxCopyReport, create_sandbox_vault
 
 __all__ = [
@@ -33,18 +42,25 @@ __all__ = [
     "DEFAULT_PROJECT_SLUG",
     "DEFAULT_PROTECTED_RELATIVE",
     "GuardrailError",
+    "McpAdapterEvaluation",
     "SandboxCopyReport",
+    "build_approval_manifest",
+    "build_mcp_adapter_evaluation",
     "canonical_run_commands",
     "canonical_workspace_layout",
-    "build_approval_manifest",
+    "classify_mcp_tool",
     "create_sandbox_vault",
+    "evaluation_to_markdown",
     "is_protected_relative",
     "load_json",
+    "load_mcp_adapter_record",
     "manifest_backup_plan",
+    "normalize_mcp_tool_request",
     "normalize_vault_root",
     "parse_paths",
     "planned_backup_dir",
     "validate_approval_manifest",
     "validate_targets",
     "write_json",
+    "write_mcp_adapter_evaluation",
 ]
