@@ -82,6 +82,40 @@ def test_normalize_findings_to_proposal_refuses_protected_targets(tmp_path: Path
         normalize_findings_to_proposal(vault_root=vault, findings=findings, source_id="unsafe")
 
 
+@pytest.mark.parametrize(
+    ("target", "message"),
+    [
+        ("Notes/alpha.md", "Each finding target must be an object"),
+        ({"old_text": "# Alpha", "new_text": "# Alpha\nstatus: proposed"}, "Finding target missing path"),
+        ({"path": "Notes/alpha.md", "old_text": "# Alpha"}, "Finding target missing new_text"),
+    ],
+)
+def test_normalize_findings_to_proposal_refuses_malformed_targets(
+    tmp_path: Path,
+    target: object,
+    message: str,
+) -> None:
+    vault = make_vault(tmp_path)
+    findings = [
+        {
+            "id": "malformed-target",
+            "type": "metadata-suggestion",
+            "evidence": "field-run regression fixture",
+            "targets": [target],
+        }
+    ]
+
+    with pytest.raises(GuardrailError, match=message):
+        normalize_findings_to_proposal(vault_root=vault, findings=findings, source_id="malformed")
+
+
+def test_normalize_findings_to_proposal_refuses_missing_findings_list(tmp_path: Path) -> None:
+    vault = make_vault(tmp_path)
+
+    with pytest.raises(GuardrailError, match="findings must be a list"):
+        normalize_findings_to_proposal(vault_root=vault, findings={"targets": []}, source_id="bad")  # type: ignore[arg-type]
+
+
 def test_write_normalized_proposal_refuses_out_dir_inside_vault_root_without_writing(tmp_path: Path) -> None:
     vault = make_vault(tmp_path)
     proposal = normalize_findings_to_proposal(
