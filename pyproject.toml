@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "obsidian-operating-layer"
+version = "0.1.0"
+description = "Read-only-first observe/propose/apply/verify tools for Obsidian"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Hermes Agent" }]
+license = { text = "Private" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Private :: Do Not Upload",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 140
+exclude = [
+  ".git",
+  ".hermes-backups",
+  ".pytest_cache",
+  ".ruff_cache",
+  "__pycache__",
+  "out",
+  "artifacts",
+  "obslayer-backups",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

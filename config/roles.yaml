@@ -1,0 +1,60 @@
+roles:
+  architect:
+    phase: interpret
+    authority: read_only_plus_plan
+    toolsets: [file, search, session_search]
+    output: architecture decision and boundaries
+  scout:
+    phase: observe
+    authority: read_only
+    toolsets: [web, file, search]
+    output: external/local evidence table
+  graph-auditor:
+    phase: observe
+    authority: read_only
+    toolsets: [file, terminal, search]
+    output: graph and hygiene metrics
+  proposer:
+    phase: propose
+    authority: write_proposal_only
+    toolsets: [file, search]
+    output: Markdown and JSON proposal bundle
+  apply:
+    phase: apply
+    authority: approved_mutation_only
+    toolsets: [file, terminal]
+    output: backup manifest, applied patch manifest
+  verifier:
+    phase: verify
+    authority: read_only
+    toolsets: [file, terminal, search]
+    output: before/after verification report
+
+protected_namespaces:
+  - .obsidian
+  - _Backups
+  - _Archive
+  - .trash
+  - Soul-Vault/Hermes/Soul
+  - Soul-Vault/Soul
+
+apply_gates:
+  require_approval_file: true
+  approval_phrase: APPROVE OBSIDIAN APPLY
+  require_backup: true
+  require_post_verify: true
+  max_files_per_run_default: 25
+  dry_run_default: true
+
+backup_policy:
+  root: _Backups/obsidian-operating-layer
+  capture: backup first, then patch
+  keep_approval_manifest_in_backup: true
+  keep_backup_manifest_in_backup: true
+
+run_commands:
+  observe: python tools/obsidian_observe.py --vault /home/hermesadmin/Obsidian --out /tmp/obslayer-observe.json
+  propose: python tools/obsidian_propose.py --observe /tmp/obslayer-observe.json --out-dir /tmp/obslayer-proposal
+  verify: python tools/obsidian_verify.py --observe /tmp/obslayer-observe.json --proposal /tmp/obslayer-proposal/proposal.json
+  apply: python tools/obsidian_apply.py --proposal /tmp/obslayer-proposal/proposal.json --approval-manifest /tmp/obslayer-approval.json --apply
+  backfill_report: python tools/obsidian_backfill_report.py --proposal /tmp/obslayer-proposal/proposal.json --reports-dir /home/hermesadmin/Obsidian/Memory-Vault/Hermes/Reports

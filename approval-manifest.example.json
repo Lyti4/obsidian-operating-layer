@@ -1,0 +1,9 @@
+{
+  "vault": "/home/hermesadmin/Obsidian",
+  "proposal": "out/propose/proposal.json",
+  "approved_changes": [
+    "example change set"
+  ],
+  "operator": "docs",
+  "timestamp": "2026-06-27T00:00:00Z"
+}

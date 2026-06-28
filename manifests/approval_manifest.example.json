@@ -1,0 +1,16 @@
+{
+  "approved": true,
+  "approval_phrase": "APPROVE OBSIDIAN APPLY",
+  "task_id": "t_ea0914d2",
+  "approver": "Dmitry",
+  "reason": "Explicitly approved live apply for a narrow, backed-up Obsidian edit.",
+  "vault_root": "/home/hermesadmin/Obsidian",
+  "targets": [
+    "Memory-Vault/Hermes/Obsidian Operating Layer.md"
+  ],
+  "backup_root": "_Backups/obsidian-operating-layer",
+  "dry_run": false,
+  "require_post_verify": true,
+  "max_files_per_run": 25,
+  "created_at": "2026-06-27T00:00:00Z"
+}
