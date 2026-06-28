@@ -104,7 +104,7 @@ notes: <short issue list or OK>
 
 ## P2.2 RAG/graph sandbox benchmark contract
 
-Status: next capability benchmark; sandbox-only.
+Status: benchmark metrics implemented for the local wrapper; sandbox-only.
 
 Existing implementation and evidence:
 
@@ -132,7 +132,7 @@ Acceptance criteria:
 - no direct write is enabled;
 - outputs are JSON and Markdown reports under `out/reports/`;
 - findings are evidence-backed and proposal-only (`executed=false`);
-- fixed queries, resource cost, and quality notes are recorded;
+- fixed queries, finding count, wall time, max RSS, cost model, and quality notes are recorded;
 - normalized findings can feed `obsidian_proposal_worker.py` without live apply.
 
 Verification:
@@ -143,7 +143,7 @@ pytest tests/test_rag_graph_adapter.py
 
 ## P2.3 MCP read-only adapter expansion contract
 
-Status: next capability expansion; sandbox-only.
+Status: read-only expansion metrics implemented for the local wrapper; sandbox-only.
 
 Existing implementation and evidence:
 
@@ -172,6 +172,7 @@ Acceptance criteria:
 - dangerous tools are refused;
 - write-like intent becomes proposal-required and `executed=false`;
 - JSON and Markdown reports are produced under `out/reports/`;
+- probe count, source path count/sample, wall time, max RSS, and cost model are recorded;
 - no secret, token, or environment dump is exposed.
 
 Verification:

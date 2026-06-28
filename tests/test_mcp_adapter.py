@@ -61,6 +61,12 @@ def test_build_mcp_adapter_evaluation_uses_sandbox_and_refuses_dangerous_tools(t
     assert evaluation.direct_write_disabled is True
     assert evaluation.verification["sandboxed"] is True
     assert evaluation.verification["dangerous_tools_refused"] is True
+    assert evaluation.verification["probe_count"] == 5
+    assert evaluation.verification["source_path_count"] == 1
+    assert evaluation.verification["source_paths_sample"] == ["Notes/alpha.md"]
+    assert evaluation.verification["benchmark_metrics"]["wall_time_ms"] >= 0
+    assert evaluation.verification["benchmark_metrics"]["max_rss_kb"] > 0
+    assert evaluation.verification["benchmark_metrics"]["cost_model"] == "local-wrapper-no-llm-call"
     assert any(item["tool"] == "write_note" and item["status"] == "refused" for item in evaluation.findings)
 
 

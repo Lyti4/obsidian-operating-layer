@@ -76,6 +76,11 @@ def test_build_rag_graph_adapter_evaluation_uses_sandbox_and_normalizes_findings
     assert evaluation.verification["sandboxed"] is True
     assert evaluation.verification["normalized_findings_only"] is True
     assert evaluation.verification["notes_scanned"] == 3
+    assert evaluation.verification["fixed_query_count"] == 5
+    assert evaluation.verification["finding_count"] == len(evaluation.findings)
+    assert evaluation.verification["benchmark_metrics"]["wall_time_ms"] >= 0
+    assert evaluation.verification["benchmark_metrics"]["max_rss_kb"] > 0
+    assert evaluation.verification["benchmark_metrics"]["cost_model"] == "local-wrapper-no-llm-call"
 
 
 def test_rag_graph_adapter_cli_writes_json_and_markdown_reports(tmp_path: Path) -> None:

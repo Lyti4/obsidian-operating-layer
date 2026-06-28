@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import re
+import resource
+import time
 from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -251,6 +253,7 @@ def build_rag_graph_adapter_evaluation(
     fixed_queries: list[str] | None = None,
     artifact_root: str | Path | None = None,
 ) -> RagGraphAdapterEvaluation:
+    started = time.perf_counter()
     record = load_rag_graph_adapter_record(adapter_record)
     sandbox = _safe_sandbox_vault(sandbox_vault)
     queries = fixed_queries or [
@@ -261,6 +264,8 @@ def build_rag_graph_adapter_evaluation(
         "Suggest backlinks for final architecture spec.",
     ]
     findings = normalize_rag_graph_findings(sandbox)
+    elapsed_ms = round((time.perf_counter() - started) * 1000, 3)
+    max_rss_kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     direct_write_disabled = all(item.get("executed") is False for item in findings)
     proposal_only_types = {item["type"] for item in findings if item.get("proposal_required") is True}
     proposal_only_allowed = PROPOSAL_ONLY_FINDING_TYPES | {"nonexistent-link", "orphan-note"}
@@ -290,6 +295,13 @@ def build_rag_graph_adapter_evaluation(
             "normalized_findings_only": all("type" in item and item.get("executed") is False for item in findings),
             "proposal_only_for_write_like_suggestions": proposal_only_types <= proposal_only_allowed,
             "notes_scanned": next((item["notes_scanned"] for item in findings if item["type"] == "graph-summary"), 0),
+            "fixed_query_count": len(queries),
+            "finding_count": len(findings),
+            "benchmark_metrics": {
+                "wall_time_ms": elapsed_ms,
+                "max_rss_kb": max_rss_kb,
+                "cost_model": "local-wrapper-no-llm-call",
+            },
         },
     )
 

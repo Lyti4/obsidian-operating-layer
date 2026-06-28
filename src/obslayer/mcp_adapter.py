@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import resource
+import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -141,10 +143,14 @@ def build_mcp_adapter_evaluation(
     probe_tools: list[str] | None = None,
     artifact_root: str | Path | None = None,
 ) -> McpAdapterEvaluation:
+    started = time.perf_counter()
     record = load_mcp_adapter_record(adapter_record)
     sandbox = _safe_sandbox_vault(sandbox_vault)
     probes = probe_tools or ["read_note", "search_notes", "graph_links", "write_note", "delete_note"]
-    normalized = [normalize_mcp_tool_request(tool) for tool in probes]
+    source_paths = sorted(path.relative_to(sandbox).as_posix() for path in sandbox.rglob("*.md") if path.is_file())
+    normalized = [normalize_mcp_tool_request(tool, {"source_paths": source_paths[:5]}) for tool in probes]
+    elapsed_ms = round((time.perf_counter() - started) * 1000, 3)
+    max_rss_kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     direct_write_disabled = all(item["decision"] != "allow-write" and item["executed"] is False for item in normalized)
 
     artifacts: dict[str, str] = {}
@@ -174,6 +180,14 @@ def build_mcp_adapter_evaluation(
             "unknown_tools_require_review": all(
                 item["status"] == "manual-review-required" for item in normalized if item["decision"] == "review-required"
             ),
+            "probe_count": len(probes),
+            "source_path_count": len(source_paths),
+            "source_paths_sample": source_paths[:5],
+            "benchmark_metrics": {
+                "wall_time_ms": elapsed_ms,
+                "max_rss_kb": max_rss_kb,
+                "cost_model": "local-wrapper-no-llm-call",
+            },
         },
     )
 
