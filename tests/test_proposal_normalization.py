@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import sys
@@ -50,6 +51,8 @@ def test_normalize_findings_to_proposal_preserves_evidence_risk_and_dry_run_defa
             "path": "Notes/alpha.md",
             "old_text": "# Alpha\n",
             "new_text": "---\nstatus: proposed\n---\n# Alpha\n",
+            "replacement_mode": "replace_text",
+            "old_text_sha256": hashlib.sha256("# Alpha\n".encode("utf-8")).hexdigest(),
             "finding_id": "finding-1",
             "finding_type": "metadata-suggestion",
             "risk": "low",
@@ -197,6 +200,10 @@ def test_proposal_worker_cli_writes_proposal_and_apply_dry_run_accepts_it(tmp_pa
     proposal = json.loads(proposal_path.read_text(encoding="utf-8"))
     assert proposal["source_id"] == "cli-test"
     assert proposal["targets"][0]["path"] == "Notes/alpha.md"
+    proposal_md = Path(payload["proposal_markdown"]).read_text(encoding="utf-8")
+    assert "## Proposed diff" in proposal_md
+    assert "--- a/Notes/alpha.md" in proposal_md
+    assert "+Related: [[Beta]]" in proposal_md
 
     dry_run = subprocess.run(
         [sys.executable, str(repo / "tools" / "obsidian_apply.py"), "--proposal", str(proposal_path)],

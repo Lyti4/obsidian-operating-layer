@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import difflib
+import hashlib
 import json
 from pathlib import Path
 from typing import Any, Iterable
@@ -74,15 +76,22 @@ def _normalize_proposal_target(
     if "new_text" not in raw_target:
         raise GuardrailError(f"Finding target missing new_text for {path}")
 
-    return {
+    new_text = str(raw_target["new_text"])
+    old_text = str(raw_target.get("old_text", ""))
+    normalized = {
         "path": path,
-        "old_text": str(raw_target.get("old_text", "")),
-        "new_text": str(raw_target["new_text"]),
+        "old_text": old_text,
+        "new_text": new_text,
+        "replacement_mode": str(raw_target.get("replacement_mode", "replace_text")),
+        "old_text_sha256": hashlib.sha256(old_text.encode("utf-8")).hexdigest(),
         "finding_id": finding_id,
         "finding_type": str(finding.get("type", "unspecified")),
         "risk": risk,
         "evidence": str(finding.get("evidence", "")),
     }
+    if raw_target.get("base_sha256"):
+        normalized["base_sha256"] = str(raw_target["base_sha256"])
+    return normalized
 
 
 def normalize_findings_to_proposal(*, vault_root: str | Path, findings: list[dict[str, Any]], source_id: str) -> dict[str, Any]:
@@ -145,6 +154,26 @@ def normalize_findings_to_proposal(*, vault_root: str | Path, findings: list[dic
     }
 
 
+def proposal_target_diff(target: dict[str, Any], *, max_chars: int = 4000) -> str:
+    target_path = str(target.get("path", "<missing>"))
+    old_text = str(target.get("old_text", ""))
+    new_text = str(target.get("new_text", ""))
+    diff = "".join(
+        difflib.unified_diff(
+            old_text.splitlines(keepends=True),
+            new_text.splitlines(keepends=True),
+            fromfile=f"a/{target_path}",
+            tofile=f"b/{target_path}",
+            n=3,
+        )
+    )
+    if not diff:
+        diff = "# no textual old_text/new_text diff available\n"
+    if len(diff) > max_chars:
+        diff = diff[:max_chars].rstrip() + "\n... [diff truncated]\n"
+    return diff
+
+
 def proposal_to_markdown(proposal: dict[str, Any]) -> str:
     lines = [
         "# Obsidian Operating Layer Normalized Proposal",
@@ -161,6 +190,19 @@ def proposal_to_markdown(proposal: dict[str, Any]) -> str:
     for item in proposal["evidence"]:
         paths = ", ".join(f"`{path}`" for path in item["target_paths"])
         lines.append(f"- `{item['finding_id']}` / `{item['risk']}` / {paths} — {item['evidence']}")
+    if proposal["targets"]:
+        lines.extend(["", "## Proposed diff"])
+        for target in proposal["targets"]:
+            lines.extend(
+                [
+                    "",
+                    f"### `{target.get('path', '<missing>')}`",
+                    "",
+                    "```diff",
+                    proposal_target_diff(target).rstrip(),
+                    "```",
+                ]
+            )
     lines.extend(
         [
             "",

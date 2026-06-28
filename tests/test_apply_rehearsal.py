@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import sys
@@ -105,3 +106,72 @@ def test_live_apply_rehearsal_on_disposable_sandbox_vault_creates_backup_and_ver
     assert observed["vault_root"] == str(sandbox_vault.resolve())
     assert observed["file_counts"][".md"] >= 1
     assert "Notes/alpha.md" in observed["sample_notes"]
+
+
+def test_live_apply_refuses_when_base_sha256_drifted(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[1]
+    sandbox_vault = tmp_path / "sandbox-vault"
+    notes = sandbox_vault / "Notes"
+    notes.mkdir(parents=True)
+    target = notes / "alpha.md"
+    original = "# Alpha\nold body\n"
+    target.write_text(original, encoding="utf-8")
+
+    proposal_path = tmp_path / "proposal.json"
+    proposal = {
+        "vault_root": str(sandbox_vault),
+        "source_id": "drift-check",
+        "summary": "Disposable sandbox drift check.",
+        "mode": "dry-run",
+        "dry_run_default": True,
+        "approval_required": True,
+        "approval_phrase": "APPROVE OBSIDIAN APPLY",
+        "targets": [
+            {
+                "path": "Notes/alpha.md",
+                "old_text": original,
+                "new_text": "# Alpha\nnew body\n",
+                "replacement_mode": "replace_file",
+                "base_sha256": hashlib.sha256(original.encode("utf-8")).hexdigest(),
+                "evidence": "drift unit test",
+            }
+        ],
+    }
+    proposal_path.write_text(json.dumps(proposal), encoding="utf-8")
+    target.write_text("# Alpha\ndrifted body\n", encoding="utf-8")
+
+    manifest_path = tmp_path / "approval-manifest.json"
+    manifest = {
+        "approved": True,
+        "approval_phrase": "APPROVE OBSIDIAN APPLY",
+        "task_id": "drift-check",
+        "approver": "unit-test",
+        "reason": "Disposable sandbox rehearsal only; never live vault.",
+        "vault_root": str(sandbox_vault),
+        "proposal": str(proposal_path),
+        "targets": [str(target)],
+        "backup_root": "_Backups/obsidian-operating-layer",
+        "dry_run": False,
+        "require_post_verify": True,
+        "max_files_per_run": 1,
+    }
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    apply_run = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_apply.py"),
+            "--proposal",
+            str(proposal_path),
+            "--approval-manifest",
+            str(manifest_path),
+            "--apply",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert apply_run.returncode == 2
+    assert "base_sha256 mismatch" in apply_run.stderr
+    assert target.read_text(encoding="utf-8") == "# Alpha\ndrifted body\n"

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import sys
@@ -73,13 +74,19 @@ def apply_text_replacements(vault_root: Path, targets: list[dict], backup_dir: P
         if not target_path.exists():
             raise GuardrailError(f"Target missing: {target_path}")
 
+        original = target_path.read_text(encoding="utf-8")
+        base_sha256 = item.get("base_sha256")
+        if base_sha256:
+            current_sha256 = hashlib.sha256(original.encode("utf-8")).hexdigest()
+            if current_sha256 != str(base_sha256):
+                raise GuardrailError(f"base_sha256 mismatch in {rel}")
+        if old_text and old_text not in original:
+            raise GuardrailError(f"Old text not found in {rel}")
+
         backup_path = (backup_dir / rel).resolve()
         backup_path.parent.mkdir(parents=True, exist_ok=True)
         backup_path.write_bytes(target_path.read_bytes())
 
-        original = target_path.read_text(encoding="utf-8")
-        if old_text and old_text not in original:
-            raise GuardrailError(f"Old text not found in {rel}")
         updated = original.replace(old_text, new_text, 1) if old_text else new_text
         target_path.write_text(updated, encoding="utf-8")
         results.append({"path": rel.as_posix(), "backup": str(backup_path), "changed": original != updated})

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -47,6 +48,8 @@ def build_field_finding(vault_root: Path, observation: dict[str, Any]) -> dict[s
                 "path": rel,
                 "old_text": text,
                 "new_text": text + marker if marker not in text else text,
+                "replacement_mode": "replace_file",
+                "base_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest(),
             }
         ],
     }
