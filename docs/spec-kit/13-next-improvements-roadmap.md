@@ -209,6 +209,9 @@ Acceptance:
 5. `p1_diagram_readability_acceptance`
 6. `p2_field_test_slice_no_live_apply`
 
+The remaining manual/UI and adapter benchmark contracts are defined in
+`15-manual-and-adapter-acceptance.md`.
+
 ## Done criteria for this roadmap
 
 The roadmap is considered executed only when:
@@ -216,7 +219,8 @@ The roadmap is considered executed only when:
 - P0 items are implemented and verified;
 - at least one P1 daily-use UX flow is usable by Дмитрий;
 - one P2 field slice has produced a real proposal/review artifact;
-- all evidence is linked from `14-operational-acceptance-report.md`;
+- all evidence is linked from `14-operational-acceptance-report.md` and
+  `15-manual-and-adapter-acceptance.md`;
 - GitHub is clean and synchronized.
 
 ## Stop conditions

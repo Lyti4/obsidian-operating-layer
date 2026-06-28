@@ -171,6 +171,9 @@ These are not safe or meaningful to automate from the CLI agent alone:
 2. Open generated SVG/PDF and approve wording/layout.
 3. Decide whether any specific real proposal should be approved for live apply.
 
+The concrete manual dashboard/diagram review checklist is recorded in
+`15-manual-and-adapter-acceptance.md`.
+
 ### Future capability expansion
 
 These remain future roadmap work, not blockers for the current operational acceptance baseline:
@@ -179,6 +182,9 @@ These remain future roadmap work, not blockers for the current operational accep
 2. `P2.3` MCP read-only adapter expansion.
 3. Scheduled observe/index reports, only after explicit cron approval.
 4. Better Telegram summary templates and command aliases.
+
+The sandbox-only benchmark contracts for `P2.2` and `P2.3` are recorded in
+`15-manual-and-adapter-acceptance.md`.
 
 ## Safety boundary
 

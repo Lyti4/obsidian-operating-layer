@@ -38,5 +38,6 @@ Obsidian vault
 - `12-full-functional-and-diagram-test-plan.md` — план полного функционального и diagram/PDF тестирования.
 - `13-next-improvements-roadmap.md` — следующий roadmap улучшений после MVP baseline.
 - `14-operational-acceptance-report.md` — отчёт о закрытии первого operational acceptance pass.
+- `15-manual-and-adapter-acceptance.md` — manual dashboard/diagram acceptance checklist and sandbox-only RAG/MCP benchmark contracts.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.
