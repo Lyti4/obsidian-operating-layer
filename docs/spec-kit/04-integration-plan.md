@@ -2,9 +2,10 @@
 
 ## Phase 1 — no-install evaluation
 
-- Keep JSON inventory under `out/research/`.
+- Keep JSON inventory under `docs/spec-kit/research/`.
 - Read README/license for top candidates via GitHub API.
 - Pick 2 MCP candidates + 1 RAG/search candidate + 5 Obsidian plugins.
+- 2026-06-28 refresh outcome: use `cyanheads/obsidian-mcp-server` as primary MCP sandbox candidate and `benmaster82/Kwipu` as primary Phase 04 RAG/graph candidate; keep `rps321321/obsidian-mcp-pro`, `bettyguo/obsidian_mcp`, `takeshy/obsidian-local-llm-hub`, `swarmclawai/swarmvault`, and `deeflect/dory` as secondary references/pattern sources until separately sandboxed.
 
 ## Phase 2 — sandbox
 

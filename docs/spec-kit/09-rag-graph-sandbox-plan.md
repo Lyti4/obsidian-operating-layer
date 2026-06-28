@@ -6,7 +6,9 @@ Use ready local RAG/graph engines to produce high-quality note relationships, me
 
 ## Candidate order
 
-1. `benmaster82/Kwipu` — Markdown/Obsidian Graph RAG, wikilinks/YAML/frontmatter focus.
+2026-06-28 GitHub refresh source: `docs/spec-kit/research/github-components-refresh-2026-06-28.md`.
+
+1. `benmaster82/Kwipu` — Markdown/Obsidian Graph RAG, wikilinks/YAML/frontmatter focus; primary Phase 04 sandbox candidate.
 2. `takeshy/obsidian-local-llm-hub` — Obsidian-side local AI hub/RAG/workflows/edit history.
 3. `swarmclawai/swarmvault` — local-first knowledge graph/memory design patterns.
 4. `deeflect/dory` — markdown memory layer with CLI/HTTP/MCP patterns.

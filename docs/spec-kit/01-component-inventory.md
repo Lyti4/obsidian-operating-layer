@@ -16,17 +16,21 @@
 
 ## Кандидаты GitHub для интеграции
 
-|bucket|repo|stars|license|language|description|
-|---|---|---|---|---|---|
-|ready_component_candidate|cyanheads/obsidian-mcp-server|608|Apache-2.0|TypeScript|Read, write, search, and surgically edit Obsidian vault notes, tags, and frontmatter via MCP. STDIO or Streamable HTTP.|
-|ready_component_candidate|rps321321/obsidian-mcp-pro|24|MIT|TypeScript|The most feature-complete MCP server for Obsidian vaults — 23 tools + 3 resources for search, read, write, tags, link analysis, graph traversal, and canvas. Also ships as an Obsidian plugin (github.com/rps321321/obsidian|
-|ready_component_candidate|smith-and-web/obsidian-mcp-server|17|MIT|TypeScript|MCP server for Obsidian vault management - enables Claude and other AI assistants to read, write, search, and organize your notes|
-|ready_component_candidate|bettyguo/obsidian_mcp|8|MIT|Python| MCP server + 7 Claude skills for Obsidian vaults — read, search, write, and link notes from Claude / Cursor / ChatGPT. Filesystem-direct, local-first, round-trip safe.|
-|ready_component_candidate|swarmclawai/swarmvault|588|MIT|TypeScript|The local-first LLM Wiki: open-source knowledge graph builder, RAG knowledge base, and agent memory store. Built on Andrej Karpathy's pattern. An Obsidian alternative for personal knowledge management, AI second brain, a|
-|ready_component_candidate|benmaster82/Kwipu|255|MIT|Python|Ask questions across your Markdown notes using a fully local Graph RAG engine. Built for Obsidian vaults, works with any folder of Markdown files. Extracts entity-relation triples from wikilinks & YAML frontmatter, retri|
-|ready_component_candidate|takeshy/obsidian-local-llm-hub|50|MIT|TypeScript|All-in-one local AI hub for Obsidian — LLM chat with vault tools, MCP servers, RAG, workflow automation, encryption, and edit history. Fully private, no cloud required.|
-|ready_component_candidate|deeflect/dory|16|MIT|Python|One memory layer for every AI agent. Local-first, markdown source of truth, and CLI/HTTP/MCP native. Your agent forgot who you are. Again. Dory fixes that.|
-|ready_component_candidate|noduslabs/infranodus-obsidian-plugin|152|AGPL-3.0|TypeScript|Advanced graph view for Obsidian: text analysis, topic modeling, and AI with InfraNodus AI text analysis tool: https://infranodus.com|
+Refresh: 2026-06-28T05:22:57Z через `gh api` only; no generic web search, no clones, no token output.
+
+|role|repo|stars|license|runtime|decision|
+|---|---|---:|---|---|---|
+|primary_mcp_sandbox_candidate|cyanheads/obsidian-mcp-server|608|Apache-2.0|mcp-server|Оставить главным MCP кандидатом; write/edit/delete только через wrapper → write-request/proposal.|
+|secondary_mcp_sandbox_candidate|rps321321/obsidian-mcp-pro|24|MIT|mcp-server|Держать как rich graph/canvas/link-analysis reference до отдельной sandbox-проверки.|
+|python_mcp_reference_candidate|bettyguo/obsidian_mcp|8|MIT|mcp-server|Использовать как Python-friendly reference для формы API/glue, не как live writer.|
+|primary_rag_graph_sandbox_candidate|benmaster82/Kwipu|255|MIT|rag-engine|Первый кандидат для Phase 04 RAG/graph: Markdown/Obsidian, wikilinks/YAML, hybrid retrieval, local Ollama.|
+|obsidian_local_ai_reference_candidate|takeshy/obsidian-local-llm-hub|50|MIT|obsidian-plugin/local-ai-hub|Reference для Obsidian-side local AI/RAG/workflow patterns; не ставить в live vault в этом slice.|
+|knowledge_graph_pattern_reference|swarmclawai/swarmvault|588|MIT|knowledge-graph/memory-layer|Pattern reference для local-first knowledge graph / agent memory.|
+|agent_memory_pattern_reference|deeflect/dory|16|MIT|memory-layer|Pattern reference для markdown memory layer CLI/HTTP/MCP.|
+|defer_until_needed|smith-and-web/obsidian-mcp-server|17|MIT|mcp-server|Запасной MCP кандидат; не выбран выше richer/более проверенных вариантов.|
+|defer_or_manual_review|noduslabs/infranodus-obsidian-plugin|152|AGPL-3.0|obsidian-plugin/graph-analysis|Полезен для graph/text analysis, но AGPL/cloud/API surface требует отдельного review перед promotion.|
+
+Полный machine-readable refresh хранится в `docs/spec-kit/research/github-components.json`, human report — `docs/spec-kit/research/github-components-refresh-2026-06-28.md`.
 
 
 ## Кандидаты Obsidian community plugins
@@ -127,5 +131,6 @@ Live vault writes -> только через approval manifest + backup + verify
 
 ## Raw artifacts
 
-- `/home/hermesadmin/work/obsidian-operating-layer/out/research/github-components.json`
-- `/home/hermesadmin/work/obsidian-operating-layer/out/research/obsidian-community-plugins-selected.json`
+- `/home/hermesadmin/work/obsidian-operating-layer/docs/spec-kit/research/github-components.json`
+- `/home/hermesadmin/work/obsidian-operating-layer/docs/spec-kit/research/github-components-refresh-2026-06-28.md`
+- `/home/hermesadmin/work/obsidian-operating-layer/docs/spec-kit/research/obsidian-community-plugins-selected.json`
