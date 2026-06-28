@@ -5,8 +5,9 @@
 ## Принцип
 
 - Не строить с нуля, если есть рабочий plugin/server/library.
-- Чужие компоненты могут читать, искать, анализировать и генерировать proposals.
+- Чужие компоненты могут читать, искать, анализировать, рисовать схемы, рендерить PDF и генерировать proposals.
 - Прямая запись в vault запрещена для внешних компонентов.
+- Диаграммы/PDF должны собираться из воспроизводимых source-файлов: Mermaid/Excalidraw-style Markdown, D2, Graphviz, PlantUML, Typst/Quarto.
 - Единственный live mutation path: наш `tools/obsidian_apply.py` с approval manifest, backup, verify.
 
 ## Target pipeline

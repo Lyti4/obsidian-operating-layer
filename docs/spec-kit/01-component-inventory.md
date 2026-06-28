@@ -11,7 +11,8 @@
 1. **Наш safety core** остаётся mutation gate: observe → propose → verify → apply, dry-run, manifest, backups.
 2. **Готовые Obsidian plugins** используем как UI/локальные функции: Dataview, Templater, Linter, Tasks, Omnisearch, Metadata Menu, Auto Note Mover, Tag Wrangler и т.п.
 3. **Готовые MCP/LLM/RAG компоненты** используем как worker/read/search слой: `cyanheads/obsidian-mcp-server`, `rps321321/obsidian-mcp-pro`, `Kwipu`, `obsidian-local-llm-hub`, `swarmvault`, `dory`.
-4. Чужие write-инструменты не получают прямую запись в vault: write requests заворачиваются в наш proposal/apply gate.
+4. **Готовый diagram/PDF слой** нужен для красивых схем Дмитрию: Obsidian Mermaid/Excalidraw-style source + CLI renderer/export to PDF.
+5. Чужие write-инструменты не получают прямую запись в vault: write requests заворачиваются в наш proposal/apply gate.
 
 ## Кандидаты GitHub для интеграции
 
@@ -97,10 +98,17 @@
 - `obsidian-local-llm-hub`: local AI hub, MCP, RAG, workflows, edit history.
 - `dory`: local-first markdown memory layer CLI/HTTP/MCP.
 
+### Layer 5 — Diagrams/PDF / готовый visual reporting слой
+- Obsidian Mermaid blocks: быстрые sequence/flow/graph схемы прямо в заметках.
+- Excalidraw-style Obsidian workflow: красивые ручные/полуручные схемы для обсуждений.
+- Mermaid CLI / D2 / Graphviz / PlantUML: воспроизводимая генерация SVG/PDF из текстового source.
+- Typst/Quarto templates: финальная сборка аккуратных PDF-отчётов из Markdown + diagrams.
+- Все generated PDFs сначала в `out/reports/`; перенос в vault только через proposal/apply gate.
+
 ## Правило интеграции
 
 ```text
-External component/plugin -> read/search/analyze/propose only
+External component/plugin -> read/search/analyze/propose/render only
 Our obslayer safety core -> единственный путь live mutation
 Live vault writes -> только через approval manifest + backup + verify
 ```
