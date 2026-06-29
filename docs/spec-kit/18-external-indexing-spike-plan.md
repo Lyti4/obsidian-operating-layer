@@ -1,6 +1,6 @@
 # 18 — External Indexing Spike Plan
 
-Status: ready for sandbox-only execution  
+Status: executed through guarded runtime; accepted state captured in `20-indexing-runtime-acceptance.md`  
 Date: 2026-06-28  
 Scope: real external-run spike for `DalecB/obsidian-semantic-mcp` against a sandbox vault copy only
 
@@ -190,7 +190,7 @@ out/reports/external-indexing-spike/external-indexing-spike-safety.json
 
 ## Wrapper hardening slice
 
-Status: implemented in project code, pending independent review/full commit.
+Status: implemented, reviewed, verified, committed, and superseded by the acceptance state in `20-indexing-runtime-acceptance.md`.
 
 New wrapper policy lives in `src/obslayer/indexing_wrapper.py` and is covered by `tests/test_indexing_wrapper.py`.
 
@@ -234,6 +234,6 @@ It adds:
 
 Remaining before production integration:
 
-- commit/push the verified runtime wrapper slice;
-- wire the CLI/harness into the real MCP stdio probe path so every live candidate invocation is wrapped automatically;
-- confirm semantic quality with real local Ollama + `bge-m3` when available.
+- wire the CLI/harness into the real MCP stdio probe path so every candidate invocation is wrapped automatically;
+- confirm semantic quality with real local Ollama + `bge-m3` when available;
+- normalize indexed findings into Obslayer proposal bundles before any apply path can consume them.

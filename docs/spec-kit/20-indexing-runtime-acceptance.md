@@ -1,0 +1,134 @@
+# 20 — Indexing Runtime Acceptance
+
+Status: accepted for sandbox and guarded read-only probes; not accepted for live mutation  
+Date: 2026-06-29  
+Scope: external indexing runtime wrapper, evidence, production-read-only boundary, and next integration blockers
+
+## Purpose
+
+This document closes the current state of `17-knowledge-indexing-update-plan.md` and `18-external-indexing-spike-plan.md` after the external indexing runtime work.
+
+It records what is accepted, what remains blocked, and which evidence proves the current boundary.
+
+## Decision summary
+
+| Area | Decision |
+|---|---|
+| Knowledge indexing architecture | Accepted direction: derived catalog/index/cache, Obsidian remains source of truth |
+| `DalecB/obsidian-semantic-mcp` candidate | Accepted as guarded sandbox/read-only backend candidate, not raw direct agent surface |
+| Runtime wrapper | Accepted as mandatory boundary for candidate execution and transcript sanitization |
+| Live vault access | Read-only probes may be evaluated only through guarded/dry-run paths; live writes remain out of scope |
+| Semantic quality | Not fully accepted until real local Ollama + `bge-m3` quality pass is completed |
+| Production integration | Not yet accepted; needs automatic MCP stdio wrapping, quality pass, and proposal normalization |
+
+## Current accepted boundary
+
+The accepted runtime boundary is:
+
+```text
+sandbox/live-read-only source
+  ↓
+external indexing candidate
+  ↓
+Obslayer indexing runtime wrapper
+  ↓
+validated tool surface + sanitized transcript + normalized provenance
+  ↓
+Hermes/Operating Layer proposal-only consumers
+```
+
+The wrapper is required because the raw candidate can return note snippets that contain absolute live-vault paths as note text. Those are not evidence of filesystem access, but they are still sensitive enough to require redaction before agent exposure.
+
+## Evidence table
+
+| Evidence | Path | Result |
+|---|---|---|
+| Contract/no-write sandbox scorecard | `out/reports/indexing-spike/indexing-spike-evaluation-DalecB-obsidian-semantic-mcp.md` | passed; sandbox tree unchanged; declared tools are read/index only |
+| Real external sandbox run summary | `out/reports/external-indexing-spike/external-indexing-spike-summary.md` | partial pass; candidate ran under isolated Node 24, indexed sandbox, no live mutation; wrapper hardening required |
+| Focused live read-only nested-excludes probe | `out/reports/external-indexing-spike/focused-live-readonly-nested-excludes-20260629T124944.md` | ok; live tree unchanged; dry-run indexed 462 and failed 0 |
+| Live bge-m3 night run summary | `out/reports/external-indexing-spike/external-indexing-spike-live-bge-m3-night-summary.md` | live tree unchanged; tools allowlist ok; derived storage under MCP home; 154 indexed / 473 failed before nested exclude fix |
+| Runtime wrapper source | `src/obslayer/indexing_wrapper.py` | enforces allowed tools, path policy, redaction, provenance normalization, and safe process spec construction |
+| Runtime CLI harness | `tools/obsidian_indexing_runtime.py` | provides guarded runtime/transcript report path under `out/reports/external-indexing-spike` |
+| Tests | `tests/test_indexing_wrapper.py`, `tests/test_indexing_runtime_cli.py` | cover unsafe paths, tool-surface failures, transcript sanitization, report-root refusal, and runtime process spec guards |
+
+## What is accepted now
+
+Accepted for the current project state:
+
+1. Indexes and semantic databases are derived artifacts, not source of truth.
+2. External indexing candidates must not be exposed raw to higher-level agents.
+3. The runtime wrapper is the mandatory safety and normalization boundary.
+4. Allowed candidate tools are exactly:
+   - `index_status`
+   - `index_vault`
+   - `search_notes`
+   - `read_note`
+5. Extra, missing, malformed, duplicate, or write-like tools fail closed.
+6. Sandbox candidate execution must stay under repo-local `out/sandbox-vaults/*` and `out/external-indexing-spike/*`.
+7. Loopback-only embedding endpoints are allowed; remote/cloud embeddings remain blocked unless explicitly approved.
+8. Absolute, traversal, drive-root, UNC-like, protected, or live-vault paths in candidate metadata fail closed or are redacted before transcript exposure.
+9. Live-vault mutations remain impossible through this indexing layer; all note changes still require proposal/approval/apply/verify.
+
+## What is not accepted yet
+
+Not accepted for production integration:
+
+1. Direct raw candidate MCP connection from Codex/Hermes/agents.
+2. Live write, patch, move, delete, rename, or Git operations through the indexing candidate.
+3. Remote embeddings or paid/cloud model endpoints.
+4. Semantic quality claims based only on fake/stub Ollama or incomplete night-run results.
+5. Using indexed findings as automatic edits without Obslayer proposal normalization and approval manifest.
+6. Treating the older night-run failure count as solved without the focused post-fix probe/evidence path.
+
+## Status of docs 17 and 18
+
+| Doc | Current interpretation |
+|---|---|
+| `17-knowledge-indexing-update-plan.md` | Architecture remains valid: FTS5/graph first, semantic sidecar second, read-only adapter behind safety boundary |
+| `18-external-indexing-spike-plan.md` | Execution plan is mostly executed; stale pending wrapper/commit language is superseded by commits `aaa748e` and `15c457d` plus this acceptance file |
+| `19-document-system-map.md` | Document map remains current, but its “next document” recommendation is now completed by this file |
+
+## Known commits in this acceptance slice lineage
+
+| Commit | Meaning |
+|---|---|
+| `aaa748e Add guarded indexing MCP runtime wrapper` | Adds guarded runtime wrapper/CLI functionality |
+| `15c457d Harden indexing wrapper excludes` | Fixes fail-closed exclude validation and nested protected path handling |
+| `580527e Systematize spec kit document map` | Adds the document system map and updated overview references |
+
+## Remaining blockers before stronger integration
+
+1. Wire the real MCP stdio probe so every candidate invocation automatically goes through the runtime wrapper.
+2. Run a semantic quality pass with real local Ollama + `bge-m3`, not a fake/stub endpoint.
+3. Add a stable Make target for the focused guarded live-read-only probe if it should become repeatable acceptance evidence.
+4. Compare against `DeusData/codebase-memory-mcp` only as an isolated benchmark candidate, not as a replacement for the Obslayer safety boundary.
+5. Normalize indexed findings into Obslayer proposal bundles with path, quote/span, hash/version, risk classification, and dry-run-only default.
+6. Update Kanban/roadmap wording so Phase 04 reflects the indexing runtime acceptance state rather than the older generic RAG/graph phase label.
+
+## Next implementation slice
+
+Recommended next slice:
+
+```text
+indexing-runtime-auto-probe
+```
+
+Acceptance for that slice:
+
+- real candidate stdio probe is launched only through the runtime wrapper;
+- transcript reports are sanitized and written under `out/reports/external-indexing-spike`;
+- tool surface is verified before accepting results;
+- sandbox/live-read-only tree hashes are compared before/after;
+- semantic mode is either verified with local `bge-m3` or explicitly marked blocked;
+- `make verify` passes after code/doc changes.
+
+## Stop conditions
+
+Stop and ask before:
+
+- live writes to `/home/hermesadmin/Obsidian`;
+- destructive delete/move/merge;
+- production deploy/restart/network exposure;
+- paid/high-volume API/model pulls;
+- secrets, browser profiles, `.env`, tokens;
+- Soul governance/personality edits.

@@ -30,8 +30,9 @@ For a fast orientation read:
 3. `19-document-system-map.md` — this current map.
 4. `17-knowledge-indexing-update-plan.md` — current knowledge indexing direction.
 5. `18-external-indexing-spike-plan.md` — external indexing runtime/spike plan.
-6. `14-operational-acceptance-report.md`, `15-manual-and-adapter-acceptance.md`, `16-sandbox-e2e-evidence.md` — accepted evidence.
-7. `docs/triage/kanban-board.md` — active board chain.
+6. `20-indexing-runtime-acceptance.md` — current accepted boundary for guarded indexing runtime work.
+7. `14-operational-acceptance-report.md`, `15-manual-and-adapter-acceptance.md`, `16-sandbox-e2e-evidence.md` — accepted evidence.
+8. `docs/triage/kanban-board.md` — active board chain.
 
 ## Spec kit document groups
 
@@ -74,6 +75,7 @@ For a fast orientation read:
 | `17-knowledge-indexing-update-plan.md` | active | Defines the vault indexing upgrade: catalog + FTS5 + graph + optional semantic sidecar + read-only adapter |
 | `18-external-indexing-spike-plan.md` | active, partly implemented | Defines real external-run spike for `DalecB/obsidian-semantic-mcp` and wrapper hardening/runtime path |
 | `19-document-system-map.md` | active | Current documentation map and state-of-world |
+| `20-indexing-runtime-acceptance.md` | active acceptance | Accepted guarded runtime boundary, evidence table, and remaining production-integration blockers |
 
 ### E. Research and run-specific notes
 
@@ -146,43 +148,33 @@ Relevant evidence:
 | Item | Current interpretation |
 |---|---|
 | Phase 04 Kanban item | Historical board chain still says Phase 04 is active, but additional indexing documents 17/18 advanced beyond the original simple phase view |
-| `18-external-indexing-spike-plan.md` line about commit/push pending | Stale after commit `15c457d`; wrapper hardening slice is now committed and pushed |
+| `18-external-indexing-spike-plan.md` line about commit/push pending | Resolved by commits `aaa748e` and `15c457d`; accepted state is now captured in `20-indexing-runtime-acceptance.md` |
 | RAG/graph phase | Has sandbox evidence, but knowledge indexing branch became the more immediate active branch |
 | Live mutation | Still not approved; live vault changes remain gated by proposal/apply manifest only |
 
-## Next document to create when work resumes
+## Latest completed document
 
-Create a dedicated acceptance/state file:
+The dedicated acceptance/state file has been created:
 
 ```text
 20-indexing-runtime-acceptance.md
 ```
 
-Suggested contents:
-
-1. Status of `17` and `18` after commit `15c457d`.
-2. Evidence table for sandbox, night report, focused live-read-only probe.
-3. What is accepted for production-read-only use and what is not.
-4. Remaining blockers before any stronger integration:
-   - real MCP stdio probe wired through the runtime wrapper automatically;
-   - semantic quality pass with local Ollama + `bge-m3`;
-   - comparison against `codebase-memory-mcp` as an isolated benchmark candidate;
-   - proposal normalization from indexed findings into Obslayer proposal format.
-5. Explicit statement that live writes remain out of scope.
+It records the status of `17` and `18`, evidence from sandbox/night/focused live-read-only probes, the accepted runtime boundary, and the remaining blockers before stronger production integration.
 
 ## Next implementation slice
 
-Recommended next code/documentation slice:
+Recommended next code/documentation slice after document `20`:
 
 ```text
-indexing-runtime-acceptance
+indexing-runtime-auto-probe
 ```
 
 Acceptance:
 
-- update `18-external-indexing-spike-plan.md` so stale pending commit/push notes are resolved;
-- add `20-indexing-runtime-acceptance.md` with evidence and decisions;
-- optionally add a Make target for the focused live-read-only indexing probe if it is stable enough;
+- route the real MCP stdio probe through the runtime wrapper automatically;
+- keep transcript reports sanitized under `out/reports/external-indexing-spike`;
+- optionally add a Make target for the focused guarded live-read-only indexing probe if it is stable enough;
 - run `make verify`;
 - keep generated reports under `out/` and committed docs/tests under `docs/` / `tests/`.
 
