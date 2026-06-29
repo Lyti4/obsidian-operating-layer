@@ -11,9 +11,12 @@ from obslayer import GuardrailError
 from obslayer.indexing_wrapper import (
     INDEXING_WRAPPER_TOOL_ALLOWLIST,
     REDACTED_LIVE_VAULT,
+    IndexingWrapperPolicy,
     assert_indexing_tool_allowed,
     build_indexing_mcp_process_spec,
     build_indexing_wrapper_policy,
+    discover_indexing_exclude_prefixes,
+    normalize_indexing_exclude_prefixes,
     normalize_indexing_mcp_result,
     normalize_loopback_ollama_base_url,
     parse_mcp_text_result,
@@ -85,6 +88,61 @@ def test_live_vault_refusal_is_independent_of_live_root_existence(tmp_path: Path
     missing_live = tmp_path / "missing-live-vault"
     with pytest.raises(GuardrailError, match="live vault"):
         require_not_live_vault_path(missing_live / "Nested" / "note.md", live_vault_root=missing_live)
+
+
+def test_discover_indexing_excludes_nested_archives_for_candidate_prefix_semantics(tmp_path: Path) -> None:
+    vault = tmp_path / "vault"
+    for rel in [
+        "_Archive/root.md",
+        "Memory-Vault/_Archive/old.md",
+        "Soul-Vault/_Archive/Duplicates/old.md",
+        "Soul-Vault/Soul/private.md",
+        "Notes/keep.md",
+    ]:
+        target = vault / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text("# note\n", encoding="utf-8")
+
+    prefixes = discover_indexing_exclude_prefixes(vault)
+
+    assert "_Archive/" in prefixes
+    assert "Memory-Vault/_Archive/" in prefixes
+    assert "Soul-Vault/_Archive/" in prefixes
+    assert "Soul-Vault/Soul/" in prefixes
+    assert "Notes/" not in prefixes
+
+
+def test_indexing_exclude_prefixes_are_normalized_and_injected_into_process_env(tmp_path: Path) -> None:
+    assert normalize_indexing_exclude_prefixes(["Soul-Vault/_Archive", "Soul-Vault/_Archive/", "Memory-Vault\\_Archive"]) == (
+        "Soul-Vault/_Archive/",
+        "Memory-Vault/_Archive/",
+    )
+    for bad in ["/Soul-Vault/_Archive", "../escape", "C:/Users/Alice/Secrets", "\\\\server\\share"]:
+        with pytest.raises(GuardrailError, match="vault-relative"):
+            normalize_indexing_exclude_prefixes([bad])
+
+    sandbox = make_sandbox(tmp_path)
+    (sandbox / "Nested" / "_Archive").mkdir(parents=True)
+    derived = repo_root() / "out" / "external-indexing-spike" / f"exclude-{tmp_path.name}"
+    policy = build_indexing_wrapper_policy(vault_root=sandbox, derived_root=derived, discover_nested_excludes=True)
+    spec = build_indexing_mcp_process_spec(command=["node", "server.js"], policy=policy)
+
+    assert "Nested/_Archive/" in policy.exclude_paths
+    assert "Nested/_Archive/" in spec.env["OBSIDIAN_SEMANTIC_EXCLUDE"]
+
+
+def test_process_spec_revalidates_direct_policy_exclude_paths(tmp_path: Path) -> None:
+    sandbox = make_sandbox(tmp_path)
+    derived = repo_root() / "out" / "external-indexing-spike" / f"direct-policy-{tmp_path.name}"
+    policy = IndexingWrapperPolicy(
+        vault_root=str(sandbox.resolve()),
+        derived_root=str(derived.resolve()),
+        ollama_base_url="http://localhost:11434",
+        exclude_paths=("/tmp/evil",),
+    )
+
+    with pytest.raises(GuardrailError, match="vault-relative"):
+        build_indexing_mcp_process_spec(command=["node", "server.js"], policy=policy)
 
 
 def test_tool_allowlist_rejects_mutation_tools() -> None:

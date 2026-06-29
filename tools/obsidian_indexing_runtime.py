@@ -45,7 +45,11 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    policy = build_indexing_wrapper_policy(vault_root=args.sandbox_vault, derived_root=args.derived_root)
+    policy = build_indexing_wrapper_policy(
+        vault_root=args.sandbox_vault,
+        derived_root=args.derived_root,
+        discover_nested_excludes=True,
+    )
     calls = _load_calls(Path(args.raw_transcript).expanduser().resolve())
     bundle = write_indexing_mcp_report_bundle(
         calls=calls,

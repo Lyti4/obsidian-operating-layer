@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -16,6 +17,8 @@ DEFAULT_SANDBOX_ROOT = REPO_ROOT / "out" / "sandbox-vaults"
 DEFAULT_DERIVED_ROOT = REPO_ROOT / "out" / "external-indexing-spike"
 DEFAULT_INDEXING_REPORT_ROOT = REPO_ROOT / "out" / "reports" / "external-indexing-spike"
 INDEXING_WRAPPER_TOOL_ALLOWLIST = ("index_status", "index_vault", "search_notes", "read_note")
+DEFAULT_INDEXING_EXCLUDED_DIR_NAMES = (".obsidian", "_Backups", "_Archive", ".trash")
+DEFAULT_INDEXING_EXCLUDE_PREFIXES = (".obsidian/", "_Backups/", "_Archive/", ".trash/", "Soul-Vault/Soul/")
 REDACTED_LIVE_VAULT = "<LIVE_VAULT>"
 MAX_SANITIZED_TEXT_CHARS = 2_000
 TRUNCATED_TEXT_SUFFIX = "…<TRUNCATED>"
@@ -32,6 +35,7 @@ class IndexingWrapperPolicy:
     allowed_tools: tuple[str, ...] = INDEXING_WRAPPER_TOOL_ALLOWLIST
     live_vault_root: str = str(DEFAULT_LIVE_VAULT_ROOT)
     require_sandbox_vault: bool = True
+    exclude_paths: tuple[str, ...] = DEFAULT_INDEXING_EXCLUDE_PREFIXES
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -133,12 +137,68 @@ def assert_indexing_tool_allowed(tool: str, allowed_tools: tuple[str, ...] = IND
     return tool
 
 
+def normalize_indexing_exclude_prefixes(paths: tuple[str, ...] | list[str]) -> tuple[str, ...]:
+    normalized: list[str] = []
+    for raw in paths:
+        text = str(raw).strip().replace("\\", "/")
+        if not text:
+            continue
+        if text.startswith("/") or text.startswith("//") or re.match(r"^[A-Za-z]:", text):
+            raise GuardrailError(f"Indexing exclude path must be vault-relative: {raw}")
+        clean = text.rstrip("/")
+        rel = Path(clean)
+        if rel.is_absolute() or ".." in rel.parts:
+            raise GuardrailError(f"Indexing exclude path must be vault-relative: {raw}")
+        prefix = f"{rel.as_posix()}/"
+        if prefix not in normalized:
+            normalized.append(prefix)
+    return tuple(normalized)
+
+
+def discover_indexing_exclude_prefixes(
+    vault_root: str | Path,
+    *,
+    base_prefixes: tuple[str, ...] = DEFAULT_INDEXING_EXCLUDE_PREFIXES,
+    excluded_dir_names: tuple[str, ...] = DEFAULT_INDEXING_EXCLUDED_DIR_NAMES,
+) -> tuple[str, ...]:
+    """Return candidate-compatible exclude prefixes, including nested archive dirs.
+
+    DalecB/obsidian-semantic-mcp currently treats OBSIDIAN_SEMANTIC_EXCLUDE as
+    vault-relative startsWith prefixes. A root-level `_Archive/` therefore does
+    not exclude `Soul-Vault/_Archive/` or `Memory-Vault/_Archive/`. Enumerating
+    discovered nested protected dirs keeps the external candidate out of archive
+    duplicates without patching its package cache.
+    """
+    root = _resolve_existing_or_parent(vault_root)
+    if not root.is_dir():
+        raise GuardrailError(f"Indexing exclude discovery requires an existing vault directory: {root}")
+    prefixes = list(normalize_indexing_exclude_prefixes(list(base_prefixes)))
+    excluded_names = set(excluded_dir_names)
+    for current, dirs, _files in os.walk(root, followlinks=False):
+        current_path = Path(current)
+        rel_current = current_path.relative_to(root)
+        kept_dirs: list[str] = []
+        for dirname in dirs:
+            rel_dir = rel_current / dirname if rel_current != Path(".") else Path(dirname)
+            rel_text = rel_dir.as_posix()
+            if dirname in excluded_names or rel_text == "Soul-Vault/Soul":
+                prefix = f"{rel_text.rstrip('/')}/"
+                if prefix not in prefixes:
+                    prefixes.append(prefix)
+                continue
+            kept_dirs.append(dirname)
+        dirs[:] = kept_dirs
+    return tuple(prefixes)
+
+
 def build_indexing_wrapper_policy(
     *,
     vault_root: str | Path,
     derived_root: str | Path,
     ollama_base_url: str = "http://localhost:11434",
     allowed_tools: tuple[str, ...] = INDEXING_WRAPPER_TOOL_ALLOWLIST,
+    exclude_paths: tuple[str, ...] | list[str] | None = None,
+    discover_nested_excludes: bool = False,
     sandbox_root: str | Path = DEFAULT_SANDBOX_ROOT,
     derived_boundary: str | Path = DEFAULT_DERIVED_ROOT,
     live_vault_root: str | Path = DEFAULT_LIVE_VAULT_ROOT,
@@ -154,6 +214,11 @@ def build_indexing_wrapper_policy(
     normalized_url = normalize_loopback_ollama_base_url(ollama_base_url)
     for tool in allowed_tools:
         assert_indexing_tool_allowed(tool)
+    normalized_excludes = (
+        discover_indexing_exclude_prefixes(vault, base_prefixes=tuple(exclude_paths or DEFAULT_INDEXING_EXCLUDE_PREFIXES))
+        if discover_nested_excludes
+        else normalize_indexing_exclude_prefixes(list(exclude_paths or DEFAULT_INDEXING_EXCLUDE_PREFIXES))
+    )
     return IndexingWrapperPolicy(
         vault_root=str(vault),
         derived_root=str(derived),
@@ -161,6 +226,7 @@ def build_indexing_wrapper_policy(
         allowed_tools=allowed_tools,
         live_vault_root=str(Path(live_vault_root).expanduser().resolve()),
         require_sandbox_vault=require_sandbox_vault,
+        exclude_paths=normalized_excludes,
     )
 
 
@@ -252,6 +318,7 @@ def build_indexing_mcp_process_spec(
     resolved_cwd = Path(cwd).expanduser().resolve()
     require_not_live_vault_path(resolved_cwd, live_vault_root=policy.live_vault_root)
     env = _validate_safe_extra_env(extra_env, live_vault_root=policy.live_vault_root)
+    exclude_paths = normalize_indexing_exclude_prefixes(list(policy.exclude_paths))
     env.update(
         {
             "OBSIDIAN_VAULT_PATH": policy.vault_root,
@@ -260,6 +327,7 @@ def build_indexing_mcp_process_spec(
             "OLLAMA_BASE_URL": policy.ollama_base_url,
             "OBSIDIAN_SEMANTIC_MCP_HOME": policy.derived_root,
             "INDEXING_DERIVED_ROOT": policy.derived_root,
+            "OBSIDIAN_SEMANTIC_EXCLUDE": "\n".join(exclude_paths),
         }
     )
     for key in ("OBSIDIAN_VAULT_PATH", "OBSIDIAN_VAULT_ROOT", "VAULT_ROOT", "OBSIDIAN_SEMANTIC_MCP_HOME", "INDEXING_DERIVED_ROOT"):

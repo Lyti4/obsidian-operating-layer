@@ -17,6 +17,8 @@ def test_indexing_runtime_cli_writes_split_raw_and_sanitized_reports(tmp_path: P
     sandbox = repo / "out" / "sandbox-vaults" / f"runtime-cli-{tmp_path.name}"
     (sandbox / "Notes").mkdir(parents=True, exist_ok=True)
     (sandbox / "Notes" / "alpha.md").write_text("# Alpha\nbody\n", encoding="utf-8")
+    (sandbox / "Soul-Vault" / "_Archive").mkdir(parents=True, exist_ok=True)
+    (sandbox / "Soul-Vault" / "_Archive" / "old.md").write_text("# Archived duplicate\n", encoding="utf-8")
     derived = repo / "out" / "external-indexing-spike" / f"runtime-cli-{tmp_path.name}"
     report_root = repo / "out" / "reports" / "external-indexing-spike" / f"runtime-cli-{tmp_path.name}"
     transcript = tmp_path / "raw-input.json"
@@ -76,6 +78,7 @@ def test_indexing_runtime_cli_writes_split_raw_and_sanitized_reports(tmp_path: P
     payload = json.loads(completed.stdout)
     assert payload["status"] == "ok"
     assert payload["process_spec"]["env"]["OBSIDIAN_SEMANTIC_MCP_HOME"] == str(derived.resolve())
+    assert "Soul-Vault/_Archive/" in payload["process_spec"]["env"]["OBSIDIAN_SEMANTIC_EXCLUDE"]
     raw = Path(payload["raw_report"]).read_text(encoding="utf-8")
     sanitized = Path(payload["sanitized_report"]).read_text(encoding="utf-8")
     assert "/home/hermesadmin/Obsidian" in raw
