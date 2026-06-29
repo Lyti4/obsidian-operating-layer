@@ -40,5 +40,8 @@ Obsidian vault
 - `14-operational-acceptance-report.md` — отчёт о закрытии первого operational acceptance pass.
 - `15-manual-and-adapter-acceptance.md` — manual dashboard/diagram acceptance checklist and sandbox-only RAG/MCP benchmark contracts.
 - `16-sandbox-e2e-evidence.md` — safe post-P3 sandbox/read-only E2E evidence and refusal checks.
+- `17-knowledge-indexing-update-plan.md` — knowledge indexing upgrade plan: catalog, FTS5, graph, optional semantic sidecar, read-only adapter.
+- `18-external-indexing-spike-plan.md` — real external indexing runtime/spike plan for `DalecB/obsidian-semantic-mcp` under sandbox/read-only constraints.
+- `19-document-system-map.md` — current map of docs, evidence, active/stale surfaces, and next indexing-runtime acceptance slice.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.
