@@ -1,6 +1,6 @@
 # 17 — Knowledge Indexing Update Plan
 
-Status: draft for sandbox spike  
+Status: architecture plan; execution state superseded by `20-indexing-runtime-acceptance.md`  
 Date: 2026-06-28  
 Scope: Obsidian Operating Layer read-only knowledge indexing upgrade
 
@@ -81,6 +81,8 @@ Do not connect any candidate to live apply. The spike only answers whether it ca
 search backend behind Operating Layer.
 
 ## First spike
+
+Current execution/acceptance state is captured in `20-indexing-runtime-acceptance.md`. The original spike plan below is retained as historical planning context.
 
 Evaluate `DalecB/obsidian-semantic-mcp` on a sandbox vault copy only. If Node 24 blocks the run, record
 that as a blocker and either install an isolated Node 24 toolchain for the sandbox or switch the spike to

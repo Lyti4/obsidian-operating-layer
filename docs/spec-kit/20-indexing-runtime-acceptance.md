@@ -18,7 +18,7 @@ It records what is accepted, what remains blocked, and which evidence proves the
 | `DalecB/obsidian-semantic-mcp` candidate | Accepted as guarded sandbox/read-only backend candidate, not raw direct agent surface |
 | Runtime wrapper | Accepted as mandatory boundary for candidate execution and transcript sanitization |
 | Live vault access | Read-only probes may be evaluated only through guarded/dry-run paths; live writes remain out of scope |
-| Semantic quality | Not fully accepted until real local Ollama + `bge-m3` quality pass is completed |
+| Semantic quality | Bounded real local `bge-m3` smoke accepted; full semantic quality/routine indexing still requires budgeted pass |
 | Production integration | Not yet accepted; needs automatic MCP stdio wrapping, quality pass, and proposal normalization |
 
 ## Current accepted boundary
@@ -45,6 +45,9 @@ The wrapper is required because the raw candidate can return note snippets that 
 |---|---|---|
 | Contract/no-write sandbox scorecard | `out/reports/indexing-spike/indexing-spike-evaluation-DalecB-obsidian-semantic-mcp.md` | passed; sandbox tree unchanged; declared tools are read/index only |
 | Real external sandbox run summary | `out/reports/external-indexing-spike/external-indexing-spike-summary.md` | partial pass; candidate ran under isolated Node 24, indexed sandbox, no live mutation; wrapper hardening required |
+| Real local bge-m3 smoke | `out/reports/external-indexing-spike/real-bge-m3-semantic-smoke-2026-06-28.md` | bounded semantic smoke completed with local `bge-m3`; useful for capability evidence, not full routine-quality acceptance |
+| Real local bge-m3 smoke safety | `out/reports/external-indexing-spike/external-indexing-spike-real-bge-m3-smoke-safety.json` | machine-readable safety evidence for the bounded smoke |
+| External indexing final status | `out/reports/external-indexing-spike/external-indexing-spike-final-status-2026-06-28.md` | final run-state summary before later doc acceptance updates |
 | Focused live read-only nested-excludes probe | `out/reports/external-indexing-spike/focused-live-readonly-nested-excludes-20260629T124944.md` | ok; live tree unchanged; dry-run indexed 462 and failed 0 |
 | Live bge-m3 night run summary | `out/reports/external-indexing-spike/external-indexing-spike-live-bge-m3-night-summary.md` | live tree unchanged; tools allowlist ok; derived storage under MCP home; 154 indexed / 473 failed before nested exclude fix |
 | Runtime wrapper source | `src/obslayer/indexing_wrapper.py` | enforces allowed tools, path policy, redaction, provenance normalization, and safe process spec construction |
@@ -68,6 +71,7 @@ Accepted for the current project state:
 7. Loopback-only embedding endpoints are allowed; remote/cloud embeddings remain blocked unless explicitly approved.
 8. Absolute, traversal, drive-root, UNC-like, protected, or live-vault paths in candidate metadata fail closed or are redacted before transcript exposure.
 9. Live-vault mutations remain impossible through this indexing layer; all note changes still require proposal/approval/apply/verify.
+10. Bounded/overnight semantic indexing is acceptable only as an explicitly scoped resource-budgeted job on this VPS.
 
 ## What is not accepted yet
 
@@ -76,7 +80,7 @@ Not accepted for production integration:
 1. Direct raw candidate MCP connection from Codex/Hermes/agents.
 2. Live write, patch, move, delete, rename, or Git operations through the indexing candidate.
 3. Remote embeddings or paid/cloud model endpoints.
-4. Semantic quality claims based only on fake/stub Ollama or incomplete night-run results.
+4. Full routine semantic quality claims based only on fake/stub Ollama, smoke runs, or incomplete night-run results.
 5. Using indexed findings as automatic edits without Obslayer proposal normalization and approval manifest.
 6. Treating the older night-run failure count as solved without the focused post-fix probe/evidence path.
 
@@ -99,7 +103,7 @@ Not accepted for production integration:
 ## Remaining blockers before stronger integration
 
 1. Wire the real MCP stdio probe so every candidate invocation automatically goes through the runtime wrapper.
-2. Run a semantic quality pass with real local Ollama + `bge-m3`, not a fake/stub endpoint.
+2. Run a budgeted semantic quality pass with real local Ollama + `bge-m3` before treating semantic indexing as routine acceptance.
 3. Add a stable Make target for the focused guarded live-read-only probe if it should become repeatable acceptance evidence.
 4. Compare against `DeusData/codebase-memory-mcp` only as an isolated benchmark candidate, not as a replacement for the Obslayer safety boundary.
 5. Normalize indexed findings into Obslayer proposal bundles with path, quote/span, hash/version, risk classification, and dry-run-only default.
