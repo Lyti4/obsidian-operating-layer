@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike
+.PHONY: test lint compile verify smoke dashboard-list field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -14,6 +14,8 @@ INDEX_SANDBOX_NAME ?= indexing-spike
 INDEX_SANDBOX ?= $(INDEX_SANDBOX_ROOT)/$(INDEX_SANDBOX_NAME)
 INDEX_REPORTS ?= out/reports/indexing-spike
 INDEX_CANDIDATE ?= docs/spec-kit/research/sample-adapter-records/dalecb-obsidian-semantic-mcp.json
+INDEX_RUNTIME_DERIVED ?= out/external-indexing-spike/auto-probe
+INDEX_RUNTIME_REPORTS ?= out/reports/external-indexing-spike/auto-probe
 
 test:
 	python3 -m pytest -q
@@ -49,3 +51,6 @@ indexing-sandbox:
 
 indexing-spike: indexing-sandbox
 	python3 tools/obsidian_indexing_spike.py --candidate-record $(INDEX_CANDIDATE) --sandbox-vault $(INDEX_SANDBOX) --out-dir $(INDEX_REPORTS) --query "Obsidian Operating Layer safety boundary" --query "approval manifest backup apply verify" --query "wikilinks tags frontmatter knowledge graph"
+
+indexing-runtime-auto-probe: indexing-sandbox
+	python3 tools/obsidian_indexing_runtime.py --sandbox-vault $(INDEX_SANDBOX) --derived-root $(INDEX_RUNTIME_DERIVED) --auto-probe-sample --raw-report $(INDEX_RUNTIME_REPORTS)/raw/auto-probe-transcript.json --sanitized-report $(INDEX_RUNTIME_REPORTS)/auto-probe-sanitized-transcript.json --report-root $(INDEX_RUNTIME_REPORTS) --command node --command server.js

@@ -52,6 +52,7 @@ The wrapper is required because the raw candidate can return note snippets that 
 | Live bge-m3 night run summary | `out/reports/external-indexing-spike/external-indexing-spike-live-bge-m3-night-summary.md` | live tree unchanged; tools allowlist ok; derived storage under MCP home; 154 indexed / 473 failed before nested exclude fix |
 | Runtime wrapper source | `src/obslayer/indexing_wrapper.py` | enforces allowed tools, path policy, redaction, provenance normalization, and safe process spec construction |
 | Runtime CLI harness | `tools/obsidian_indexing_runtime.py` | provides guarded runtime/transcript report path under `out/reports/external-indexing-spike` |
+| Runtime auto-probe sample | `make indexing-runtime-auto-probe` | repeatable sandbox-only guardrail exercise; creates and sanitizes a sample transcript through the runtime boundary without live mutation |
 | Tests | `tests/test_indexing_wrapper.py`, `tests/test_indexing_runtime_cli.py` | cover unsafe paths, tool-surface failures, transcript sanitization, report-root refusal, and runtime process spec guards |
 
 ## What is accepted now
@@ -72,6 +73,7 @@ Accepted for the current project state:
 8. Absolute, traversal, drive-root, UNC-like, protected, or live-vault paths in candidate metadata fail closed or are redacted before transcript exposure.
 9. Live-vault mutations remain impossible through this indexing layer; all note changes still require proposal/approval/apply/verify.
 10. Bounded/overnight semantic indexing is acceptable only as an explicitly scoped resource-budgeted job on this VPS.
+11. `make indexing-runtime-auto-probe` is accepted as the repeatable preflight for exercising the runtime wrapper boundary before wiring real MCP stdio calls.
 
 ## What is not accepted yet
 
@@ -114,12 +116,12 @@ Not accepted for production integration:
 Recommended next slice:
 
 ```text
-indexing-runtime-auto-probe
+indexing-runtime-real-stdio-probe
 ```
 
 Acceptance for that slice:
 
-- real candidate stdio probe is launched only through the runtime wrapper;
+- real candidate stdio probe is launched only through the runtime wrapper, not through raw agent/Codex config;
 - transcript reports are sanitized and written under `out/reports/external-indexing-spike`;
 - tool surface is verified before accepting results;
 - sandbox/live-read-only tree hashes are compared before/after;
