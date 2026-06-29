@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe
+.PHONY: test lint compile verify smoke dashboard-list field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -16,6 +16,8 @@ INDEX_REPORTS ?= out/reports/indexing-spike
 INDEX_CANDIDATE ?= docs/spec-kit/research/sample-adapter-records/dalecb-obsidian-semantic-mcp.json
 INDEX_RUNTIME_DERIVED ?= out/external-indexing-spike/auto-probe
 INDEX_RUNTIME_REPORTS ?= out/reports/external-indexing-spike/auto-probe
+INDEX_STDIO_DERIVED ?= out/external-indexing-spike/stdio-probe-fake
+INDEX_STDIO_REPORTS ?= out/reports/external-indexing-spike/stdio-probe-fake
 
 test:
 	python3 -m pytest -q
@@ -54,3 +56,6 @@ indexing-spike: indexing-sandbox
 
 indexing-runtime-auto-probe: indexing-sandbox
 	python3 tools/obsidian_indexing_runtime.py --sandbox-vault $(INDEX_SANDBOX) --derived-root $(INDEX_RUNTIME_DERIVED) --auto-probe-sample --raw-report $(INDEX_RUNTIME_REPORTS)/raw/auto-probe-transcript.json --sanitized-report $(INDEX_RUNTIME_REPORTS)/auto-probe-sanitized-transcript.json --report-root $(INDEX_RUNTIME_REPORTS) --command node --command server.js
+
+indexing-runtime-stdio-probe-fake: indexing-sandbox
+	python3 tools/obsidian_indexing_stdio_probe.py --sandbox-vault $(INDEX_SANDBOX) --derived-root $(INDEX_STDIO_DERIVED) --raw-report $(INDEX_STDIO_REPORTS)/raw/transcript.json --sanitized-report $(INDEX_STDIO_REPORTS)/sanitized-transcript.json --report-root $(INDEX_STDIO_REPORTS) --command python3 --command tests/fixtures/fake_jsonline_mcp_server.py --query "Obsidian Operating Layer safety boundary" --timeout-seconds 5

@@ -53,7 +53,8 @@ The wrapper is required because the raw candidate can return note snippets that 
 | Runtime wrapper source | `src/obslayer/indexing_wrapper.py` | enforces allowed tools, path policy, redaction, provenance normalization, and safe process spec construction |
 | Runtime CLI harness | `tools/obsidian_indexing_runtime.py` | provides guarded runtime/transcript report path under `out/reports/external-indexing-spike` |
 | Runtime auto-probe sample | `make indexing-runtime-auto-probe` | repeatable sandbox-only guardrail exercise; creates and sanitizes a sample transcript through the runtime boundary without live mutation |
-| Tests | `tests/test_indexing_wrapper.py`, `tests/test_indexing_runtime_cli.py` | cover unsafe paths, tool-surface failures, transcript sanitization, report-root refusal, and runtime process spec guards |
+| Runtime stdio fake harness | `make indexing-runtime-stdio-probe-fake` | repeatable subprocess stdio exercise against fake JSON-lines MCP server; writes raw/sanitized reports through the same runtime wrapper boundary without live mutation |
+| Tests | `tests/test_indexing_wrapper.py`, `tests/test_indexing_runtime_cli.py`, `tests/test_indexing_stdio_probe.py` | cover unsafe paths, tool-surface failures, transcript sanitization, stdio subprocess probing, report-root refusal, and runtime process spec guards |
 
 ## What is accepted now
 
@@ -74,6 +75,7 @@ Accepted for the current project state:
 9. Live-vault mutations remain impossible through this indexing layer; all note changes still require proposal/approval/apply/verify.
 10. Bounded/overnight semantic indexing is acceptable only as an explicitly scoped resource-budgeted job on this VPS.
 11. `make indexing-runtime-auto-probe` is accepted as the repeatable preflight for exercising the runtime wrapper boundary before wiring real MCP stdio calls.
+12. `make indexing-runtime-stdio-probe-fake` is accepted as the deterministic CI/local harness for proving stdio subprocess wiring without npm/network dependencies.
 
 ## What is not accepted yet
 
@@ -104,7 +106,7 @@ Not accepted for production integration:
 
 ## Remaining blockers before stronger integration
 
-1. Wire the real MCP stdio probe so every candidate invocation automatically goes through the runtime wrapper.
+1. Run the real `@dalecb/obsidian-semantic-mcp` candidate through the stdio probe harness so every invocation automatically goes through the runtime wrapper.
 2. Run a budgeted semantic quality pass with real local Ollama + `bge-m3` before treating semantic indexing as routine acceptance.
 3. Add a stable Make target for the focused guarded live-read-only probe if it should become repeatable acceptance evidence.
 4. Compare against `DeusData/codebase-memory-mcp` only as an isolated benchmark candidate, not as a replacement for the Obslayer safety boundary.
@@ -116,8 +118,10 @@ Not accepted for production integration:
 Recommended next slice:
 
 ```text
-indexing-runtime-real-stdio-probe
+indexing-runtime-real-candidate-stdio-probe
 ```
+
+The stdio subprocess harness is now present and accepted against a fake JSON-lines MCP server; the remaining step is a guarded run against the real `@dalecb/obsidian-semantic-mcp` package.
 
 Acceptance for that slice:
 
