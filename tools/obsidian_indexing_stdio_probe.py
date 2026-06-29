@@ -4,9 +4,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import queue
 import subprocess
 import sys
-import time
+import threading
 from typing import Any
 
 from _bootstrap import SRC  # noqa: F401
@@ -15,6 +16,7 @@ from obslayer import (
     GuardrailError,
     build_indexing_mcp_process_spec,
     build_indexing_wrapper_policy,
+    verify_indexing_runtime_tools,
     write_indexing_mcp_report_bundle,
 )
 from obslayer.indexing_wrapper import DEFAULT_INDEXING_REPORT_ROOT
@@ -24,6 +26,7 @@ DEFAULT_QUERIES = (
     "approval manifest backup apply verify",
     "wikilinks tags frontmatter knowledge graph",
 )
+MAX_STDERR_CAPTURE_CHARS = 16_000
 
 
 class JsonLineMcpClient:
@@ -41,6 +44,35 @@ class JsonLineMcpClient:
         )
         self.timeout_seconds = timeout_seconds
         self._next_id = 1
+        self._stdout_queue: queue.Queue[str | None] = queue.Queue()
+        self._stderr_chunks: list[str] = []
+        self._stdout_thread = threading.Thread(target=self._drain_stdout, name="mcp-stdout-drain", daemon=True)
+        self._stderr_thread = threading.Thread(target=self._drain_stderr, name="mcp-stderr-drain", daemon=True)
+        self._stdout_thread.start()
+        self._stderr_thread.start()
+
+    def _drain_stdout(self) -> None:
+        if self.process.stdout is None:
+            self._stdout_queue.put(None)
+            return
+        try:
+            for line in self.process.stdout:
+                self._stdout_queue.put(line)
+        finally:
+            self._stdout_queue.put(None)
+
+    def _drain_stderr(self) -> None:
+        stream = self.process.stderr
+        if stream is None:
+            return
+        for chunk in iter(lambda: stream.read(4096), ""):
+            self._stderr_chunks.append(chunk)
+            captured = "".join(self._stderr_chunks)
+            if len(captured) > MAX_STDERR_CAPTURE_CHARS:
+                self._stderr_chunks = [captured[-MAX_STDERR_CAPTURE_CHARS:]]
+
+    def stderr_tail(self) -> str:
+        return "".join(self._stderr_chunks)[-1000:]
 
     def close(self) -> None:
         if self.process.poll() is None:
@@ -50,10 +82,23 @@ class JsonLineMcpClient:
             except subprocess.TimeoutExpired:
                 self.process.kill()
                 self.process.wait(timeout=3)
+        self._stdout_thread.join(timeout=1)
+        self._stderr_thread.join(timeout=1)
+
+    def _read_response_line(self, *, method: str) -> str:
+        try:
+            line = self._stdout_queue.get(timeout=self.timeout_seconds)
+        except queue.Empty as exc:
+            raise GuardrailError(f"Timed out waiting for MCP response to {method}; stderr={self.stderr_tail()}") from exc
+        if line is None:
+            raise GuardrailError(f"MCP process closed stdout before response to {method}; stderr={self.stderr_tail()}")
+        return line
 
     def request(self, method: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
-        if self.process.stdin is None or self.process.stdout is None:
-            raise GuardrailError("MCP process pipes are unavailable")
+        if self.process.stdin is None:
+            raise GuardrailError("MCP process stdin is unavailable")
+        if self.process.poll() is not None:
+            raise GuardrailError(f"MCP process exited before request {method}; stderr={self.stderr_tail()}")
         request_id = self._next_id
         self._next_id += 1
         payload: dict[str, Any] = {"jsonrpc": "2.0", "id": request_id, "method": method}
@@ -61,22 +106,21 @@ class JsonLineMcpClient:
             payload["params"] = params
         self.process.stdin.write(json.dumps(payload) + "\n")
         self.process.stdin.flush()
-        deadline = time.monotonic() + self.timeout_seconds
-        while time.monotonic() < deadline:
-            line = self.process.stdout.readline()
-            if line:
-                try:
-                    response = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                if response.get("id") == request_id:
-                    return response
+        while True:
+            line = self._read_response_line(method=method)
+            try:
+                response = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise GuardrailError(f"MCP process emitted malformed JSON while waiting for {method}") from exc
+            if response.get("id") != request_id:
                 continue
-            if self.process.poll() is not None:
-                stderr = self.process.stderr.read() if self.process.stderr else ""
-                raise GuardrailError(f"MCP process exited before response to {method}: {stderr[-1000:]}")
-            time.sleep(0.05)
-        raise GuardrailError(f"Timed out waiting for MCP response to {method}")
+            if response.get("jsonrpc") != "2.0":
+                raise GuardrailError(f"MCP response to {method} is not JSON-RPC 2.0")
+            if "error" in response:
+                raise GuardrailError(f"MCP response to {method} returned error: {response['error']}")
+            if "result" not in response:
+                raise GuardrailError(f"MCP response to {method} is missing result")
+            return response
 
 
 def _tool_call(client: JsonLineMcpClient, tool: str, arguments: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -103,11 +147,25 @@ def _first_result_path(message: dict[str, Any]) -> str | None:
     return None
 
 
+def _verify_initialize(message: dict[str, Any]) -> None:
+    result = message.get("result")
+    if not isinstance(result, dict):
+        raise GuardrailError("MCP initialize response must contain an object result")
+    protocol_version = result.get("protocolVersion")
+    if not isinstance(protocol_version, str) or not protocol_version:
+        raise GuardrailError("MCP initialize response is missing protocolVersion")
+    capabilities = result.get("capabilities")
+    if not isinstance(capabilities, dict):
+        raise GuardrailError("MCP initialize response is missing capabilities object")
+
+
 def run_probe(*, spec, queries: list[str], index_mode: str, dry_run: bool, timeout_seconds: float) -> list[dict[str, Any]]:
+    if not dry_run:
+        raise GuardrailError("stdio probe refuses non-dry-run index_vault calls")
     client = JsonLineMcpClient(spec, timeout_seconds=timeout_seconds)
     calls: list[dict[str, Any]] = []
     try:
-        client.request(
+        initialize = client.request(
             "initialize",
             {
                 "protocolVersion": "2024-11-05",
@@ -115,7 +173,9 @@ def run_probe(*, spec, queries: list[str], index_mode: str, dry_run: bool, timeo
                 "clientInfo": {"name": "obslayer-indexing-stdio-probe", "version": "0"},
             },
         )
+        _verify_initialize(initialize)
         tools = client.request("tools/list")
+        verify_indexing_runtime_tools(tools, spec.policy)
         calls.append({"kind": "list_tools", "message": tools})
         calls.append({"tool": "index_status", "message": _tool_call(client, "index_status")})
         calls.append({"tool": "index_vault", "message": _tool_call(client, "index_vault", {"mode": index_mode, "dry_run": dry_run})})
@@ -147,7 +207,13 @@ def main() -> int:
     parser.add_argument("--command", action="append", required=True, help="MCP server command part; repeat for argv")
     parser.add_argument("--query", action="append", default=[])
     parser.add_argument("--index-mode", default="incremental", choices=("incremental", "full"))
-    parser.add_argument("--dry-run", action="store_true", default=True)
+    parser.add_argument("--dry-run", action="store_true", default=True, help="Keep index_vault in dry-run mode; this is the safe default.")
+    parser.add_argument(
+        "--non-dry-run",
+        action="store_false",
+        dest="dry_run",
+        help="Rejected by guardrails; present only to make non-dry-run intent explicit and fail closed.",
+    )
     parser.add_argument("--timeout-seconds", type=float, default=30.0)
     args = parser.parse_args()
 

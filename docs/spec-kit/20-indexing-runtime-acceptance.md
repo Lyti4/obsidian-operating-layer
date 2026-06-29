@@ -54,7 +54,8 @@ The wrapper is required because the raw candidate can return note snippets that 
 | Runtime CLI harness | `tools/obsidian_indexing_runtime.py` | provides guarded runtime/transcript report path under `out/reports/external-indexing-spike` |
 | Runtime auto-probe sample | `make indexing-runtime-auto-probe` | repeatable sandbox-only guardrail exercise; creates and sanitizes a sample transcript through the runtime boundary without live mutation |
 | Runtime stdio fake harness | `make indexing-runtime-stdio-probe-fake` | repeatable subprocess stdio exercise against fake JSON-lines MCP server; writes raw/sanitized reports through the same runtime wrapper boundary without live mutation |
-| Tests | `tests/test_indexing_wrapper.py`, `tests/test_indexing_runtime_cli.py`, `tests/test_indexing_stdio_probe.py` | cover unsafe paths, tool-surface failures, transcript sanitization, stdio subprocess probing, report-root refusal, and runtime process spec guards |
+| Stdio protocol hardening | `tools/obsidian_indexing_stdio_probe.py` | validates `initialize` and `tools/list` before tool calls, drains stdout/stderr with bounded capture, fails closed on JSON-RPC errors, malformed JSON, timeout, and non-dry-run intent |
+| Tests | `tests/test_indexing_wrapper.py`, `tests/test_indexing_runtime_cli.py`, `tests/test_indexing_stdio_probe.py` | cover unsafe paths, tool-surface failures, transcript sanitization, stdio subprocess probing, report-root refusal, runtime process spec guards, malformed JSON-RPC, failed initialize, tool mismatch, timeout, and non-dry-run refusal |
 
 ## What is accepted now
 
@@ -76,6 +77,7 @@ Accepted for the current project state:
 10. Bounded/overnight semantic indexing is acceptable only as an explicitly scoped resource-budgeted job on this VPS.
 11. `make indexing-runtime-auto-probe` is accepted as the repeatable preflight for exercising the runtime wrapper boundary before wiring real MCP stdio calls.
 12. `make indexing-runtime-stdio-probe-fake` is accepted as the deterministic CI/local harness for proving stdio subprocess wiring without npm/network dependencies.
+13. The stdio harness fails closed on malformed JSON-RPC, failed or malformed `initialize`, extra/missing tool surface, timeouts, and any explicit non-dry-run intent before the real candidate gate.
 
 ## What is not accepted yet
 
