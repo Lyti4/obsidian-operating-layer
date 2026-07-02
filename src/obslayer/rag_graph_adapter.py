@@ -37,6 +37,7 @@ class RagGraphAdapterEvaluation:
     sandbox_required: bool
     write_policy: str
     fixed_queries: list[str]
+    source_exclude_prefixes: list[str]
     findings: list[dict[str, Any]]
     artifacts: dict[str, str]
     verification: dict[str, Any]
@@ -246,12 +247,22 @@ def normalize_rag_graph_findings(sandbox_vault: str | Path) -> list[dict[str, An
     return findings
 
 
+def _finding_source_label(finding: dict[str, Any]) -> str:
+    return str(finding.get("source") or finding.get("cluster") or finding.get("name") or "sandbox")
+
+
+def _matches_source_prefix(finding: dict[str, Any], prefixes: list[str]) -> bool:
+    label = _finding_source_label(finding)
+    return any(label == prefix or label.startswith(f"{prefix}/") for prefix in prefixes)
+
+
 def build_rag_graph_adapter_evaluation(
     *,
     adapter_record: str | Path,
     sandbox_vault: str | Path,
     fixed_queries: list[str] | None = None,
     artifact_root: str | Path | None = None,
+    source_exclude_prefixes: list[str] | None = None,
 ) -> RagGraphAdapterEvaluation:
     started = time.perf_counter()
     record = load_rag_graph_adapter_record(adapter_record)
@@ -263,7 +274,10 @@ def build_rag_graph_adapter_evaluation(
         "Detect possible duplicates among project reports.",
         "Suggest backlinks for final architecture spec.",
     ]
-    findings = normalize_rag_graph_findings(sandbox)
+    raw_findings = normalize_rag_graph_findings(sandbox)
+    prefixes = sorted(set(source_exclude_prefixes or []))
+    excluded_findings = [item for item in raw_findings if _matches_source_prefix(item, prefixes)]
+    findings = [item for item in raw_findings if not _matches_source_prefix(item, prefixes)]
     elapsed_ms = round((time.perf_counter() - started) * 1000, 3)
     max_rss_kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     direct_write_disabled = all(item.get("executed") is False for item in findings)
@@ -271,9 +285,8 @@ def build_rag_graph_adapter_evaluation(
     proposal_only_allowed = PROPOSAL_ONLY_FINDING_TYPES | {"nonexistent-link", "orphan-note"}
     finding_counts_by_type = Counter(item["type"] for item in findings)
     finding_counts_by_severity = Counter(item["severity"] for item in findings)
-    top_sources_by_finding_count = Counter(
-        item.get("source") or item.get("cluster") or item.get("name") or "sandbox" for item in findings
-    ).most_common(10)
+    top_sources_by_finding_count = Counter(_finding_source_label(item) for item in findings).most_common(10)
+    excluded_counts_by_type = Counter(item["type"] for item in excluded_findings)
 
     artifacts: dict[str, str] = {}
     if artifact_root is not None:
@@ -292,6 +305,7 @@ def build_rag_graph_adapter_evaluation(
         sandbox_required=True,
         write_policy="normalize-findings-only-and-convert-write-like-suggestions-to-proposals",
         fixed_queries=queries,
+        source_exclude_prefixes=prefixes,
         findings=findings,
         artifacts=artifacts,
         verification={
@@ -302,6 +316,10 @@ def build_rag_graph_adapter_evaluation(
             "notes_scanned": next((item["notes_scanned"] for item in findings if item["type"] == "graph-summary"), 0),
             "fixed_query_count": len(queries),
             "finding_count": len(findings),
+            "raw_finding_count": len(raw_findings),
+            "excluded_finding_count": len(excluded_findings),
+            "source_exclude_prefixes": prefixes,
+            "excluded_counts_by_type": dict(sorted(excluded_counts_by_type.items())),
             "finding_counts_by_type": dict(sorted(finding_counts_by_type.items())),
             "finding_counts_by_severity": dict(sorted(finding_counts_by_severity.items())),
             "top_sources_by_finding_count": [
@@ -328,11 +346,24 @@ def rag_graph_evaluation_to_markdown(evaluation: RagGraphAdapterEvaluation) -> s
         f"- sandbox_vault: `{evaluation.sandbox_vault}`",
         f"- direct_write_disabled: `{evaluation.direct_write_disabled}`",
         f"- write_policy: `{evaluation.write_policy}`",
+        f"- source_exclude_prefixes: `{evaluation.source_exclude_prefixes}`",
         "",
         "## Fixed queries",
     ]
     lines.extend(f"- {query}" for query in evaluation.fixed_queries)
-    lines.extend(["", "## Finding summary", "", "### Counts by type"])
+    lines.extend(
+        [
+            "",
+            "## Finding summary",
+            "- raw findings before source-prefix filtering: "
+            f"`{evaluation.verification.get('raw_finding_count', len(evaluation.findings))}`",
+            "- active findings after source-prefix filtering: "
+            f"`{evaluation.verification.get('finding_count', len(evaluation.findings))}`",
+            f"- excluded findings: `{evaluation.verification.get('excluded_finding_count', 0)}`",
+            "",
+            "### Counts by type",
+        ]
+    )
     for finding_type, count in evaluation.verification.get("finding_counts_by_type", {}).items():
         lines.append(f"- `{finding_type}`: {count}")
     lines.extend(["", "### Counts by severity"])
@@ -341,6 +372,10 @@ def rag_graph_evaluation_to_markdown(evaluation: RagGraphAdapterEvaluation) -> s
     lines.extend(["", "### Top sources by finding count"])
     for item in evaluation.verification.get("top_sources_by_finding_count", []):
         lines.append(f"- `{item['source']}`: {item['count']}")
+    if evaluation.verification.get("excluded_counts_by_type"):
+        lines.extend(["", "### Excluded counts by type"])
+        for finding_type, count in evaluation.verification["excluded_counts_by_type"].items():
+            lines.append(f"- `{finding_type}`: {count}")
 
     lines.extend(["", "## Normalized findings"])
     for finding in evaluation.findings:

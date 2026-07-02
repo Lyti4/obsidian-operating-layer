@@ -86,6 +86,21 @@ def test_build_rag_graph_adapter_evaluation_uses_sandbox_and_normalizes_findings
     assert evaluation.verification["benchmark_metrics"]["cost_model"] == "local-wrapper-no-llm-call"
 
 
+def test_build_rag_graph_adapter_evaluation_can_filter_generated_source_prefix(tmp_path: Path) -> None:
+    sandbox = make_sandbox(tmp_path)
+    evaluation = build_rag_graph_adapter_evaluation(
+        adapter_record=adapter_record(),
+        sandbox_vault=sandbox,
+        source_exclude_prefixes=["Projects"],
+    )
+
+    assert evaluation.source_exclude_prefixes == ["Projects"]
+    assert evaluation.verification["raw_finding_count"] > evaluation.verification["finding_count"]
+    assert evaluation.verification["excluded_finding_count"] >= 1
+    assert evaluation.verification["excluded_counts_by_type"]["nonexistent-link"] == 1
+    assert not any(item.get("source", "").startswith("Projects") for item in evaluation.findings)
+
+
 def test_rag_graph_adapter_cli_writes_json_and_markdown_reports(tmp_path: Path) -> None:
     repo = Path(__file__).resolve().parents[1]
     sandbox = make_sandbox(tmp_path)
@@ -115,6 +130,8 @@ def test_rag_graph_adapter_cli_writes_json_and_markdown_reports(tmp_path: Path) 
     assert payload["direct_write_disabled"] is True
     assert payload["normalized_findings_only"] is True
     assert payload["notes_scanned"] == 3
+    assert payload["raw_finding_count"] == payload["finding_count"]
+    assert payload["excluded_finding_count"] == 0
     assert Path(payload["json_report"]).is_file()
     assert Path(payload["markdown_report"]).is_file()
     report = json.loads(Path(payload["json_report"]).read_text(encoding="utf-8"))

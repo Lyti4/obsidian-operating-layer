@@ -27,6 +27,13 @@ def main() -> int:
         dest="fixed_queries",
         help="Fixed evaluation query to record; may be passed multiple times. Defaults to Phase 04 queries.",
     )
+    parser.add_argument(
+        "--exclude-source-prefix",
+        action="append",
+        dest="source_exclude_prefixes",
+        default=[],
+        help="Proposal-only hygiene filter: exclude findings whose source/cluster/name equals or is under this relative prefix.",
+    )
     args = parser.parse_args()
 
     out_dir = Path(args.out_dir).expanduser().resolve()
@@ -35,6 +42,7 @@ def main() -> int:
         sandbox_vault=args.sandbox_vault,
         fixed_queries=args.fixed_queries,
         artifact_root=out_dir,
+        source_exclude_prefixes=args.source_exclude_prefixes,
     )
     json_out = Path(evaluation.artifacts["json_report"])
     md_out = json_out.with_suffix(".md")
@@ -51,6 +59,9 @@ def main() -> int:
                 "direct_write_disabled": evaluation.direct_write_disabled,
                 "normalized_findings_only": evaluation.verification["normalized_findings_only"],
                 "notes_scanned": evaluation.verification["notes_scanned"],
+                "raw_finding_count": evaluation.verification["raw_finding_count"],
+                "finding_count": evaluation.verification["finding_count"],
+                "excluded_finding_count": evaluation.verification["excluded_finding_count"],
             },
             indent=2,
             sort_keys=True,
