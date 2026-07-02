@@ -78,6 +78,9 @@ def test_build_rag_graph_adapter_evaluation_uses_sandbox_and_normalizes_findings
     assert evaluation.verification["notes_scanned"] == 3
     assert evaluation.verification["fixed_query_count"] == 5
     assert evaluation.verification["finding_count"] == len(evaluation.findings)
+    assert evaluation.verification["finding_counts_by_type"]["nonexistent-link"] == 1
+    assert evaluation.verification["finding_counts_by_severity"]["medium"] >= 1
+    assert evaluation.verification["top_sources_by_finding_count"]
     assert evaluation.verification["benchmark_metrics"]["wall_time_ms"] >= 0
     assert evaluation.verification["benchmark_metrics"]["max_rss_kb"] > 0
     assert evaluation.verification["benchmark_metrics"]["cost_model"] == "local-wrapper-no-llm-call"
@@ -116,3 +119,7 @@ def test_rag_graph_adapter_cli_writes_json_and_markdown_reports(tmp_path: Path) 
     assert Path(payload["markdown_report"]).is_file()
     report = json.loads(Path(payload["json_report"]).read_text(encoding="utf-8"))
     assert report["verification"]["notes_scanned"] == 3
+    assert report["verification"]["finding_counts_by_type"]["nonexistent-link"] == 1
+    markdown = Path(payload["markdown_report"]).read_text(encoding="utf-8")
+    assert "## Finding summary" in markdown
+    assert "### Top sources by finding count" in markdown

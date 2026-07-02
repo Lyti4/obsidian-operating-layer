@@ -269,6 +269,11 @@ def build_rag_graph_adapter_evaluation(
     direct_write_disabled = all(item.get("executed") is False for item in findings)
     proposal_only_types = {item["type"] for item in findings if item.get("proposal_required") is True}
     proposal_only_allowed = PROPOSAL_ONLY_FINDING_TYPES | {"nonexistent-link", "orphan-note"}
+    finding_counts_by_type = Counter(item["type"] for item in findings)
+    finding_counts_by_severity = Counter(item["severity"] for item in findings)
+    top_sources_by_finding_count = Counter(
+        item.get("source") or item.get("cluster") or item.get("name") or "sandbox" for item in findings
+    ).most_common(10)
 
     artifacts: dict[str, str] = {}
     if artifact_root is not None:
@@ -297,6 +302,11 @@ def build_rag_graph_adapter_evaluation(
             "notes_scanned": next((item["notes_scanned"] for item in findings if item["type"] == "graph-summary"), 0),
             "fixed_query_count": len(queries),
             "finding_count": len(findings),
+            "finding_counts_by_type": dict(sorted(finding_counts_by_type.items())),
+            "finding_counts_by_severity": dict(sorted(finding_counts_by_severity.items())),
+            "top_sources_by_finding_count": [
+                {"source": source, "count": count} for source, count in top_sources_by_finding_count
+            ],
             "benchmark_metrics": {
                 "wall_time_ms": elapsed_ms,
                 "max_rss_kb": max_rss_kb,
@@ -322,6 +332,16 @@ def rag_graph_evaluation_to_markdown(evaluation: RagGraphAdapterEvaluation) -> s
         "## Fixed queries",
     ]
     lines.extend(f"- {query}" for query in evaluation.fixed_queries)
+    lines.extend(["", "## Finding summary", "", "### Counts by type"])
+    for finding_type, count in evaluation.verification.get("finding_counts_by_type", {}).items():
+        lines.append(f"- `{finding_type}`: {count}")
+    lines.extend(["", "### Counts by severity"])
+    for severity, count in evaluation.verification.get("finding_counts_by_severity", {}).items():
+        lines.append(f"- `{severity}`: {count}")
+    lines.extend(["", "### Top sources by finding count"])
+    for item in evaluation.verification.get("top_sources_by_finding_count", []):
+        lines.append(f"- `{item['source']}`: {item['count']}")
+
     lines.extend(["", "## Normalized findings"])
     for finding in evaluation.findings:
         label = finding.get("source") or finding.get("cluster") or finding.get("name") or "sandbox"
