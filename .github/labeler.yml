@@ -1,0 +1,32 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**'
+          - '.github/ISSUE_TEMPLATE/**'
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/workflows/**'
+          - '.github/dependabot.yml'
+security:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'SECURITY.md'
+          - 'src/obslayer/guardrails.py'
+          - 'src/obslayer/indexing_wrapper.py'
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'tests/**'
+indexing:
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'tools/obsidian_indexing*'
+          - 'src/obslayer/indexing*'
+          - 'docs/spec-kit/*indexing*'
+github-integration:
+  - changed-files:
+      - any-glob-to-any-file:
+          - '.github/**'
+          - 'docs/github-integration.md'
