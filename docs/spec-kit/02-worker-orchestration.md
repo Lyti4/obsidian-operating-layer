@@ -47,3 +47,33 @@ Contract:
 - acceptance owner: Hermes, not Nanobot.
 
 See `25-nanobot-graphify-worker.md` for the full procedure.
+
+## Nanobot standing maintenance worker
+
+Nanobot is also available as `nanobot-standing-worker` for ongoing project maintenance and communication.
+
+Allowed capabilities:
+
+- `read`;
+- `search`;
+- `analyze`;
+- `summarize`;
+- `graph`;
+- `propose`;
+- `route`.
+
+Forbidden capabilities:
+
+- `secret-read`;
+- `live-mutation`;
+- `direct-apply`;
+- `deploy`;
+- `restart`;
+- `cron-create`;
+- `paid-action`;
+- `network-expose`;
+- `embedding-auto-run`.
+
+Use it for health snapshots, stale-doc checks, queue/task packet handling, handoff summaries, and proposal-only maintenance bundles. Hermes remains the acceptance owner.
+
+See `26-nanobot-standing-worker.md` for the full procedure.

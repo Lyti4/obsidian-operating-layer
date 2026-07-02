@@ -178,3 +178,13 @@ Evidence:
 - Do not run routine/full embeddings until a separate bounded embedding slice is approved.
 
 Reference contract: `25-nanobot-graphify-worker.md`.
+
+### P2c — Nanobot standing maintenance and communication layer
+
+- Use Nanobot as a supervised standing worker for project maintenance, status checks, task packet routing, and proposal-only reports.
+- Keep Hermes as acceptance owner and user-facing decision maker.
+- Store persistent task artifacts under `out/queue/`, `out/reports/`, and `out/proposals/`.
+- Do not create cron jobs, restart services, install third-party apps, mutate auth, or run embeddings without separate explicit user approval.
+- Verify every Nanobot result for scope, secret hygiene, protected paths, live mutation absence, and evidence quality.
+
+Reference contract: `26-nanobot-standing-worker.md`.

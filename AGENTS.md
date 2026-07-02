@@ -8,7 +8,7 @@ This workspace builds a safe local operating layer for Obsidian. Treat the Obsid
 
 - **Hermes** is the orchestrator and acceptance owner: it prepares tasks, checks evidence, enforces safety, and decides whether a proposal can move toward approval.
 - **Codex/subagents** may implement non-trivial code changes when requested, but must stay inside this repository and the active task scope.
-- **Nanobot** may act as the Graphify worker only through the documented sandbox/read-only procedure in `docs/spec-kit/25-nanobot-graphify-worker.md`.
+- **Nanobot** may act as a standing maintenance/communication worker through `docs/spec-kit/26-nanobot-standing-worker.md` and as the Graphify worker through `docs/spec-kit/25-nanobot-graphify-worker.md`.
 - External components, MCP servers, RAG engines, Graphify, and indexers are adapters. They may read/search/analyze/graph/propose/render, but they do not own live apply.
 
 ## Ground rules
@@ -19,6 +19,16 @@ This workspace builds a safe local operating layer for Obsidian. Treat the Obsid
 - Any live change must be narrowly scoped, backed up, and verified.
 - Do not print or store secrets, tokens, cookies, private keys, `.env` values, or credential file contents.
 - Do not touch money, public posting, production restarts, network exposure, or account/OAuth changes unless the user explicitly asks.
+
+## Nanobot standing worker policy
+
+Nanobot can be involved continuously in project maintenance and inter-agent communication, but only as a supervised worker:
+
+- allowed: observe, summarize, route task packets, draft reports, draft proposal-only artifacts, run sandbox/read-only Graphify tasks;
+- forbidden without explicit approval: live vault mutation, direct apply, cron creation, service restart, deployment, auth/profile changes, paid actions, third-party GitHub App installs, automatic embeddings;
+- Hermes remains responsible for acceptance, user communication, approval manifests, and final decisions.
+
+Standing Nanobot task packets and reports should stay under `out/queue/`, `out/reports/`, or `out/proposals/` unless a task explicitly says otherwise.
 
 ## Vault safety contract
 

@@ -45,5 +45,6 @@ Obsidian vault
 - `19-document-system-map.md` — current map of docs, evidence, active/stale surfaces, and next indexing-runtime acceptance slice.
 - `20-indexing-runtime-acceptance.md` — accepted state of the guarded indexing runtime, evidence, and remaining production-integration blockers.
 - `25-nanobot-graphify-worker.md` — Nanobot-as-Graphify-worker contract: bridge route, `gpt-5.4-mini`, sandbox/read-only, graph-first before embeddings.
+- `26-nanobot-standing-worker.md` — Nanobot standing maintenance/communication worker contract for ongoing project support.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.

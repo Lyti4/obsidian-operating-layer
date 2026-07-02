@@ -34,11 +34,12 @@ For a fast orientation read:
 5. `18-external-indexing-spike-plan.md` — external indexing runtime/spike plan.
 6. `20-indexing-runtime-acceptance.md` — current accepted boundary for guarded indexing runtime work.
 7. `25-nanobot-graphify-worker.md` — Nanobot Graphify worker contract and graph-first/embedding-later route.
-8. `14-operational-acceptance-report.md`, `15-manual-and-adapter-acceptance.md`, `16-sandbox-e2e-evidence.md` — accepted evidence.
-9. `docs/acceptance/index.md` — current accepted, conditional, and not-yet-accepted capabilities.
-10. `docs/release-readiness.md` — release go/no-go gate.
-11. `docs/runbooks/` — short operator workflows.
-12. `docs/triage/kanban-board.md` — active board chain.
+8. `26-nanobot-standing-worker.md` — Nanobot standing maintenance/communication worker contract.
+9. `14-operational-acceptance-report.md`, `15-manual-and-adapter-acceptance.md`, `16-sandbox-e2e-evidence.md` — accepted evidence.
+10. `docs/acceptance/index.md` — current accepted, conditional, and not-yet-accepted capabilities.
+11. `docs/release-readiness.md` — release go/no-go gate.
+12. `docs/runbooks/` — short operator workflows.
+13. `docs/triage/kanban-board.md` — active board chain.
 
 ## Spec kit document groups
 
@@ -83,6 +84,7 @@ For a fast orientation read:
 | `19-document-system-map.md` | active | Current documentation map and state-of-world |
 | `20-indexing-runtime-acceptance.md` | active acceptance | Accepted guarded runtime boundary, evidence table, and remaining production-integration blockers |
 | `25-nanobot-graphify-worker.md` | active operating procedure | Nanobot as Graphify worker via bridge on `gpt-5.4-mini`, sandbox/read-only, graph-first before embeddings |
+| `26-nanobot-standing-worker.md` | active operating procedure | Nanobot as supervised standing worker for maintenance, communication, task packets, and proposal-only reports |
 | `24-orchestration-backlog.md` | active execution plan | Layer-by-layer backlog for finishing, improving, and applying the project |
 
 ### E. Research and run-specific notes

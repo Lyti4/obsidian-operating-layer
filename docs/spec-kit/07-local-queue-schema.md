@@ -130,3 +130,35 @@ Every state transition should append an audit entry:
 - Failed task keeps logs and does not partially mutate live vault.
 - Proposal output passes obslayer validation.
 - Reports identify what was applied vs only proposed.
+
+## Nanobot standing task packets
+
+Standing Nanobot tasks use the same queue layout when a task needs persistence. Recommended worker names:
+
+- `nanobot-standing-worker` for observe/proposal/communication hub duties;
+- `nanobot-graphify` for graph-first semantic work described in `25-nanobot-graphify-worker.md`.
+
+Recommended modes:
+
+- `observe`;
+- `proposal`;
+- `communication_hub`;
+- `graphify`.
+
+Required safety fields for these tasks:
+
+```json
+{
+  "safety": {
+    "protected_paths_excluded": true,
+    "direct_write_enabled": false,
+    "requires_manifest_for_apply": true,
+    "forbid_secret_read": true,
+    "forbid_service_restart": true,
+    "forbid_cron_create_without_user_approval": true,
+    "forbid_embedding_auto_run": true
+  }
+}
+```
+
+Nanobot queue outputs are advisory until Hermes accepts them.
