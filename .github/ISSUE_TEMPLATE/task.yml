@@ -1,0 +1,26 @@
+name: Task
+description: Track implementation or documentation work
+labels: [task]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance checks
+      description: Commands, evidence, or docs that prove completion.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety gate
+      options:
+        - label: No live Obsidian mutation without approval manifest
+          required: true
+        - label: No secrets or raw credentials in logs/docs/issues
+          required: true
