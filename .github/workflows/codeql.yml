@@ -19,6 +19,11 @@ jobs:
     name: codeql / python
     runs-on: ubuntu-latest
     steps:
+      - name: Harden runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
         uses: actions/checkout@v5
       - name: Initialize CodeQL

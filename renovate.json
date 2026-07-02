@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "dependencyDashboard": true,
+  "prHourlyLimit": 2,
+  "prConcurrentLimit": 5,
+  "timezone": "Europe/Amsterdam",
+  "schedule": [
+    "before 8am on monday"
+  ],
+  "packageRules": [
+    {
+      "description": "Automerge low-risk patch updates after CI passes",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true
+    },
+    {
+      "description": "Group GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Group Python dependency updates",
+      "matchManagers": ["pip_requirements", "pep621", "pip_setup"],
+      "groupName": "python-dependencies"
+    }
+  ]
+}

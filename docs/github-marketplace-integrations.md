@@ -70,3 +70,22 @@ Policy: do not install third-party GitHub Apps without explicit owner approval. 
 - Paid security/compliance apps.
 - Apps requiring write access to all repositories without narrow selection.
 - Apps that upload private repository code to external services without explicit approval.
+
+## Wave 1 implementation status
+
+Implemented directly through repository files and GitHub Actions:
+
+- `renovate.json` plus `.github/workflows/renovate.yml`: scheduled and manual Renovate dependency update runner scoped to this repository via `GITHUB_TOKEN`.
+- `.github/workflows/semgrep.yml`: Semgrep scan uploads SARIF to GitHub code scanning.
+- `.github/workflows/coverage.yml`: pytest coverage XML plus Codecov upload step; upload is non-blocking until Codecov app/token status is verified.
+- `step-security/harden-runner@v2` in CI/security workflows with `egress-policy: audit`, so it observes network/process behavior without blocking jobs during the first tuning pass.
+
+Not installed automatically because they require GitHub Marketplace/OAuth installation and broad repository access:
+
+- CodeRabbit / Sourcery / Qodo AI PR reviewers.
+- SonarQube Cloud app.
+- Snyk app.
+- GitGuardian app.
+- Codecov GitHub App beyond tokenless Action upload behavior.
+
+Next step for third-party Apps: install only selected apps on selected repositories after checking the requested permissions in the GitHub UI.
