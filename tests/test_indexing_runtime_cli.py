@@ -77,8 +77,9 @@ def test_indexing_runtime_cli_writes_split_raw_and_sanitized_reports(tmp_path: P
     assert completed.returncode == 0, completed.stderr + completed.stdout
     payload = json.loads(completed.stdout)
     assert payload["status"] == "ok"
-    assert payload["process_spec"]["env"]["OBSIDIAN_SEMANTIC_MCP_HOME"] == str(derived.resolve())
-    assert "Soul-Vault/_Archive/" in payload["process_spec"]["env"]["OBSIDIAN_SEMANTIC_EXCLUDE"]
+    assert "process_spec" not in payload
+    assert str(sandbox) not in completed.stdout
+    assert str(derived) not in completed.stdout
     raw = Path(payload["raw_report"]).read_text(encoding="utf-8")
     sanitized = Path(payload["sanitized_report"]).read_text(encoding="utf-8")
     assert "/home/hermesadmin/Obsidian" in raw

@@ -20,6 +20,8 @@ INDEXING_WRAPPER_TOOL_ALLOWLIST = ("index_status", "index_vault", "search_notes"
 DEFAULT_INDEXING_EXCLUDED_DIR_NAMES = (".obsidian", "_Backups", "_Archive", ".trash")
 DEFAULT_INDEXING_EXCLUDE_PREFIXES = (".obsidian/", "_Backups/", "_Archive/", ".trash/", "Soul-Vault/Soul/")
 REDACTED_LIVE_VAULT = "<LIVE_VAULT>"
+REDACTED_SANDBOX_VAULT = "<SANDBOX_VAULT>"
+REDACTED_DERIVED_ROOT = "<DERIVED_ROOT>"
 MAX_SANITIZED_TEXT_CHARS = 2_000
 TRUNCATED_TEXT_SUFFIX = "…<TRUNCATED>"
 MAX_URL_DECODE_ROUNDS = 8
@@ -381,6 +383,7 @@ def sanitize_indexing_mcp_transcript(
             tool=tool,
             message=dict(call.get("message") or {}),
             vault_root=policy.vault_root,
+            derived_root=policy.derived_root,
             live_vault_root=policy.live_vault_root,
         )
         payload, truncations = _truncate_sanitized_text(normalized.payload)
@@ -493,18 +496,130 @@ PATH_FIELD_NAMES = frozenset(
 )
 
 
+def _is_safe_redacted_root_reference(raw: str, *, redacted_root: str) -> bool:
+    if not raw.startswith(redacted_root):
+        return False
+    suffix = raw[len(redacted_root) :].replace("\\", "/")
+    if not suffix:
+        return True
+    if not suffix.startswith("/"):
+        return False
+    rel_suffix = suffix.lstrip("/")
+    if ".." in Path(rel_suffix).parts:
+        return False
+    if is_protected_relative(rel_suffix):
+        raise GuardrailError(f"Result path points to protected content: {rel_suffix}")
+    return True
+
+
+def _normalize_sandbox_absolute_path(raw: str, *, vault_root: str | Path) -> str:
+    root = Path(vault_root).expanduser().resolve()
+    for candidate in _decoded_path_forms(str(raw).replace("\\", "/")):
+        normalized = candidate.replace("\\", "/")
+        path = Path(normalized).expanduser()
+        if not path.is_absolute():
+            continue
+        resolved = _resolve_existing_or_parent(path)
+        if not _is_relative_to(resolved, root):
+            return raw
+        rel = resolved.relative_to(root).as_posix()
+        return _safe_rel_path(rel)
+    return raw
+
+
+def _normalize_sandbox_absolute_path_fields(value: Any, *, vault_root: str | Path) -> Any:
+    if isinstance(value, dict):
+        normalized: dict[str, Any] = {}
+        for key, item in value.items():
+            key_text = str(key)
+            is_path_field = key_text in PATH_FIELD_NAMES or key_text.endswith("_path") or key_text.endswith("Path")
+            if is_path_field and isinstance(item, str):
+                normalized[key_text] = _normalize_sandbox_absolute_path(item, vault_root=vault_root)
+            elif is_path_field and isinstance(item, list):
+                normalized[key_text] = [
+                    _normalize_sandbox_absolute_path(entry, vault_root=vault_root) if isinstance(entry, str) else entry
+                    for entry in item
+                ]
+            else:
+                normalized[key_text] = _normalize_sandbox_absolute_path_fields(item, vault_root=vault_root)
+        return normalized
+    if isinstance(value, list):
+        return [_normalize_sandbox_absolute_path_fields(item, vault_root=vault_root) for item in value]
+    return value
+
+
+def _redact_root_paths(
+    value: Any,
+    *,
+    root: str | Path | None,
+    replacement: str,
+    kind: str,
+) -> tuple[Any, list[dict[str, str]]]:
+    if root is None:
+        return value, []
+    resolved_root = str(Path(root).expanduser().resolve())
+    redactions: list[dict[str, str]] = []
+
+    def visit(obj: Any) -> Any:
+        if isinstance(obj, str):
+            redacted = obj
+            for needle in {resolved_root, resolved_root.replace("/", "\\/")}:
+                if needle in redacted:
+                    redacted = redacted.replace(needle, replacement)
+            encoded = resolved_root
+            for _ in range(MAX_URL_DECODE_ROUNDS):
+                encoded = quote(encoded, safe="")
+                redacted = re.sub(re.escape(encoded), replacement, redacted, flags=re.IGNORECASE)
+            if redacted != obj:
+                redactions.append({"kind": kind, "replacement": replacement})
+            return redacted
+        if isinstance(obj, list):
+            return [visit(item) for item in obj]
+        if isinstance(obj, dict):
+            return {str(key): visit(val) for key, val in obj.items()}
+        return obj
+
+    return visit(value), redactions
+
+
+def redact_sandbox_vault_paths(value: Any, *, vault_root: str | Path | None) -> tuple[Any, list[dict[str, str]]]:
+    return _redact_root_paths(
+        value,
+        root=vault_root,
+        replacement=REDACTED_SANDBOX_VAULT,
+        kind="sandbox-vault-path",
+    )
+
+
+def redact_derived_root_paths(value: Any, *, derived_root: str | Path | None) -> tuple[Any, list[dict[str, str]]]:
+    return _redact_root_paths(
+        value,
+        root=derived_root,
+        replacement=REDACTED_DERIVED_ROOT,
+        kind="derived-root-path",
+    )
+
+
 def _validate_payload_paths(value: Any, *, context: str = "payload") -> None:
     if isinstance(value, dict):
         for key, item in value.items():
             key_text = str(key)
             if key_text in PATH_FIELD_NAMES or key_text.endswith("_path") or key_text.endswith("Path"):
                 if isinstance(item, str):
-                    _safe_rel_path(item)
+                    if not _is_safe_redacted_root_reference(
+                        item,
+                        redacted_root=REDACTED_DERIVED_ROOT,
+                    ) and not _is_safe_redacted_root_reference(item, redacted_root=REDACTED_SANDBOX_VAULT):
+                        _safe_rel_path(item)
                 elif isinstance(item, list):
                     for entry in item:
                         if not isinstance(entry, str):
                             raise GuardrailError(f"Unexpected non-string path list entry in {context}: {key_text}")
-                        _safe_rel_path(entry)
+                        if not _is_safe_redacted_root_reference(
+                            entry,
+                            redacted_root=REDACTED_DERIVED_ROOT,
+                        ) and not _is_safe_redacted_root_reference(entry, redacted_root=REDACTED_SANDBOX_VAULT):
+                            _safe_rel_path(entry)
                 elif item is not None:
                     raise GuardrailError(f"Unexpected non-string path field in {context}: {key_text}")
             _validate_payload_paths(item, context=f"{context}.{key_text}")
@@ -541,13 +656,21 @@ def normalize_indexing_mcp_result(
     tool: str,
     message: dict[str, Any],
     vault_root: str | Path,
+    derived_root: str | Path | None = None,
     live_vault_root: str | Path = DEFAULT_LIVE_VAULT_ROOT,
 ) -> NormalizedMcpResult:
     assert_indexing_tool_allowed(tool)
     vault = require_not_live_vault_path(vault_root, live_vault_root=live_vault_root)
+    if derived_root is not None:
+        require_not_live_vault_path(derived_root, live_vault_root=live_vault_root)
     payload = parse_mcp_text_result(message)
+    payload = _normalize_sandbox_absolute_path_fields(payload, vault_root=vault)
+    payload, derived_redactions = redact_derived_root_paths(payload, derived_root=derived_root)
     _validate_payload_paths(payload, context=tool)
+    payload, sandbox_redactions = redact_sandbox_vault_paths(payload, vault_root=vault_root)
     payload, redactions = redact_live_vault_paths(payload, live_vault_root=live_vault_root)
+    redactions.extend(sandbox_redactions)
+    redactions.extend(derived_redactions)
     provenance: list[dict[str, Any]] = []
 
     if tool == "search_notes" and isinstance(payload, dict):

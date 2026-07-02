@@ -10,7 +10,9 @@ import pytest
 from obslayer import GuardrailError
 from obslayer.indexing_wrapper import (
     INDEXING_WRAPPER_TOOL_ALLOWLIST,
+    REDACTED_DERIVED_ROOT,
     REDACTED_LIVE_VAULT,
+    REDACTED_SANDBOX_VAULT,
     IndexingWrapperPolicy,
     assert_indexing_tool_allowed,
     build_indexing_mcp_process_spec,
@@ -236,6 +238,32 @@ def test_normalize_search_result_rejects_absolute_traversal_and_protected_paths(
         normalize_indexing_mcp_result(tool="search_notes", message=message, vault_root=sandbox)
 
 
+def test_normalize_search_result_converts_absolute_sandbox_path_before_provenance(tmp_path: Path) -> None:
+    sandbox = make_sandbox(tmp_path)
+    message = mcp_text({"results": [{"path": str((sandbox / "Notes" / "alpha.md").resolve()), "matched_sections": []}]})
+
+    normalized = normalize_indexing_mcp_result(tool="search_notes", message=message, vault_root=sandbox)
+
+    assert normalized.payload["results"][0]["path"] == "Notes/alpha.md"
+    assert normalized.provenance[0]["path"] == "Notes/alpha.md"
+    assert normalized.provenance[0]["hash_or_version"] != "missing"
+
+
+@pytest.mark.parametrize("protected_rel", [".obsidian/app.json", "_Archive/old.md"])
+def test_normalize_search_result_rejects_absolute_sandbox_protected_paths(tmp_path: Path, protected_rel: str) -> None:
+    sandbox = make_sandbox(tmp_path)
+    target = sandbox / protected_rel
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text("protected", encoding="utf-8")
+
+    with pytest.raises(GuardrailError, match="protected"):
+        normalize_indexing_mcp_result(
+            tool="search_notes",
+            message=mcp_text({"results": [{"path": str(target.resolve()), "matched_sections": []}]}),
+            vault_root=sandbox,
+        )
+
+
 def test_normalize_read_note_result_redacts_content_and_rejects_protected_or_absolute_paths(tmp_path: Path) -> None:
     sandbox = make_sandbox(tmp_path)
     message = mcp_text(
@@ -368,6 +396,45 @@ def test_sanitize_indexing_mcp_transcript_gates_tools_and_returns_only_sanitized
     assert result["provenance"][0]["snippet"] == "mentions <LIVE_VAULT> in sandbox output"
     assert transcript.redactions
     assert "/home/hermesadmin/Obsidian" not in json.dumps(transcript.to_dict())
+
+
+def test_sanitize_indexing_mcp_transcript_redacts_safe_derived_root_paths(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    derived_db = f"{policy.derived_root}/data/semantic.sqlite"
+    transcript = sanitize_indexing_mcp_transcript(
+        [
+            {"kind": "list_tools", "message": mcp_text({"tools": list(INDEXING_WRAPPER_TOOL_ALLOWLIST)})},
+            {
+                "tool": "index_status",
+                "message": mcp_text({"db_path": derived_db, "read_only": True, "notes": 0}),
+            },
+        ],
+        policy=policy,
+    )
+
+    dumped = json.dumps(transcript.to_dict())
+    assert policy.derived_root not in dumped
+    assert f"{REDACTED_DERIVED_ROOT}/data/semantic.sqlite" in dumped
+    assert any(item["kind"] == "derived-root-path" for item in transcript.redactions)
+
+
+def test_sanitize_indexing_mcp_transcript_redacts_sandbox_vault_root_paths(tmp_path: Path) -> None:
+    policy = runtime_policy(tmp_path)
+    transcript = sanitize_indexing_mcp_transcript(
+        [
+            {"kind": "list_tools", "message": mcp_text({"tools": list(INDEXING_WRAPPER_TOOL_ALLOWLIST)})},
+            {
+                "tool": "index_status",
+                "message": mcp_text({"vault_root": policy.vault_root, "read_only": True, "notes": 0}),
+            },
+        ],
+        policy=policy,
+    )
+
+    dumped = json.dumps(transcript.to_dict())
+    assert policy.vault_root not in dumped
+    assert REDACTED_SANDBOX_VAULT in dumped
+    assert any(item["kind"] == "sandbox-vault-path" for item in transcript.redactions)
 
 
 def test_sanitize_indexing_mcp_transcript_rejects_unsafe_runtime_outputs(tmp_path: Path) -> None:

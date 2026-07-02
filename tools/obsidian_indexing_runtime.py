@@ -130,9 +130,8 @@ def main() -> int:
         sanitized_report=args.sanitized_report,
         report_root=args.report_root,
     )
-    process_spec = None
     if args.command:
-        process_spec = build_indexing_mcp_process_spec(command=args.command, policy=policy).to_dict()
+        build_indexing_mcp_process_spec(command=args.command, policy=policy)
 
     print(
         json.dumps(
@@ -142,7 +141,6 @@ def main() -> int:
                 "sanitized_report": bundle.sanitized_report,
                 "calls": len(bundle.sanitized_transcript.calls),
                 "redactions": len(bundle.sanitized_transcript.redactions),
-                "process_spec": process_spec,
             },
             indent=2,
             sort_keys=True,

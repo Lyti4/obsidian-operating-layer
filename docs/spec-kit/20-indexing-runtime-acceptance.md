@@ -54,8 +54,8 @@ The wrapper is required because the raw candidate can return note snippets that 
 | Runtime CLI harness | `tools/obsidian_indexing_runtime.py` | provides guarded runtime/transcript report path under `out/reports/external-indexing-spike` |
 | Runtime auto-probe sample | `make indexing-runtime-auto-probe` | repeatable sandbox-only guardrail exercise; creates and sanitizes a sample transcript through the runtime boundary without live mutation |
 | Runtime stdio fake harness | `make indexing-runtime-stdio-probe-fake` | repeatable subprocess stdio exercise against fake JSON-lines MCP server; writes raw/sanitized reports through the same runtime wrapper boundary without live mutation |
-| Stdio protocol hardening | `tools/obsidian_indexing_stdio_probe.py` | validates `initialize` and `tools/list` before tool calls, drains stdout/stderr with bounded capture, fails closed on JSON-RPC errors, malformed JSON, timeout, and non-dry-run intent |
-| Tests | `tests/test_indexing_wrapper.py`, `tests/test_indexing_runtime_cli.py`, `tests/test_indexing_stdio_probe.py` | cover unsafe paths, tool-surface failures, transcript sanitization, stdio subprocess probing, report-root refusal, runtime process spec guards, malformed JSON-RPC, failed initialize, tool mismatch, timeout, and non-dry-run refusal |
+| Stdio protocol hardening | `tools/obsidian_indexing_stdio_probe.py` | validates `initialize` and `tools/list` before tool calls, drains stdout/stderr with bounded capture, fails closed on JSON-RPC errors, malformed JSON, timeout, and unapproved non-dry-run intent; timeout/close cleanup terminates the spawned process group; explicit sandbox-only derived-index writes require `--allow-derived-index-write` |
+| Tests | `tests/test_indexing_wrapper.py`, `tests/test_indexing_runtime_cli.py`, `tests/test_indexing_stdio_probe.py` | cover unsafe paths, tool-surface failures, transcript sanitization, stdio subprocess probing, report-root refusal, runtime process spec guards, malformed JSON-RPC, failed initialize, tool mismatch, timeout, process-group child cleanup on timeout, secret/env leak refusal, sanitized diagnostics, default non-dry-run refusal, and explicit sandbox-derived non-dry-run allowance |
 
 ## What is accepted now
 
@@ -73,11 +73,12 @@ Accepted for the current project state:
 6. Sandbox candidate execution must stay under repo-local `out/sandbox-vaults/*` and `out/external-indexing-spike/*`.
 7. Loopback-only embedding endpoints are allowed; remote/cloud embeddings remain blocked unless explicitly approved.
 8. Absolute, traversal, drive-root, UNC-like, protected, or live-vault paths in candidate metadata fail closed or are redacted before transcript exposure.
-9. Live-vault mutations remain impossible through this indexing layer; all note changes still require proposal/approval/apply/verify.
+9. The wrapper never passes the live vault as the candidate vault; the stdio harness also fingerprints the configured live vault before/after candidate execution and fails closed if it detects mutation. All note changes still require proposal/approval/apply/verify.
 10. Bounded/overnight semantic indexing is acceptable only as an explicitly scoped resource-budgeted job on this VPS.
 11. `make indexing-runtime-auto-probe` is accepted as the repeatable preflight for exercising the runtime wrapper boundary before wiring real MCP stdio calls.
 12. `make indexing-runtime-stdio-probe-fake` is accepted as the deterministic CI/local harness for proving stdio subprocess wiring without npm/network dependencies.
-13. The stdio harness fails closed on malformed JSON-RPC, failed or malformed `initialize`, extra/missing tool surface, timeouts, and any explicit non-dry-run intent before the real candidate gate.
+13. The stdio harness fails closed on malformed JSON-RPC, failed or malformed `initialize`, extra/missing tool surface, timeouts, unsanitized diagnostics, secret parent-env inheritance, and unapproved non-dry-run intent.
+14. Non-dry-run `index_vault` is accepted only for an explicit real-candidate sandbox gate: `--allow-derived-index-write`, a named repo-local sandbox vault under `out/sandbox-vaults/*`, derived storage under `out/external-indexing-spike/*`, sanitized reports under `out/reports/external-indexing-spike/*`, and no live-vault mutation.
 
 ## What is not accepted yet
 
@@ -130,8 +131,9 @@ Acceptance for that slice:
 - real candidate stdio probe is launched only through the runtime wrapper, not through raw agent/Codex config;
 - transcript reports are sanitized and written under `out/reports/external-indexing-spike`;
 - tool surface is verified before accepting results;
-- sandbox/live-read-only tree hashes are compared before/after;
+- the configured live vault is fingerprinted before/after candidate execution and the probe fails closed on detected live-vault mutation;
 - semantic mode is either verified with local `bge-m3` or explicitly marked blocked;
+- any non-dry-run candidate indexing uses `--allow-derived-index-write` only against a named repo-local sandbox vault, with derived storage under `out/external-indexing-spike` and no live-vault mutation;
 - `make verify` passes after code/doc changes.
 
 ## Stop conditions

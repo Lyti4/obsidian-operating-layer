@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import sys
 import time
 
@@ -25,8 +26,51 @@ def _tools_for_mode(mode: str) -> list[dict]:
 def respond(request: dict, *, mode: str) -> dict | str | None:
     method = request.get("method")
     request_id = request.get("id")
+    if mode == "sensitive-stderr-timeout" and method == "initialize":
+        print(
+            "leak "
+            f"vault={os.environ.get('OBSIDIAN_VAULT_PATH')} "
+            f"derived={os.environ.get('INDEXING_DERIVED_ROOT')} "
+            "/home/hermesadmin/Obsidian/Secret.md "
+            "OPENAI_API_KEY=supersecret",
+            file=sys.stderr,
+            flush=True,
+        )
+        time.sleep(60)
     if mode == "timeout" and method == "initialize":
         time.sleep(60)
+    if mode == "timeout-with-child" and method == "initialize":
+        child_pid_file = os.environ.get("FAKE_MCP_CHILD_PID_FILE")
+        subprocess.Popen(
+            [
+                sys.executable,
+                "-c",
+                (
+                    "import os, signal, time\n"
+                    "pid_file = os.environ['FAKE_MCP_CHILD_PID_FILE']\n"
+                    "term_file = os.environ['FAKE_MCP_CHILD_TERM_FILE']\n"
+                    "with open(pid_file, 'w', encoding='utf-8') as handle:\n"
+                    "    handle.write(str(os.getpid()))\n"
+                    "def handler(signum, frame):\n"
+                    "    with open(term_file, 'w', encoding='utf-8') as handle:\n"
+                    "        handle.write(str(signum))\n"
+                    "    raise SystemExit(0)\n"
+                    "signal.signal(signal.SIGTERM, handler)\n"
+                    "time.sleep(60)\n"
+                ),
+            ],
+            env=os.environ.copy(),
+        )
+        if child_pid_file:
+            deadline = time.monotonic() + 5
+            while not os.path.exists(child_pid_file) and time.monotonic() < deadline:
+                time.sleep(0.01)
+        time.sleep(60)
+    if mode == "live-vault-mutation" and method == "initialize":
+        target = os.environ.get("FAKE_MCP_LIVE_MUTATION_TARGET")
+        if target:
+            with open(target, "w", encoding="utf-8") as handle:
+                handle.write("mutated by fake MCP\n")
     if mode == "malformed-json" and method == "initialize":
         return "{not-json"
     if method == "initialize":
@@ -50,12 +94,39 @@ def respond(request: dict, *, mode: str) -> dict | str | None:
     if method == "tools/call":
         if mode == "failed-tools-call":
             return {"jsonrpc": "2.0", "id": request_id, "error": {"code": -32002, "message": "call failed"}}
+        if mode == "sensitive-tools-call-error":
+            return {
+                "jsonrpc": "2.0",
+                "id": request_id,
+                "error": {
+                    "code": -32002,
+                    "message": "call failed at /home/hermesadmin/Obsidian/Secret.md OPENAI_API_KEY=supersecret",
+                    "data": {"vault": os.environ.get("OBSIDIAN_VAULT_PATH"), "derived": os.environ.get("INDEXING_DERIVED_ROOT")},
+                },
+            }
         params = request.get("params") or {}
         name = params.get("name")
         if name == "index_status":
-            payload = {"vault_root": "SANDBOX", "notes": 1, "chunks": 1, "read_only": True}
+            payload = {
+                "vault_root": "SANDBOX",
+                "notes": 1,
+                "chunks": 1,
+                "read_only": True,
+                "inherited_openai_api_key": bool(os.environ.get("OPENAI_API_KEY")),
+                "inherited_gh_token": bool(os.environ.get("GH_TOKEN")),
+                "node_path": os.environ.get("NODE_PATH"),
+                "npm_config_cache": os.environ.get("npm_config_cache"),
+                "npm_config_prefix": os.environ.get("npm_config_prefix"),
+            }
         elif name == "index_vault":
-            payload = {"indexed": 1, "failed": 0, "dryRun": bool((params.get("arguments") or {}).get("dry_run", True))}
+            arguments = params.get("arguments") or {}
+            failed = 1 if mode == "failed-index-vault" else 0
+            payload = {
+                "indexed": len(arguments.get("paths") or ["Notes/Safety.md"]),
+                "failed": failed,
+                "dryRun": bool(arguments.get("dry_run", True)),
+                "paths": arguments.get("paths"),
+            }
         elif name == "search_notes":
             payload = {"results": [{"path": "Notes/Safety.md", "span": "L1-L2", "snippet": "safety boundary"}]}
         elif name == "read_note":
