@@ -35,3 +35,7 @@ Status: active for `Lyti4/obsidian-operating-layer`.
 ## Rollout rule for other projects
 
 Apply this layer repo-by-repo after a local green baseline. Do not bulk-enable destructive or blocking rules on all projects until each repository has at least one green CI run and a rollback path.
+
+## Notes
+
+- Scorecard external result publishing is disabled because this workflow uploads SARIF to GitHub code scanning and therefore needs `security-events: write`; OpenSSF external publication rejects workflows with that write permission.
