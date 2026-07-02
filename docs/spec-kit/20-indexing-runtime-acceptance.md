@@ -146,3 +146,22 @@ Stop and ask before:
 - paid/high-volume API/model pulls;
 - secrets, browser profiles, `.env`, tokens;
 - Soul governance/personality edits.
+
+## Medium sandbox stdio probe — 2026-07-02
+
+Status: accepted for P2 sandbox-only progression.
+
+Evidence:
+
+- Fake stdio wrapper probe: `out/reports/external-indexing-spike/medium-fake-20260702/sanitized-transcript.json`; result `status=ok`, `index_vault_failed=0`.
+- Real candidate medium probe: `out/reports/external-indexing-spike/medium-real-20260702/sanitized-transcript.json`; result `status=ok`, `calls=10`, `index_vault_failed=0`, `redactions=7`.
+- Paths: 10 small Markdown files, batched by 2, from sandbox vault only.
+- Candidate runtime: project-scoped wrapper using `npx -y -p node@24 -p @dalecb/obsidian-semantic-mcp@0.2.1 obsidian-semantic-mcp`; global/user Node was not changed.
+- Redaction check: no raw live vault path, sandbox absolute path, derived absolute path, or secret-pattern leak found in sanitized transcript.
+- Live vault check: no live vault files modified in the 20-minute validation window around the probe.
+
+Decision:
+
+- Medium sandbox probe is green.
+- Continue to P3/full-sandbox preparation only through sandbox/out paths.
+- Do not promote Node 24 globally until scoped runtime has completed full sandbox acceptance and rollback notes exist.

@@ -134,3 +134,10 @@ When a new indexing runtime failure is observed, add an entry here with:
 - current hypothesis;
 - proposed fix or next diagnostic step;
 - status update when fixed and verified.
+
+### NOTE-20260702 — Medium scoped-Node24 probe passed
+
+- Status: evidence added, not a full close of BUG-006.
+- Result: a 10-file medium sandbox probe passed through a project-scoped Node 24 wrapper with `index_vault_failed=0`.
+- Safety: global/user Node was not changed; sanitized transcript had no raw live/sandbox/derived absolute path leaks and no secret-pattern leak.
+- Remaining BUG-006 follow-up: record actual candidate process `node --version` in structured reports, rather than relying on wrapper command evidence.
