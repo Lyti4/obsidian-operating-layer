@@ -165,3 +165,30 @@ upstream API using the active Codex OAuth/subscription bearer
 ```
 
 This setting is non-secret. OAuth tokens remain in the existing credential stores and must never be printed in reports. If the bridge is down, Nanobot must stop or degrade to local structural analysis; it must not silently bypass Headroom.
+
+## Canonical safety references
+
+Graphify tasks inherit the root protected-path and report-sanitization policy from `AGENTS.md` and shared tool policy. The canonical protected set includes `.obsidian`, `_Backups`, `_Archive`, `.trash`, Soul-protected paths, generated/cache paths, derived-index paths, and secret-bearing paths. A Graphify-specific checklist may add restrictions, but must not narrow the root policy.
+
+## Bridge fallback rule
+
+For semantic/model-backed Graphify work, the Headroom URL bridge must be healthy before making model claims. If the bridge or OAuth layer is unavailable, the task must either:
+
+1. stop as `blocked` and return to Hermes; or
+2. run only an explicitly labeled `local_structural_only` pass that makes no semantic/model claims, starts no embeddings, and produces a report that names the degraded mode.
+
+No task may silently fall back to a direct provider or bypass the localhost Headroom URL bridge.
+
+## Minimum evidence packet
+
+Every Nanobot Graphify result must include:
+
+- task packet ID and mode;
+- source kind and sandbox/snapshot identifier;
+- output artifact list;
+- bridge/model route status when model work was used;
+- protected-path target scan result;
+- secret-scan result;
+- mutation check result confirming no live-vault changes;
+- confirmation that no cron, service restart, auth mutation, deploy, paid action, or embedding auto-run occurred;
+- blocked/degraded conditions, if any.

@@ -188,3 +188,19 @@ Reference contract: `25-nanobot-graphify-worker.md`.
 - Verify every Nanobot result for scope, secret hygiene, protected paths, live mutation absence, and evidence quality.
 
 Reference contract: `26-nanobot-standing-worker.md`.
+
+### 2026-07-02 Nanobot compliance excerpt review
+
+Result: green read-only Nanobot compliance review using sanitized excerpts instead of expanding Nanobot workspace access.
+
+Evidence:
+- Runtime health checked for Nanobot and Headroom.
+- Nanobot was routed through `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses`.
+- Artifacts: `out/reports/nanobot-standing-worker/20260702-compliance-excerpts/`.
+- Secret-pattern scan over generated artifacts returned no findings.
+- Live vault was not mutated; Nanobot did not write into the repository directly.
+
+Follow-up changes:
+- Clarified internal vs sanitized path reporting.
+- Normalized protected-path inheritance for Graphify tasks.
+- Added explicit bridge fallback rules and minimum evidence packet requirements for Nanobot Graphify/standing-worker results.

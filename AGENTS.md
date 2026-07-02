@@ -66,6 +66,11 @@ Protected paths are not writable by adapters or workers:
 - Prefer JSON for machine-readable bundles and Markdown for human reports.
 - Keep reports concise and include exact commands, changed files, and verification results.
 
+
+## Report path handling
+
+Use absolute paths in internal logs/evidence when they are needed for verification. For sanitized handoff reports, release-facing summaries, or artifacts meant to leave the local operator context, redact or relativize raw live-vault, sandbox, derived-cache, and secret-bearing paths. Treat internal evidence, sanitized handoff reports, and public summaries as separate artifact classes.
+
 ## Verification policy
 
 After any apply, run a fresh observation and compare it to the baseline. Stop on the first unexpected regression and report the mismatch clearly.

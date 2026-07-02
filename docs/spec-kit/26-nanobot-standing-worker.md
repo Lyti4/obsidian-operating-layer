@@ -214,3 +214,20 @@ For Codex-backed Nanobot work, use the localhost Headroom URL bridge rather than
 - Scope: localhost-only, no public exposure
 
 If the URL bridge or OAuth layer is unhealthy, standing tasks should be marked blocked and returned to Hermes. Do not silently fall back to direct upstream provider calls.
+
+## Runtime fallback and evidence standard
+
+Standing-worker tasks that require Codex subscription capacity must use the localhost Headroom URL bridge. If the bridge/OAuth layer is unhealthy, mark the task `blocked` unless the task packet explicitly permits `local_structural_only` fallback. Any fallback report must be clearly labeled as non-semantic/non-model-backed where applicable.
+
+Minimum evidence for each Nanobot standing-worker result:
+
+- task packet ID, mode, and immutable scope;
+- source kind/path or sanitized excerpt bundle identifier;
+- output artifact list and result pointer;
+- pre/post mutation check method when a project/vault source is involved;
+- secret-scan result for generated artifacts;
+- protected-path target scan result;
+- confirmation that no cron, service restart, auth/profile mutation, deploy, paid action, network exposure, or embedding auto-run occurred;
+- explicit blocked reason and required Hermes/user decision for blocked tasks.
+
+Queue packets under `out/queue/` should use immutable task IDs, explicit status transitions, and result pointers to reports/proposals. Blocked queue items must name the decision needed before retry.
