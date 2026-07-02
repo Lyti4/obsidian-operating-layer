@@ -20,7 +20,7 @@ The project should advance through narrow, verifiable slices. Live Obsidian muta
 | Sandbox layer | disposable copies, protected-path exclusions, reset controls | baseline accepted | medium sandbox indexing probe |
 | Indexing/MCP/RAG | guarded wrapper, sanitized reports, derived storage, batching/resume | sandbox/read-only accepted | diagnose medium/full sandbox timeout path |
 | Docs/productization | release gate, acceptance index, runbooks, changelog | productization slice added | keep docs in sync after each slice |
-| Application layer | proposal-only live operation, then approved narrow apply | not yet started | first live proposal-only pass |
+| Application layer | proposal-only live operation, then approved narrow apply | P3 proposal-only pass green | optional narrow approved apply after explicit manifest |
 
 ## Execution rules
 
@@ -100,3 +100,20 @@ Use the concise operator format:
 Риск/блокер: ...
 Следующий шаг: ...
 ```
+
+
+### 2026-07-02 P3 live proposal-only pass
+
+Result: green read-only/proposal-only run.
+
+Evidence:
+- `make verify` passed before the run.
+- Observation/proposal/verification artifacts: `out/live-proposal-only-20260702T093117Z/`.
+- Live vault scan observed 1048 Markdown files and related non-Markdown assets.
+- Generated proposal stayed `mode: dry-run`, `dry_run_default: true`, `approval_required: true`, `risk_class: read_only_only`, with `0` targets.
+- Verification returned `ok: true` and no issues.
+- Post-run mtime check found `0` live vault files modified since run start.
+- Generated artifacts had no secret-pattern hits.
+
+Finding:
+- The runbook used stale CLI flags/paths; updated to current `--observe`, `--out-dir`, and verify command behavior.
