@@ -8,7 +8,7 @@ Scope: Nanobot as a standing worker for project maintenance, communication, and 
 
 Nanobot should participate in ongoing project operations, not only one-off Graphify work.
 
-Nanobot is a standing worker and local communication hub for bounded maintenance tasks. Hermes remains the orchestrator, safety owner, and acceptance owner.
+Nanobot is a standing worker and local communication hub for bounded maintenance tasks. It routes model calls through the localhost Headroom URL bridge when using Codex subscription inheritance. Hermes remains the orchestrator, safety owner, and acceptance owner.
 
 ```text
 projects / repos / vault snapshots / reports
@@ -203,3 +203,14 @@ Not accepted without separate approval:
 - paid/high-volume API usage;
 - automatic embeddings;
 - auth/profile/credential mutation.
+
+## Model routing
+
+For Codex-backed Nanobot work, use the localhost Headroom URL bridge rather than direct upstream calls.
+
+- URL: `http://127.0.0.1:8787/v1/responses`
+- Env override: `NANOBOT_OPENAI_CODEX_RESPONSES_URL`
+- Default small/Graphify model: `gpt-5.4-mini`
+- Scope: localhost-only, no public exposure
+
+If the URL bridge or OAuth layer is unhealthy, standing tasks should be marked blocked and returned to Hermes. Do not silently fall back to direct upstream provider calls.

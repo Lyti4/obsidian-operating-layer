@@ -53,7 +53,7 @@ Protected paths are not writable by adapters or workers:
 
 - Graph-first before embedding-first.
 - Graphify semantic work runs on sandbox copies first, not the live vault.
-- Nanobot Graphify tasks use the subscription bridge with `gpt-5.4-mini` unless a later task explicitly overrides it.
+- Nanobot Graphify tasks use the localhost Headroom URL bridge with `gpt-5.4-mini` unless a later task explicitly overrides it.
 - Embeddings are optional and later-stage only: small batches, single worker, `nice`/`ionice` where applicable, checkpoint/resume, and stop-on-load guardrails.
 - No Graphify, MCP, RAG, or embedding component may directly write/delete/move notes in the live vault.
 

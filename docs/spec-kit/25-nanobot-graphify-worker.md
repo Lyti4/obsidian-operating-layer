@@ -13,7 +13,7 @@ Hermes remains the control plane:
 ```text
 Hermes prepares bounded task packet
   ↓
-Nanobot runs Graphify through subscription bridge on gpt-5.4-mini
+Nanobot runs Graphify through the Headroom URL bridge on gpt-5.4-mini
   ↓
 Graph/report/proposal artifacts are written under out/
   ↓
@@ -40,7 +40,7 @@ Default Graphify worker route:
 |---|---|
 | worker | Nanobot |
 | model | `gpt-5.4-mini` |
-| route | subscription bridge / inherited subscription path |
+| route | Headroom URL bridge: `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses` |
 | source | sandbox vault copy or approved read-only snapshot |
 | outputs | graph JSON/Markdown, findings, proposal-only bundle |
 | live writes | forbidden |
@@ -143,3 +143,25 @@ Not accepted now:
 - silent model escalation;
 - direct apply without approval manifest;
 - use of protected paths as targets.
+
+## Headroom URL bridge
+
+Nanobot/Graphify subscription inheritance uses the local Headroom URL bridge, not a direct upstream provider call.
+
+Runtime setting:
+
+```bash
+NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses
+```
+
+Expected path:
+
+```text
+Nanobot openai_codex provider
+  ↓
+Headroom URL proxy on 127.0.0.1:8787
+  ↓
+upstream API using the active Codex OAuth/subscription bearer
+```
+
+This setting is non-secret. OAuth tokens remain in the existing credential stores and must never be printed in reports. If the bridge is down, Nanobot must stop or degrade to local structural analysis; it must not silently bypass Headroom.
