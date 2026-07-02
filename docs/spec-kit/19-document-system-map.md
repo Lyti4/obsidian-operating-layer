@@ -17,7 +17,9 @@ Use it as the entry point when deciding what to run next.
 | Project rules | `AGENTS.md` | Read-only-first operating rules and verification policy |
 | Spec kit | `docs/spec-kit/` | Architecture, safety contract, plans, acceptance evidence |
 | Kanban mirror | `docs/triage/kanban-board.md` | GitHub-visible mirror of the Hermes Kanban chain |
-| Operator docs | `docs/operator-guide.md` | Human/operator usage guide |
+| Operator docs | `docs/operator-guide.md`, `docs/runbooks/` | Human/operator usage guide and short runbooks |
+| Release gate | `docs/release-readiness.md` | Single go/no-go checklist for bounded releases |
+| Acceptance index | `docs/acceptance/index.md` | Current accepted / conditional / not accepted capability map |
 | Generated evidence | `out/reports/` | Rebuildable run reports; not the canonical spec |
 | Generated artifacts | `out/` | Sandbox vaults, derived indices, reports, diagrams |
 
@@ -32,7 +34,10 @@ For a fast orientation read:
 5. `18-external-indexing-spike-plan.md` — external indexing runtime/spike plan.
 6. `20-indexing-runtime-acceptance.md` — current accepted boundary for guarded indexing runtime work.
 7. `14-operational-acceptance-report.md`, `15-manual-and-adapter-acceptance.md`, `16-sandbox-e2e-evidence.md` — accepted evidence.
-8. `docs/triage/kanban-board.md` — active board chain.
+8. `docs/acceptance/index.md` — current accepted, conditional, and not-yet-accepted capabilities.
+9. `docs/release-readiness.md` — release go/no-go gate.
+10. `docs/runbooks/` — short operator workflows.
+11. `docs/triage/kanban-board.md` — active board chain.
 
 ## Spec kit document groups
 
@@ -76,6 +81,7 @@ For a fast orientation read:
 | `18-external-indexing-spike-plan.md` | active, partly implemented | Defines real external-run spike for `DalecB/obsidian-semantic-mcp` and wrapper hardening/runtime path |
 | `19-document-system-map.md` | active | Current documentation map and state-of-world |
 | `20-indexing-runtime-acceptance.md` | active acceptance | Accepted guarded runtime boundary, evidence table, and remaining production-integration blockers |
+| `24-orchestration-backlog.md` | active execution plan | Layer-by-layer backlog for finishing, improving, and applying the project |
 
 ### E. Research and run-specific notes
 
@@ -99,6 +105,14 @@ For a fast orientation read:
 | `docs/obsidian-review-dashboard/templates/report-template.md` | Acceptance report template |
 | `docs/obsidian-review-dashboard/templates/review-note.md` | Review note template |
 | `docs/triage/kanban-board.md` | Live Kanban mirror snapshot |
+| `docs/release-readiness.md` | Release go/no-go gate |
+| `docs/acceptance/index.md` | Accepted / conditional / not accepted capability map |
+| `docs/runbooks/observe-propose-verify.md` | Safe observation/proposal/verification workflow |
+| `docs/runbooks/proposal-review.md` | Human proposal review workflow |
+| `docs/runbooks/sandbox-indexing.md` | Sandbox indexing/MCP/RAG probe workflow |
+| `docs/runbooks/approved-live-apply.md` | Explicitly approved live apply workflow |
+| `docs/releases/2026-07-02-productization-slice.md` | Productization slice release note |
+| `docs/spec-kit/24-orchestration-backlog.md` | Layer-by-layer execution backlog |
 | `docs/triage/project-delivery-playbook.md` | Reusable project delivery process |
 
 ## Current architecture layers

@@ -25,7 +25,10 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `src/obslayer/guardrails.py` — shared guardrails, approval manifest validation, protected path policy, backup policy.
 - `src/obslayer/sandbox.py` — sandbox vault copy/reset harness for read-only component evaluation.
 - `tests/` — unit/regression tests for dry-run, approval gating, protected paths, CLI wrappers, and report generation.
-- `docs/` — operator guide and report template.
+- `docs/` — operator guide, release readiness, acceptance index, runbooks, and report templates.
+- `docs/release-readiness.md` — single release go/no-go checklist.
+- `docs/acceptance/index.md` — current accepted / conditional / not accepted capability map.
+- `docs/runbooks/` — short operator runbooks for safe daily use.
 - `manifests/` — checked-in manifest examples only; real manifests belong in task-specific working dirs.
 - `out/`, `artifacts/`, `obslayer-backups/`, `.hermes-backups/` — local generated artifacts, ignored by git.
 
@@ -53,6 +56,17 @@ From the Obsidian task context and GitHub scan, this package adopts patterns rat
 - No proposal may target protected namespaces.
 - No secrets, payments, public posting, production restarts, Gateway/systemd changes, or network exposure.
 - Keep live vault mutations narrowly scoped, backed up, and verified.
+
+## Operational docs
+
+Start here before applying the project operationally:
+
+- `docs/release-readiness.md` — release go/no-go gate.
+- `docs/acceptance/index.md` — accepted boundaries and not-yet-accepted capabilities.
+- `docs/runbooks/observe-propose-verify.md` — safe live-vault analysis without mutation.
+- `docs/runbooks/proposal-review.md` — human review before approval.
+- `docs/runbooks/sandbox-indexing.md` — bounded indexing/MCP/RAG probes.
+- `docs/runbooks/approved-live-apply.md` — only after explicit approval.
 
 ## Quick start
 
