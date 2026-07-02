@@ -66,8 +66,10 @@ The project should advance through narrow, verifiable slices. Live Obsidian muta
 Only after P3 produces a useful proposal and the operator approves:
 
 - create exact approval manifest;
+- require canonical `backup_root: "_Backups/obsidian-operating-layer"`;
 - backup;
 - apply;
+- run mandatory post-apply content verification;
 - post-observe;
 - verify drift;
 - record release note and acceptance update.
@@ -150,3 +152,18 @@ Evidence:
 
 Finding:
 - `docs/runbooks/approved-live-apply.md` used stale CLI flags. Updated it to the actual `obsidian_apply.py` and `make live-proposal-only` commands.
+
+
+### 2026-07-02 P4 fail-closed apply contract hardening
+
+Result: sandbox-only guardrail hardening completed.
+
+Changes:
+- Approval manifests must use the canonical backup root `_Backups/obsidian-operating-layer`.
+- Example approval manifests were updated to the current live-apply schema and exact proposal binding.
+- `obsidian_apply.py` records mandatory `post_verify` evidence after approved apply.
+- Added fail-closed regression coverage for wrong backup roots, extra approved targets, and missing proposal targets.
+
+Evidence:
+- `python3 -m pytest tests/test_guardrails.py tests/test_apply_rehearsal.py -q` passed.
+- Live Obsidian vault was not mutated.

@@ -113,6 +113,22 @@ def test_approval_manifest_rejects_backup_root_escape(tmp_path: Path) -> None:
         validate_approval_manifest(manifest)
 
 
+
+def test_approval_manifest_requires_canonical_backup_root(tmp_path: Path) -> None:
+    vault = make_vault(tmp_path)
+    manifest = build_approval_manifest(
+        task_id="t_123",
+        approver="Dmitry",
+        reason="narrow safe edit",
+        vault_root=str(vault),
+        targets=[str(vault / "Notes" / "alpha.md")],
+        dry_run=False,
+    ).to_dict()
+
+    manifest["backup_root"] = "Backups/custom"
+    with pytest.raises(GuardrailError, match="_Backups/obsidian-operating-layer"):
+        validate_approval_manifest(manifest)
+
 def test_live_apply_refuses_manifest_without_proposal_binding(tmp_path: Path) -> None:
     vault = make_vault(tmp_path)
     repo = Path(__file__).resolve().parents[1]
@@ -404,3 +420,117 @@ def test_live_apply_refuses_manifest_vault_mismatch(tmp_path: Path) -> None:
     assert completed.returncode != 0
     assert "vault" in completed.stderr + completed.stdout
     assert (vault / "Notes" / "alpha.md").read_text(encoding="utf-8") == "hello world\n"
+
+
+def test_live_apply_refuses_manifest_extra_approved_target(tmp_path: Path) -> None:
+    vault = make_vault(tmp_path)
+    repo = Path(__file__).resolve().parents[1]
+    proposal = tmp_path / "proposal.json"
+    manifest = tmp_path / "approval.json"
+
+    proposal.write_text(
+        json.dumps(
+            {
+                "vault_root": str(vault),
+                "targets": [
+                    {"path": "Notes/alpha.md", "old_text": "hello", "new_text": "changed", "evidence": "unit"},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    manifest.write_text(
+        json.dumps(
+            {
+                "approved": True,
+                "proposal": str(proposal),
+                "approval_phrase": DEFAULT_APPROVAL_PHRASE,
+                "task_id": "t_guard",
+                "approver": "Dmitry",
+                "reason": "extra target must fail",
+                "vault_root": str(vault),
+                "targets": [str(vault / "Notes" / "alpha.md"), str(vault / "Notes" / "beta.md")],
+                "backup_root": "_Backups/obsidian-operating-layer",
+                "dry_run": False,
+                "require_post_verify": True,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_apply.py"),
+            "--proposal",
+            str(proposal),
+            "--approval-manifest",
+            str(manifest),
+            "--apply",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode != 0
+    assert "extra_approved" in completed.stderr + completed.stdout
+    assert (vault / "Notes" / "alpha.md").read_text(encoding="utf-8") == "hello world\n"
+
+
+def test_live_apply_refuses_manifest_missing_proposal_target(tmp_path: Path) -> None:
+    vault = make_vault(tmp_path)
+    repo = Path(__file__).resolve().parents[1]
+    proposal = tmp_path / "proposal.json"
+    manifest = tmp_path / "approval.json"
+
+    proposal.write_text(
+        json.dumps(
+            {
+                "vault_root": str(vault),
+                "targets": [
+                    {"path": "Notes/alpha.md", "old_text": "hello", "new_text": "changed", "evidence": "unit"},
+                    {"path": "Notes/beta.md", "old_text": "beta", "new_text": "changed", "evidence": "unit"},
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    manifest.write_text(
+        json.dumps(
+            {
+                "approved": True,
+                "proposal": str(proposal),
+                "approval_phrase": DEFAULT_APPROVAL_PHRASE,
+                "task_id": "t_guard",
+                "approver": "Dmitry",
+                "reason": "missing target must fail",
+                "vault_root": str(vault),
+                "targets": [str(vault / "Notes" / "alpha.md")],
+                "backup_root": "_Backups/obsidian-operating-layer",
+                "dry_run": False,
+                "require_post_verify": True,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_apply.py"),
+            "--proposal",
+            str(proposal),
+            "--approval-manifest",
+            str(manifest),
+            "--apply",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode != 0
+    assert "not approved" in completed.stderr + completed.stdout
+    assert (vault / "Notes" / "alpha.md").read_text(encoding="utf-8") == "hello world\n"
+    assert (vault / "Notes" / "beta.md").read_text(encoding="utf-8") == "beta\n"
