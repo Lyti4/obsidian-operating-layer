@@ -28,6 +28,26 @@ def test_observe_propose_verify(tmp_path):
     assert "verification ok" in result.stdout
 
 
+def test_verify_json_only_is_machine_readable(tmp_path):
+    vault = make_test_vault(tmp_path)
+    obs = tmp_path / "obs.json"
+    propdir = tmp_path / "proposal"
+    run([sys.executable, str(TOOLS / "obsidian_observe.py"), "--vault", str(vault), "--out", str(obs)])
+    run([sys.executable, str(TOOLS / "obsidian_propose.py"), "--observe", str(obs), "--out-dir", str(propdir)])
+    result = run([
+        sys.executable,
+        str(TOOLS / "obsidian_verify.py"),
+        "--observe",
+        str(obs),
+        "--proposal",
+        str(propdir / "proposal.json"),
+        "--json-only",
+    ])
+    data = json.loads(result.stdout)
+    assert data["ok"] is True
+    assert data["issues"] == []
+
+
 def test_proposal_defaults_dry_run(tmp_path):
     vault = make_test_vault(tmp_path)
     obs = tmp_path / "obs.json"

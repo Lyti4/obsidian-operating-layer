@@ -117,3 +117,20 @@ Evidence:
 
 Finding:
 - The runbook used stale CLI flags/paths; updated to current `--observe`, `--out-dir`, and verify command behavior.
+
+
+### 2026-07-02 P3 repeatable make target
+
+Result: green repeatable read-only/proposal-only target.
+
+Changes:
+- Added `make live-proposal-only` for timestamped observation/proposal/verification artifacts under `out/live-proposal-only-*`.
+- Added `obsidian_verify.py --json-only` so verification artifacts are machine-readable without stripping human status text.
+- Updated the observe/propose/verify runbook to prefer the make target and keep manual commands as an equivalent path.
+
+Evidence:
+- `make verify` passed.
+- Tiny temp-vault run passed and produced JSON-only verification.
+- Live read-only run: `out/live-proposal-only-20260702T095004Z/`.
+- Live run observed 1048 Markdown files, produced `0` proposal targets, kept `dry_run_default: true`, and verification returned `ok: true` with no issues.
+- Post-run mtime check found `0` live vault files modified since run start.
