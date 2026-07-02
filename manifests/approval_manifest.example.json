@@ -1,16 +1,17 @@
 {
-  "approved": true,
   "approval_phrase": "APPROVE OBSIDIAN APPLY",
-  "task_id": "t_ea0914d2",
+  "approved": true,
   "approver": "Dmitry",
-  "reason": "Explicitly approved live apply for a narrow, backed-up Obsidian edit.",
-  "vault_root": "/home/hermesadmin/Obsidian",
-  "targets": [
-    "Memory-Vault/Hermes/Obsidian Operating Layer.md"
-  ],
   "backup_root": "_Backups/obsidian-operating-layer",
+  "created_at": "2026-07-02T00:00:00Z",
   "dry_run": false,
+  "max_files_per_run": 1,
+  "proposal": "/home/hermesadmin/work/obsidian-operating-layer/out/propose/proposal.json",
+  "reason": "Explicitly approved narrow Obsidian edit; example only, replace paths before use.",
   "require_post_verify": true,
-  "max_files_per_run": 25,
-  "created_at": "2026-06-27T00:00:00Z"
+  "targets": [
+    "/home/hermesadmin/Obsidian/Memory-Vault/Hermes/Obsidian Operating Layer.md"
+  ],
+  "task_id": "p4-narrow-apply-example",
+  "vault_root": "/home/hermesadmin/Obsidian"
 }

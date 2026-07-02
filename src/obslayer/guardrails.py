@@ -227,12 +227,8 @@ def validate_approval_manifest(manifest: dict) -> ApprovalManifest:
     backup_root = Path(str(manifest["backup_root"]))
     if backup_root.is_absolute() or ".." in backup_root.parts:
         raise GuardrailError("Approval manifest backup_root must stay inside the vault")
-    if is_protected_relative(backup_root):
-        # `_Backups/obsidian-operating-layer` is the one intentional exception:
-        # backup writes must be inside the vault backup namespace, while user
-        # proposal targets are forbidden from touching it.
-        if backup_root.as_posix() != DEFAULT_BACKUP_ROOT:
-            raise GuardrailError("Approval manifest backup_root must use the operating-layer backup namespace")
+    if backup_root.as_posix() != DEFAULT_BACKUP_ROOT:
+        raise GuardrailError("Approval manifest backup_root must use _Backups/obsidian-operating-layer")
 
     vault_root = normalize_vault_root(manifest["vault_root"])
     validate_targets(vault_root, manifest["targets"])

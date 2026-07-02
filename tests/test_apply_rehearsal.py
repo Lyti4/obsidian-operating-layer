@@ -85,6 +85,9 @@ def test_live_apply_rehearsal_on_disposable_sandbox_vault_creates_backup_and_ver
     assert (Path(result["backup_dir"]) / "Notes" / "alpha.md").read_text(encoding="utf-8") == "# Alpha\nold body\n"
     assert (Path(result["backup_dir"]) / "approval-manifest.json").is_file()
     assert (Path(result["backup_dir"]) / "backup-plan.json").is_file()
+    assert result["post_verify"]["ok"] is True
+    assert result["post_verify"]["issues"] == []
+    assert result["post_verify"]["checked_targets"][0]["path"] == "Notes/alpha.md"
 
     observe_out = tmp_path / "post-observe.json"
     observe_run = subprocess.run(

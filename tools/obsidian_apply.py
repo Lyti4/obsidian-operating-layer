@@ -93,6 +93,35 @@ def apply_text_replacements(vault_root: Path, targets: list[dict], backup_dir: P
     return results
 
 
+def verify_applied_targets(vault_root: Path, targets: list[dict], backup_dir: Path) -> dict:
+    issues: list[str] = []
+    checked: list[dict] = []
+    relpaths = proposal_target_relpaths(vault_root, targets)
+    for item, rel in zip(targets, relpaths, strict=True):
+        target_path = (vault_root / rel).resolve()
+        backup_path = (backup_dir / rel).resolve()
+        if not target_path.exists():
+            issues.append(f"post-apply target missing: {rel.as_posix()}")
+            continue
+        if not backup_path.exists():
+            issues.append(f"post-apply backup missing: {rel.as_posix()}")
+            continue
+        original = backup_path.read_text(encoding="utf-8")
+        old_text = item.get("old_text", "")
+        new_text = item.get("new_text", "")
+        expected = original.replace(old_text, new_text, 1) if old_text else new_text
+        current = target_path.read_text(encoding="utf-8")
+        if current != expected:
+            issues.append(f"post-apply content mismatch: {rel.as_posix()}")
+        checked.append(
+            {
+                "path": rel.as_posix(),
+                "sha256": hashlib.sha256(current.encode("utf-8")).hexdigest(),
+            }
+        )
+    return {"ok": not issues, "issues": issues, "checked_targets": checked}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Apply approved Obsidian edits with a dry-run default and backup gate.")
     parser.add_argument("--proposal", required=True, help="Proposal JSON produced by obsidian_propose.py")
@@ -120,6 +149,7 @@ def main() -> int:
         "target_relpaths": [path.as_posix() for path in proposal_relpaths],
         "backup_dir": None,
         "applied": [],
+        "post_verify": None,
     }
 
     if dry_run:
@@ -150,12 +180,16 @@ def main() -> int:
     write_json(backup_dir / "backup-plan.json", backup_plan.to_dict())
 
     applied = apply_text_replacements(vault_root, targets, backup_dir)
+    post_verify = verify_applied_targets(vault_root, targets, backup_dir)
+    if manifest.require_post_verify and not post_verify["ok"]:
+        raise GuardrailError(f"post-apply verification failed: {post_verify['issues']}")
     result.update(
         {
             "status": "applied",
             "backup_dir": str(backup_dir),
             "applied": applied,
             "approval_manifest": str(Path(args.approval_manifest).resolve()),
+            "post_verify": post_verify,
         }
     )
     if args.out:
