@@ -53,6 +53,7 @@ Protected paths are not writable by adapters or workers:
 
 - Graph-first before embedding-first.
 - Graphify semantic work runs on sandbox copies first, not the live vault.
+- Use Graphify's native workflow before proposal generation: build/extract to `graphify-out/`, read `GRAPH_REPORT.md`, then use `graphify query`, `graphify path`, or `graphify explain` for decisions. RAG counts are only a preflight/noise guardrail, not the main Graphify deliverable.
 - Nanobot Graphify tasks use the localhost Headroom URL bridge with `gpt-5.4-mini` unless a later task explicitly overrides it.
 - Embeddings are optional and later-stage only: small batches, single worker, `nice`/`ionice` where applicable, checkpoint/resume, and stop-on-load guardrails.
 - No Graphify, MCP, RAG, or embedding component may directly write/delete/move notes in the live vault.
