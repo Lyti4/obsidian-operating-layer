@@ -134,3 +134,19 @@ Evidence:
 - Live read-only run: `out/live-proposal-only-20260702T095004Z/`.
 - Live run observed 1048 Markdown files, produced `0` proposal targets, kept `dry_run_default: true`, and verification returned `ok: true` with no issues.
 - Post-run mtime check found `0` live vault files modified since run start.
+
+
+### 2026-07-02 P4 sandbox apply-contract preflight
+
+Result: green sandbox-only apply contract preflight; live apply remains blocked pending explicit approval manifest.
+
+Evidence:
+- Created a temporary vault under `/tmp` with one note target.
+- Built a proposal with one text replacement, `base_sha256`, evidence, and dry-run defaults.
+- Built an approval manifest naming the exact proposal and target, with `APPROVE OBSIDIAN APPLY`, `dry_run: false`, and `require_post_verify: true`.
+- `obsidian_apply.py` dry-run returned `status: dry-run` and did not create backups.
+- Approved sandbox apply returned `status: applied`, changed exactly one temp-vault note, and created a backup copy under the temp vault `_Backups/obsidian-operating-layer/...`.
+- No live Obsidian vault path was used for the apply preflight.
+
+Finding:
+- `docs/runbooks/approved-live-apply.md` used stale CLI flags. Updated it to the actual `obsidian_apply.py` and `make live-proposal-only` commands.
