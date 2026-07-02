@@ -32,3 +32,18 @@
 - `propose`: ok for external components.
 - `write-request`: must become obslayer proposal.
 - `write-direct`: forbidden except obslayer apply with manifest.
+
+## Nanobot Graphify worker
+
+Nanobot is the preferred worker for Graphify semantic graph tasks when the task is sandbox/read-only and routed through the subscription bridge on `gpt-5.4-mini`.
+
+Contract:
+
+- worker id: `nanobot-graphify`;
+- allowed: `read`, `search`, `analyze`, `graph`, `propose`;
+- forbidden: `write-direct`, `delete`, `move`, `patch`, `secret-read`, `live-mutation`, `embedding-auto-run`;
+- input: sandbox vault snapshot or explicitly approved read-only source;
+- output: graph/report/proposal artifacts under `out/`;
+- acceptance owner: Hermes, not Nanobot.
+
+See `25-nanobot-graphify-worker.md` for the full procedure.

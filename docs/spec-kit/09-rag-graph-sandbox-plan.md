@@ -78,3 +78,20 @@ turn write-like suggestions into proposal only
 - human report: `docs/spec-kit/phase04-rag-graph-evaluation-2026-06-28.md`
 
 The current slice normalizes findings only: nonexistent links, orphan notes, candidate backlinks, MOC clusters, duplicate candidates, and graph summaries. All write-like outcomes are proposal-only and record `executed=false`; no live vault path is used.
+
+## 2026-07-02 Graphify-first update
+
+The current execution order is Graphify-first, embedding-later.
+
+Nanobot may run Graphify tasks through the subscription bridge on `gpt-5.4-mini`, but only against sandbox/read-only snapshots. The goal is to obtain semantic structure before paying the cost and risk of full embedding:
+
+- note graph;
+- clusters and candidate MOCs;
+- duplicate/merge candidates;
+- broken/nonexistent links;
+- weak-link/backlink candidates;
+- a reviewed candidate set for any later embeddings.
+
+Embeddings are not part of the default Graphify pass. Any embedding run must be a separate accepted slice with bounded batches, concurrency `1`, checkpoint/resume, and load-stop guardrails.
+
+Detailed Nanobot worker contract: `25-nanobot-graphify-worker.md`.

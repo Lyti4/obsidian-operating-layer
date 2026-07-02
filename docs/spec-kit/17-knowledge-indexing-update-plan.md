@@ -175,3 +175,25 @@ Result:
 ## Next step
 
 Move from contract/no-write harness to an isolated external-run spike for `DalecB/obsidian-semantic-mcp`: resolve Node 24 in an isolated sandbox toolchain, start only against the sandbox vault, force localhost Ollama, run real `index_vault/search_notes/read_note/index_status`, and compare results against the harness scorecard.
+
+## 2026-07-02 graph-first safety update
+
+To reduce server risk, the semantic roadmap now requires a graph-first pass before any routine embedding work.
+
+Default order:
+
+```text
+sandbox snapshot
+  ↓
+Graphify/Nanobot semantic graph on gpt-5.4-mini
+  ↓
+reviewed clusters / links / duplicates / cleanup candidates
+  ↓
+optional embedding candidate set
+  ↓
+separate bounded embedding slice, if approved
+```
+
+The Graphify/Nanobot stage must not start local embeddings automatically and must not mutate the live vault. It produces proposal-only artifacts for Hermes review. The embedding sidecar remains optional and derived; it is not required for lexical/graph acceptance.
+
+See `25-nanobot-graphify-worker.md` for worker routing and stop conditions.

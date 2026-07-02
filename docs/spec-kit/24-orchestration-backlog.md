@@ -167,3 +167,14 @@ Changes:
 Evidence:
 - `python3 -m pytest tests/test_guardrails.py tests/test_apply_rehearsal.py -q` passed.
 - Live Obsidian vault was not mutated.
+
+### P2b — Graphify-first semantic layer
+
+- Use Nanobot as the Graphify worker through the subscription bridge on `gpt-5.4-mini`.
+- Run only on sandbox/read-only vault snapshots.
+- Produce graph/report/proposal artifacts under `out/`.
+- Verify no live vault mutation, no protected-path target, no secret leakage, and no automatic embedding job.
+- Use Graphify outputs to select a narrow embedding candidate set later.
+- Do not run routine/full embeddings until a separate bounded embedding slice is approved.
+
+Reference contract: `25-nanobot-graphify-worker.md`.

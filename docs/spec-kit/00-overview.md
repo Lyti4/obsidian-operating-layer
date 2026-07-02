@@ -44,5 +44,6 @@ Obsidian vault
 - `18-external-indexing-spike-plan.md` — real external indexing runtime/spike plan for `DalecB/obsidian-semantic-mcp` under sandbox/read-only constraints.
 - `19-document-system-map.md` — current map of docs, evidence, active/stale surfaces, and next indexing-runtime acceptance slice.
 - `20-indexing-runtime-acceptance.md` — accepted state of the guarded indexing runtime, evidence, and remaining production-integration blockers.
+- `25-nanobot-graphify-worker.md` — Nanobot-as-Graphify-worker contract: bridge route, `gpt-5.4-mini`, sandbox/read-only, graph-first before embeddings.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.
