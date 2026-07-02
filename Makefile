@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake
+.PHONY: test lint compile verify smoke dashboard-list live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -18,6 +18,7 @@ INDEX_RUNTIME_DERIVED ?= out/external-indexing-spike/auto-probe
 INDEX_RUNTIME_REPORTS ?= out/reports/external-indexing-spike/auto-probe
 INDEX_STDIO_DERIVED ?= out/external-indexing-spike/stdio-probe-fake
 INDEX_STDIO_REPORTS ?= out/reports/external-indexing-spike/stdio-probe-fake
+LIVE_PROPOSAL_OUT ?= out/live-proposal-only
 
 test:
 	python3 -m pytest -q
@@ -35,6 +36,15 @@ smoke:
 
 dashboard-list:
 	python3 tools/obsidian_review_dashboard.py list --proposal-root $(PROPOSAL_ROOT) --json
+
+live-proposal-only:
+	stamp=$$(date -u +%Y%m%dT%H%M%SZ); \
+	base="$(LIVE_PROPOSAL_OUT)-$$stamp"; \
+	mkdir -p "$$base"; \
+	python3 tools/obsidian_observe.py --vault $(VAULT) --out "$$base/observation.json"; \
+	python3 tools/obsidian_propose.py --observe "$$base/observation.json" --out-dir "$$base/propose"; \
+	python3 tools/obsidian_verify.py --observe "$$base/observation.json" --proposal "$$base/propose/proposal.json" --json-only > "$$base/verify.json"; \
+	printf 'BASE=%s\n' "$$base" | tee "$$base/run.env"
 
 field-slice-example:
 	python3 tools/obsidian_field_slice.py --vault $(VAULT) --out-root $(FIELD_SLICE_OUT) --task-id make-field-slice-example --decision pending

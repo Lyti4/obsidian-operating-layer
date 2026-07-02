@@ -62,6 +62,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Verify an observation/proposal bundle for the Obsidian operating layer.")
     parser.add_argument("--observe", required=True, help="Observation JSON path")
     parser.add_argument("--proposal", required=True, help="Proposal JSON path")
+    parser.add_argument("--json-only", action="store_true", help="Print only the verification JSON result")
     args = parser.parse_args()
 
     observation = load_json(Path(args.observe).expanduser().resolve())
@@ -70,10 +71,11 @@ def main() -> int:
         raise GuardrailError("Observation and proposal must be JSON objects")
 
     result = verify(observation, proposal)
-    if result["ok"]:
-        print("verification ok")
-    else:
-        print("verification failed")
+    if not args.json_only:
+        if result["ok"]:
+            print("verification ok")
+        else:
+            print("verification failed")
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0 if result["ok"] else 1
 
