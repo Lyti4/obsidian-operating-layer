@@ -40,13 +40,21 @@ Default Graphify worker route:
 |---|---|
 | worker | Nanobot |
 | model | `gpt-5.4-mini` |
-| route | Headroom URL bridge: `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses` |
+| route | Headroom/Codex URL bridge; prefer Graphify `--backend codex-cli --model gpt-5.4-mini` for native Graphify semantic extraction, or Nanobot `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses` for Nanobot worker calls |
 | source | sandbox vault copy or approved read-only snapshot |
 | outputs | graph JSON/Markdown, findings, proposal-only bundle |
 | live writes | forbidden |
 | embeddings | forbidden by default; separate approved stage only |
 
 If the bridge is unavailable, the task must degrade to local structural analysis or stop. It must not silently switch to a heavier model or local embedding job.
+
+Native Graphify semantic extraction should use the local Codex CLI backend when available:
+
+```bash
+graphify extract <sandbox-corpus>   --backend codex-cli   --model gpt-5.4-mini   --max-concurrency 1   --max-workers 1
+```
+
+This route inherits the approved Codex provider configuration (`provider=headroom`, localhost Headroom base URL) and avoids raw OpenAI-compatible API keys. Keep the first reruns bounded to tiny/small sandbox corpora, then run `graphify cluster-only`, inspect `GRAPH_REPORT.md`, and use `graphify query/path/explain --graph <graph.json>` before any proposal packet.
 
 ## Graphify-directed Nanobot loop
 
