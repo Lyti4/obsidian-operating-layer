@@ -30,6 +30,8 @@ Nanobot can be involved continuously in project maintenance and inter-agent comm
 
 Standing Nanobot task packets and reports should stay under `out/queue/`, `out/reports/`, or `out/proposals/` unless a task explicitly says otherwise.
 
+When Nanobot is restricted to its own workspace, hand it sanitized workspace-local copies of Graphify/project evidence and ask it to write a local `REPORT.md`; Hermes then verifies and archives the report under project `out/reports/`. Do not expand Nanobot filesystem permissions just to let it inspect project paths.
+
 ## Vault safety contract
 
 Live vault mutation is allowed only through:

@@ -11,11 +11,11 @@ Nanobot is the designated worker for Graphify-style semantic graph tasks, but no
 Hermes remains the control plane:
 
 ```text
-Hermes prepares bounded task packet
+Graphify evidence/report selects the next bounded packet
   ↓
-Nanobot runs Graphify through the Headroom URL bridge on gpt-5.4-mini
+Hermes copies only the approved/sanitized packet into Nanobot workspace
   ↓
-Graph/report/proposal artifacts are written under out/
+Nanobot reads the local packet and produces a report/proposal draft
   ↓
 Hermes verifies safety, quality, load, and proposal shape
   ↓
@@ -47,6 +47,24 @@ Default Graphify worker route:
 | embeddings | forbidden by default; separate approved stage only |
 
 If the bridge is unavailable, the task must degrade to local structural analysis or stop. It must not silently switch to a heavier model or local embedding job.
+
+## Graphify-directed Nanobot loop
+
+Graphify should drive Nanobot by evidence packets, not by giving Nanobot broad filesystem reach.
+
+Required loop:
+
+```text
+Graphify report / graph.json / findings
+  → bounded task packet
+  → sanitized copy inside Nanobot's restricted workspace
+  → Nanobot observe/report-only analysis
+  → Hermes review and archival under out/reports/
+```
+
+When Nanobot runs with `restrictToWorkspace=true`, it must not be pointed at project paths outside its workspace. Hermes should copy only the approved reports/evidence into a workspace-local inbox packet such as `inbox/graphify-to-nanobot-.../`, ask Nanobot to write `REPORT.md` in that same packet directory, then copy the verified report back to this repository's `out/reports/`.
+
+If Nanobot needs more context, it should request the missing skill, tool, or evidence in its report instead of expanding permissions, reading live vault paths, or changing configuration.
 
 ## Task packet shape
 
