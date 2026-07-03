@@ -244,3 +244,22 @@ Every Nanobot Graphify result must include:
 - mutation check result confirming no live-vault changes;
 - confirmation that no cron, service restart, auth mutation, deploy, paid action, or embedding auto-run occurred;
 - blocked/degraded conditions, if any.
+
+
+## Graphify-derived embedding handoff
+
+Embedding work must now consume a reviewed Graphify output first. The accepted handoff is:
+
+```text
+sandbox snapshot
+  ↓
+Graphify extract / cluster-only / query-path-explain
+  ↓
+graphify-out/graph.json + GRAPH_REPORT.md
+  ↓
+obslayer graphify embedding handoff manifest
+  ↓
+optional bounded embedding runner consumes only manifest candidates
+```
+
+Use `tools/obsidian_graphify_embedding_handoff.py` to create `embedding-manifest.json` and `REPORT.md` from `graphify-out/graph.json`. The handoff selects only eligible sandbox markdown/text source files referenced by Graphify nodes, scores them by graph participation, records hashes, and marks `embedding_policy.auto_execute=false`. It does not start embeddings. A later embedding runner must use that manifest as its allowlist, keep concurrency `1`, checkpoint/resume, write only derived cache under `out/external-indexing-spike/graphify-derived/`, and stop before live vault mutation.

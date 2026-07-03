@@ -101,3 +101,22 @@ Nanobot may run Graphify tasks through the subscription bridge on `gpt-5.4-mini`
 Embeddings are not part of the default Graphify pass. Any embedding run must be a separate accepted slice with bounded batches, concurrency `1`, checkpoint/resume, and load-stop guardrails.
 
 Detailed Nanobot worker contract: `25-nanobot-graphify-worker.md`.
+
+
+## Graphify-derived embedding handoff
+
+Embedding work must now consume a reviewed Graphify output first. The accepted handoff is:
+
+```text
+sandbox snapshot
+  ↓
+Graphify extract / cluster-only / query-path-explain
+  ↓
+graphify-out/graph.json + GRAPH_REPORT.md
+  ↓
+obslayer graphify embedding handoff manifest
+  ↓
+optional bounded embedding runner consumes only manifest candidates
+```
+
+Use `tools/obsidian_graphify_embedding_handoff.py` to create `embedding-manifest.json` and `REPORT.md` from `graphify-out/graph.json`. The handoff selects only eligible sandbox markdown/text source files referenced by Graphify nodes, scores them by graph participation, records hashes, and marks `embedding_policy.auto_execute=false`. It does not start embeddings. A later embedding runner must use that manifest as its allowlist, keep concurrency `1`, checkpoint/resume, write only derived cache under `out/external-indexing-spike/graphify-derived/`, and stop before live vault mutation.

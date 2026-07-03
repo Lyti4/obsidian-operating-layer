@@ -20,6 +20,13 @@ from .diagram_pdf_adapter import (
     load_diagram_renderer_record,
     write_diagram_pdf_report_evaluation,
 )
+from .graphify_embedding_handoff import (
+    GraphifyEmbeddingCandidate,
+    GraphifyEmbeddingHandoff,
+    build_graphify_embedding_handoff,
+    handoff_to_markdown,
+    write_graphify_embedding_handoff,
+)
 from .guardrails import (
     DEFAULT_APPROVAL_PHRASE,
     DEFAULT_BACKUP_ROOT,
@@ -111,6 +118,8 @@ __all__ = [
     "DEFAULT_PROTECTED_RELATIVE",
     "DiagramPdfReportEvaluation",
     "GuardrailError",
+    "GraphifyEmbeddingCandidate",
+    "GraphifyEmbeddingHandoff",
     "INDEXING_WRAPPER_TOOL_ALLOWLIST",
     "IndexingMcpProcessSpec",
     "IndexingMcpReportBundle",
@@ -127,6 +136,7 @@ __all__ = [
     "assert_indexing_tool_allowed",
     "build_acceptance_report",
     "build_approval_manifest",
+    "build_graphify_embedding_handoff",
     "build_indexing_mcp_process_spec",
     "build_indexing_spike_evaluation",
     "build_indexing_wrapper_policy",
@@ -148,6 +158,7 @@ __all__ = [
     "evaluation_to_markdown",
     "find_controlled_job",
     "hash_vault_tree",
+    "handoff_to_markdown",
     "indexing_spike_to_markdown",
     "is_protected_relative",
     "list_controlled_jobs",
@@ -179,6 +190,7 @@ __all__ = [
     "validate_approval_manifest",
     "validate_targets",
     "verify_indexing_runtime_tools",
+    "write_graphify_embedding_handoff",
     "write_indexing_mcp_report_bundle",
     "write_json",
     "write_acceptance_report",

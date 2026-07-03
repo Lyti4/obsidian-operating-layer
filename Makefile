@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake
+.PHONY: test lint compile verify smoke dashboard-list live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake graphify-embedding-handoff
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -19,6 +19,10 @@ INDEX_RUNTIME_REPORTS ?= out/reports/external-indexing-spike/auto-probe
 INDEX_STDIO_DERIVED ?= out/external-indexing-spike/stdio-probe-fake
 INDEX_STDIO_REPORTS ?= out/reports/external-indexing-spike/stdio-probe-fake
 LIVE_PROPOSAL_OUT ?= out/live-proposal-only
+GRAPHIFY_EMBED_GRAPH ?= out/reports/graphify-embedding-handoff/input/graphify-out/graph.json
+GRAPHIFY_EMBED_SANDBOX ?= out/sandbox-vaults/graphify-embedding
+GRAPHIFY_EMBED_REPORTS ?= out/reports/graphify-embedding-handoff/manual
+GRAPHIFY_EMBED_DERIVED ?= out/external-indexing-spike/graphify-derived/manual
 
 test:
 	python3 -m pytest -q
@@ -69,3 +73,7 @@ indexing-runtime-auto-probe: indexing-sandbox
 
 indexing-runtime-stdio-probe-fake: indexing-sandbox
 	python3 tools/obsidian_indexing_stdio_probe.py --sandbox-vault $(INDEX_SANDBOX) --derived-root $(INDEX_STDIO_DERIVED) --raw-report $(INDEX_STDIO_REPORTS)/raw/transcript.json --sanitized-report $(INDEX_STDIO_REPORTS)/sanitized-transcript.json --report-root $(INDEX_STDIO_REPORTS) --command python3 --command tests/fixtures/fake_jsonline_mcp_server.py --query "Obsidian Operating Layer safety boundary" --timeout-seconds 5
+
+
+graphify-embedding-handoff:
+	python3 tools/obsidian_graphify_embedding_handoff.py --graph-json $(GRAPHIFY_EMBED_GRAPH) --sandbox-vault $(GRAPHIFY_EMBED_SANDBOX) --out-dir $(GRAPHIFY_EMBED_REPORTS) --derived-root $(GRAPHIFY_EMBED_DERIVED) --max-candidates 50
