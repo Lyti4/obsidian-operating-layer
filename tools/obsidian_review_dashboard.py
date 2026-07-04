@@ -210,11 +210,23 @@ def render_explanation_markdown(explanation: dict[str, Any]) -> str:
             lines.extend(["### Query intents", ""])
             lines.extend(f"- {query}" for query in queries)
             lines.append("")
-        lines.extend(["### Top candidates", "", "| rank | best score | hits | path | query matches |", "|---:|---:|---:|---|---|"])
+        lines.extend(
+            [
+                "### Top candidates",
+                "",
+                "| rank | best score | hits | chunks | path | query matches |",
+                "|---:|---:|---:|---|---|---|",
+            ]
+        )
         for index, item in enumerate(explanation.get("semantic_candidates") or [], 1):
             queries_text = "; ".join(item.get("queries") or [])
+            chunks = item.get("chunks", [])
+            chunks_text = ", ".join(str(chunk) for chunk in chunks[:5]) if isinstance(chunks, list) else str(chunks)
+            if isinstance(chunks, list) and len(chunks) > 5:
+                chunks_text += ", ..."
             lines.append(
-                f"| {index} | `{item.get('best_score')}` | `{item.get('hit_count')}` | `{item['path']}` | {queries_text} |"
+                f"| {index} | `{item.get('best_score')}` | `{item.get('hit_count')}` | `{chunks_text}` | "
+                f"`{item['path']}` | {queries_text} |"
             )
         lines.extend(
             [

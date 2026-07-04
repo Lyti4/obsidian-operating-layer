@@ -50,6 +50,17 @@ An empty block is not approval evidence. Use the CLI dashboard first when in dou
 python3 tools/obsidian_review_dashboard.py list --proposal-root out/proposals --json
 ```
 
+
+## Semantic proposal-only reports
+
+Semantic query proposal-only reports are review-candidate artifacts, not target-diff proposals. For these reports:
+
+- `targets: []` is expected and means no apply target is authorized.
+- The primary review surface is `candidates`, `summary`, `queries`, and `safety`.
+- `tools/obsidian_review_dashboard.py explain` must show candidate notes, query intents, chunk references, safety boundary, and next safe step.
+- Approval phrase is not applicable until a later, separate target-diff proposal and explicit approval manifest exists.
+- Candidate notes are inputs for review only; they do not authorize live vault mutation.
+
 ## Review queue
 
 ```dataview

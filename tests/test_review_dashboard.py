@@ -138,5 +138,33 @@ def test_explain_semantic_proposal_only_includes_candidates(tmp_path: Path) -> N
     assert explanation["semantic_candidate_count"] == 1
     assert "## Semantic review candidates" in text
     assert "Memory-Vault/Hermes/Reports/A.md" in text
+    assert "`0, 1`" in text
+    assert "| rank | best score | hits | chunks | path | query matches |" in text
     assert "Semantic candidates are review inputs only" in text
     assert "live mutation authorized: `False`" in text
+
+
+def test_explain_real_semantic_proposal_artifact_if_present() -> None:
+    proposal = (
+        repo_root()
+        / "out"
+        / "proposals"
+        / "semantic-query-reports"
+        / "final468-operator-review-20260704T093433Z"
+        / "proposal.json"
+    )
+    if not proposal.exists():
+        pytest.skip("real final468 semantic proposal artifact is not present in this checkout")
+
+    from obsidian_review_dashboard import explain_proposal, render_explanation_markdown
+
+    explanation = explain_proposal(proposal)
+    text = render_explanation_markdown(explanation)
+
+    assert explanation["target_count"] == 0
+    assert explanation["approval_phrase"] != "None"
+    assert explanation["approval_phrase"] == "not applicable — proposal-only / no targets"
+    assert explanation["semantic_candidate_count"] > 0
+    assert "## Semantic review candidates" in text
+    assert "| rank | best score | hits | chunks | path | query matches |" in text
+    assert "## Safety boundary" in text

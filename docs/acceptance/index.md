@@ -16,7 +16,7 @@ Scope: source-of-truth summary for accepted, limited, and not-yet-accepted proje
 | Diagram/PDF report generation | Accepted with manual readability gate | `docs/spec-kit/15-manual-and-adapter-acceptance.md` |
 | Controlled autonomy queue | Accepted only as explicit manual jobs | `docs/controlled-autonomy.md`; no scheduler installed |
 | Indexing wrapper/runtime | Accepted for sandbox, guarded read-only probes, and final468 Graphify-derived semantic query smoke | `docs/spec-kit/20-indexing-runtime-acceptance.md`, `out/reports/graphify-final468-acceptance-20260704T065729Z/REPORT.md` |
-| Semantic query proposal-only reports | Accepted as review-candidate reports with empty targets | `tools/obsidian_semantic_proposal_report.py`, `out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/REPORT.md` |
+| Semantic query proposal-only reports | Accepted as review-candidate path with empty `targets`, candidate notes, safety boundary, and no apply authorization | `tools/obsidian_semantic_proposal_report.py`, `tools/obsidian_review_dashboard.py explain`, `out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/REPORT.md`, `EXPLANATION.md` |
 
 ## Limited / conditional
 
