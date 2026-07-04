@@ -176,6 +176,7 @@ make verify
 python3 tools/obsidian_review_dashboard.py list --proposal-root out/proposals --json
 python3 tools/obsidian_controlled_autonomy.py report --help
 python3 tools/obsidian_field_slice.py --vault /tmp/approved-vault-subset --out-root out/field-slices/example --decision pending
+make semantic-proposal-report
 ```
 
 Expected canonical result:
@@ -185,7 +186,8 @@ Expected canonical result:
 - compileall passes;
 - review dashboard list is read-only;
 - controlled-autonomy report help clearly separates Markdown and JSON;
-- field slice produces proposal/review/decision artifacts without live apply.
+- field slice produces proposal/review/decision artifacts without live apply;
+- semantic proposal report produces review candidates with `targets: []` and no live apply authorization.
 
 ## Remaining gaps
 
@@ -205,6 +207,7 @@ These remain future roadmap work, not blockers for the current operational accep
 1. Decide whether any specific real proposal should ever be approved for live apply.
 2. Scheduled observe/index reports, only after explicit cron approval.
 3. Routine unattended semantic indexing, only after explicit schedule/resource approval.
+4. Turning semantic candidate reports into concrete edit proposals, only after separate review and approval.
 4. Optional additional visual themes for diagrams.
 
 Closed after the original acceptance pass:

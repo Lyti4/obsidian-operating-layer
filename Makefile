@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify
+.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -49,6 +49,9 @@ CHANNEL_REGISTRY ?= docs/spec-kit/channel-registry.json
 CHANNEL_REGISTRY_REPORTS ?= out/reports/channel-registry-verify/manual
 DASHBOARD_SOURCE ?= docs/obsidian-review-dashboard/index.md
 DASHBOARD_VALIDATE_REPORTS ?= out/reports/dashboard-source-validate/manual
+SEMANTIC_PROPOSAL_QUERY_JSON ?= out/reports/graphify-embedding-query-smoke/final468-20260704T065635Z/query-smoke.json
+SEMANTIC_PROPOSAL_OUT ?= out/proposals/semantic-query-reports/manual
+SEMANTIC_PROPOSAL_MAX_CANDIDATES ?= 25
 
 test:
 	python3 -m pytest -q
@@ -129,3 +132,6 @@ nanobot-evidence-gateway:
 
 channel-registry-verify:
 	python3 tools/obsidian_channel_registry_verify.py --registry $(CHANNEL_REGISTRY) --out-dir $(CHANNEL_REGISTRY_REPORTS)
+
+semantic-proposal-report:
+	python3 tools/obsidian_semantic_proposal_report.py --query-smoke-json $(SEMANTIC_PROPOSAL_QUERY_JSON) --out-dir $(SEMANTIC_PROPOSAL_OUT) --max-candidates $(SEMANTIC_PROPOSAL_MAX_CANDIDATES)

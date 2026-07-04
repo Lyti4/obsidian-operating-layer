@@ -252,3 +252,21 @@ Boundary:
 - no live vault mutation;
 - no routine unattended production indexing;
 - safe-batch mode is required on this 4 GB VPS.
+
+
+### 2026-07-04 P3 semantic query proposal-only report
+
+Result: first repeatable proposal-only report generated from the accepted final468 semantic query-smoke evidence.
+
+Changes:
+- Added `tools/obsidian_semantic_proposal_report.py`.
+- Added `make semantic-proposal-report`.
+- The report normalizes query-smoke hits into review candidates while keeping `targets: []`, `risk_class: read_only_only`, `dry_run_default: true`, and `live_mutation_authorized: false`.
+
+Evidence:
+- Targeted tests: `pytest tests/test_semantic_proposal_report.py -q` passed.
+- Real final468 proposal-only report: `out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/REPORT.md`.
+- Source query evidence: `out/reports/graphify-embedding-query-smoke/final468-20260704T065635Z/query-smoke.json`.
+
+Boundary:
+- candidate review only; no proposed file edits; no live vault mutation; no approval manifest generated.

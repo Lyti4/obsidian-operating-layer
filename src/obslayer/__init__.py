@@ -122,6 +122,13 @@ from .rag_graph_adapter import (
 )
 from .resource_preflight import ResourcePreflightReport, collect_resource_preflight
 from .sandbox import SandboxCopyReport, create_sandbox_vault
+from .semantic_proposal_report import (
+    SemanticProposalCandidate,
+    SemanticProposalReport,
+    build_semantic_proposal_report,
+    semantic_proposal_report_to_markdown,
+    write_semantic_proposal_report,
+)
 
 __all__ = [
     "ApprovalManifest",
@@ -154,6 +161,11 @@ __all__ = [
     "SAFE_JOB_KINDS",
     "SanitizedMcpTranscript",
     "SandboxCopyReport",
+    "SemanticProposalCandidate",
+    "SemanticProposalReport",
+    "build_semantic_proposal_report",
+    "semantic_proposal_report_to_markdown",
+    "write_semantic_proposal_report",
     "acceptance_report_to_markdown",
     "assert_indexing_tool_allowed",
     "build_acceptance_report",

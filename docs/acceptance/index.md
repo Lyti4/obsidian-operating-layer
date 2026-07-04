@@ -16,13 +16,14 @@ Scope: source-of-truth summary for accepted, limited, and not-yet-accepted proje
 | Diagram/PDF report generation | Accepted with manual readability gate | `docs/spec-kit/15-manual-and-adapter-acceptance.md` |
 | Controlled autonomy queue | Accepted only as explicit manual jobs | `docs/controlled-autonomy.md`; no scheduler installed |
 | Indexing wrapper/runtime | Accepted for sandbox, guarded read-only probes, and final468 Graphify-derived semantic query smoke | `docs/spec-kit/20-indexing-runtime-acceptance.md`, `out/reports/graphify-final468-acceptance-20260704T065729Z/REPORT.md` |
+| Semantic query proposal-only reports | Accepted as review-candidate reports with empty targets | `tools/obsidian_semantic_proposal_report.py`, `out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/REPORT.md` |
 
 ## Limited / conditional
 
 | Capability | Current boundary | Next gate |
 |---|---|---|
 | External MCP/RAG adapters | Sandbox/read-only/proposal-only | adapter-specific sandbox scorecard |
-| Semantic indexing | Accepted for final468 sandbox/derived-cache pass; no live vault mutation; no unattended routine job | proposal-only reports from query results; explicit approval for any live apply |
+| Semantic indexing | Accepted for final468 sandbox/derived-cache pass and proposal-only candidate reports; no live vault mutation; no unattended routine job | explicit approval for any live apply |
 | Live vault proposal generation | Read-only observation + proposal bundle | human review of proposal and manifest |
 | Live apply | Not generally enabled | explicit approval manifest, backup, apply, verify |
 
