@@ -153,13 +153,14 @@ Allowed without extra approval:
 
 Approved scheduled scout:
 
-- Дмитрий approved one supervised Nanobot cron scout on 2026-07-04.
-- Schedule target: daily local-only run via Hermes cron.
+- Дмитрий approved one supervised Nanobot cron scout on 2026-07-04, then explicitly expanded it to a 15-minute bounded audit loop.
+- Schedule target: `every 15m` via Hermes cron job `212b7e8f3c21`.
 - Script: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`.
 - Delivery: `local`; reports are written under `out/reports/nanobot-cron-scout/`.
 - Scope: Obsidian Operating Layer maintenance only; read-only evidence gateway only; report-only recommendations.
 - The job may run Nanobot through `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent` and Headroom's backend Codex bridge.
-- The job must not mutate the repo, live vault, auth, profiles, cron definition, services, network exposure, deployments, or embeddings.
+- The job uses a lock, timeout, sanitized raw output, preflight, and `project-state.json` to check whether docs/specs lag behind latest commits/proposals/reports.
+- The job must not mutate the repo, live vault, auth, profiles, services, network exposure, deployments, or embeddings. Cron scope/schedule changes still require explicit user approval.
 - Any blocked/quota/auth/provider result is a reportable blocker, not a reason to bypass Headroom or broaden access.
 
 Requires explicit user approval before enabling/changing:
@@ -178,7 +179,7 @@ Hermes must verify before acting on a Nanobot result:
 - no protected paths were targeted;
 - no secrets appear in report/proposal artifacts;
 - no live vault mutation happened;
-- no service restart/deploy/auth mutation happened, and no cron mutation happened except this pre-approved scout definition;
+- no service restart/deploy/auth mutation happened, and no cron mutation happened except the explicitly approved 15-minute scout definition;
 - high-load jobs were not started unexpectedly;
 - output has evidence and paths/hashes where relevant;
 - proposal-only output is clearly separated from approved apply.
@@ -207,7 +208,7 @@ Accepted now:
 
 Not accepted without separate approval:
 
-- additional autonomous cron/schedules beyond the approved daily local scout;
+- additional autonomous cron/schedules beyond the approved 15-minute local audit scout;
 - live vault writes;
 - production restarts/deploys;
 - third-party GitHub App installs;
@@ -249,3 +250,18 @@ Queue packets under `out/queue/` should use immutable task IDs, explicit status 
 A manual run of the approved scout was attempted immediately after cron setup. Preflight passed, but the Codex/Headroom-backed Nanobot model call was blocked by provider capacity/quota/auth state. The scout script now treats quota/auth/provider-rejected text as `blocked` even when the Nanobot wrapper exits with return code `0`, and writes a blocked `REPORT.md` plus sanitized `nanobot.raw.md`.
 
 Boundary remains unchanged: no fallback route may bypass Headroom, no broader localhost access is allowed, and no live vault/repo/service/auth/cron mutation is allowed from Nanobot. Hermes may continue local structural-only spec-kit work while the model-backed scout is blocked.
+
+### 2026-07-04 15-minute audit expansion
+
+Дмитрий explicitly requested that Nanobot run every 15 minutes and audit the project/docs for lag. Hermes updated existing job `212b7e8f3c21` instead of creating a second overlapping job.
+
+Runtime boundary:
+
+- schedule: `every 15m`;
+- mode: Hermes cron `no_agent` script;
+- delivery: `local`;
+- output: `out/reports/nanobot-cron-scout/`;
+- lock: prevents overlapping runs;
+- timeout: bounded Nanobot call;
+- report-only/proposal-only;
+- blocked reports are valid outcomes for quota/auth/provider limits.

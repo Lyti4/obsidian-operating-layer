@@ -312,12 +312,12 @@ Boundary:
 - no approval manifest generated;
 - semantic candidates remain review inputs, not edit targets.
 
-### 2026-07-04 P2c Nanobot daily local scout approval
+### 2026-07-04 P2c Nanobot local scout approval
 
 Result: Дмитрий approved one supervised Nanobot cron for Obsidian Operating Layer maintenance.
 
 Accepted scope:
-- daily Hermes cron, local delivery only;
+- initially daily Hermes cron, later explicitly expanded to `every 15m`, local delivery only;
 - script: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`;
 - output: `out/reports/nanobot-cron-scout/`;
 - Nanobot uses the accepted Headroom backend Codex bridge wrapper;
@@ -328,7 +328,7 @@ Boundary:
 - no live vault mutation;
 - no repository mutation by Nanobot;
 - no auth/profile/service/network/deploy/embedding actions;
-- any additional cron, delivery change, or scope expansion requires separate explicit approval.
+- any additional cron, delivery change, or scope expansion beyond the approved 15-minute audit requires separate explicit approval.
 
 ### 2026-07-04 P3 semantic candidate decision packet
 
@@ -411,3 +411,20 @@ Changed:
 Boundary:
 
 - review index only; candidate paths are evidence inputs; no live vault mutation; no approval manifest; no edit targets.
+
+
+### 2026-07-04 P2c Nanobot 15-minute audit loop
+
+Result: existing Nanobot scout cron `212b7e8f3c21` was updated to a bounded 15-minute local audit loop after explicit user request.
+
+Changed runtime:
+
+- schedule: `every 15m`;
+- script: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`;
+- mode: no-agent script, local delivery only;
+- outputs: `out/reports/nanobot-cron-scout/`;
+- script now writes `project-state.json`, uses a lock to prevent overlap, keeps timeout/block reporting, and asks Nanobot to check whether project/docs lag behind latest commits/proposals/reports.
+
+Boundary:
+
+- read-only/proposal-only audit; no live vault mutation; no repo mutation by Nanobot; no auth/profile/service/network/deploy/embedding changes; blocked reports are acceptable when provider capacity is unavailable.

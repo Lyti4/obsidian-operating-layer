@@ -25,12 +25,12 @@ This workspace builds a safe local operating layer for Obsidian. Treat the Obsid
 Nanobot can be involved continuously in project maintenance and inter-agent communication, but only as a supervised worker:
 
 - allowed: observe, summarize, route task packets, draft reports, draft proposal-only artifacts, run sandbox/read-only Graphify tasks;
-- forbidden without explicit approval: live vault mutation, direct apply, cron creation beyond the approved daily local Nanobot scout, service restart, deployment, auth/profile changes, paid actions, third-party GitHub App installs, automatic embeddings;
+- forbidden without explicit approval: live vault mutation, direct apply, cron creation beyond the approved 15-minute local Nanobot audit scout, service restart, deployment, auth/profile changes, paid actions, third-party GitHub App installs, automatic embeddings;
 - Hermes remains responsible for acceptance, user communication, approval manifests, and final decisions.
 
 Standing Nanobot task packets and reports should stay under `out/queue/`, `out/reports/`, or `out/proposals/` unless a task explicitly says otherwise.
 
-Approved scheduled Nanobot scout: Dmitry approved one daily Hermes cron that runs `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py` with local delivery only and writes reports under `out/reports/nanobot-cron-scout/`. It is read-only/proposal-only, must use the evidence gateway and Headroom bridge, and must not change repo/vault/auth/profile/services/network/embeddings.
+Approved scheduled Nanobot audit scout: Dmitry approved one Hermes cron job (`212b7e8f3c21`) running every 15 minutes via `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`, local delivery only, with reports under `out/reports/nanobot-cron-scout/`. It is bounded read-only/proposal-only, uses a lock/timeout, must use the evidence gateway and Headroom bridge, and must not change repo/vault/auth/profile/services/network/embeddings.
 
 Nanobot should read recurring project/server evidence through the local server-safe read-only gateway (`http://127.0.0.1:18791/`) instead of receiving repeated copied packets. The gateway exposes allowlisted project evidence plus selected server context roots (`~/work`, user systemd units, selected Hermes/Nanobot docs/workspace/skills/cron, and local operator scripts), supports only GET/HEAD/OPTIONS, blocks traversal/hidden/secret-like/sensitive paths, blocks oversized or unsafe-extension files, and does not grant filesystem write permission. Workspace-local copied packets remain a fallback for one-off sanitized bundles. Do not give Nanobot raw `/`, `~/secure`, `.ssh`, `.codex`, browser profiles, live vault roots, or credential directories.
 
