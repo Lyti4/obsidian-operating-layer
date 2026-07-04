@@ -380,3 +380,18 @@ Boundary:
 - Smoke asserts route shape and probes only local Headroom/evidence-gateway health when `--live-probes` is requested.
 - No repo/vault/auth/profile/service mutation by Nanobot.
 - Generic `/v1/responses` remains a documented anti-pattern for Nanobot Codex bridge work.
+
+
+### 2026-07-04 P3 targeted semantic proposal explanation
+
+Result: dashboard/explain now understands targeted semantic proposal packets.
+
+Changed:
+
+- `tools/obsidian_review_dashboard.py explain` accepts proposal-only semantic targeted packets with empty targets and `live_mutation_authorized: false`.
+- The explanation renders candidate source paths, proposed review actions, and source decision packet.
+- Added regression coverage for generated link-hygiene targeted proposal artifacts.
+
+Boundary:
+
+- candidate paths remain evidence inputs, not edit targets; no approval manifest; no live vault mutation.

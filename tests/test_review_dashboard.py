@@ -235,3 +235,72 @@ def test_explain_cli_accepts_positional_proposal_path(tmp_path: Path) -> None:
 
     assert "# Proposal explanation: cli-positional" in result.stdout
     assert "not applicable — proposal-only / no targets" in result.stdout
+
+
+
+def test_explain_targeted_semantic_proposal_only_without_approval_flags(tmp_path: Path) -> None:
+    proposal = tmp_path / "proposal.json"
+    proposal.write_text(
+        json.dumps(
+            {
+                "mode": "semantic-targeted-proposal",
+                "proposal_id": "targeted-link-hygiene",
+                "status": "ready-for-operator-review",
+                "live_mutation_authorized": False,
+                "targets": [],
+                "group": "link_hygiene_reports",
+                "candidate_paths": [
+                    "Memory-Vault/Hermes/Reports/Obsidian Link Hygiene Scan 2026-06-27.md",
+                    "Memory-Vault/Hermes/Reports/A | B.md",
+                ],
+                "proposed_changes": [
+                    "Draft a dedicated link-hygiene review/index artifact from the listed historical reports."
+                ],
+                "source_decision_packet": "/tmp/decision-packet.json",
+                "safety": {
+                    "approval_manifest_created": False,
+                    "live_mutation_authorized": False,
+                    "proposal_only": True,
+                    "targets_empty": True,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    from obsidian_review_dashboard import explain_proposal, render_explanation_markdown
+
+    explanation = explain_proposal(proposal)
+    text = render_explanation_markdown(explanation)
+
+    assert explanation["approval_phrase"] == "not applicable — proposal-only / no targets"
+    assert explanation["targeted_candidate_paths"]
+    assert explanation["proposed_changes"]
+    assert "## Targeted proposal review" in text
+    assert "Draft a dedicated link-hygiene" in text
+    assert "Memory-Vault/Hermes/Reports/A \\| B.md" in text
+    assert "not live edit targets" in text
+
+
+def test_explain_real_targeted_semantic_proposal_artifact_if_present() -> None:
+    proposal = (
+        repo_root()
+        / "out"
+        / "proposals"
+        / "semantic-targeted-proposals"
+        / "link-hygiene-20260704T112830Z"
+        / "proposal.json"
+    )
+    if not proposal.exists():
+        pytest.skip("real targeted semantic proposal artifact is not present in this checkout")
+
+    from obsidian_review_dashboard import explain_proposal, render_explanation_markdown
+
+    explanation = explain_proposal(proposal)
+    text = render_explanation_markdown(explanation)
+
+    assert explanation["target_count"] == 0
+    assert explanation["approval_phrase"] == "not applicable — proposal-only / no targets"
+    assert len(explanation["targeted_candidate_paths"]) == 8
+    assert "## Targeted proposal review" in text
+    assert "These paths are evidence/candidate inputs only" in text

@@ -67,3 +67,14 @@ For generated proposal artifacts, acceptance means:
 - `27-graphify-nanobot-embedding-orchestration.md`
 - `28-global-headroom-only-llm-channel.md`
 - `29-channel-registry.md`
+
+## Targeted proposal explanation
+
+Targeted semantic proposals may omit classic apply fields such as `approval_required` and `dry_run_default` when all of the following hold:
+
+- `mode` starts with `semantic-`;
+- `targets: []`;
+- `live_mutation_authorized: false`;
+- `safety.proposal_only: true`.
+
+`tools/obsidian_review_dashboard.py explain` must render their `candidate_paths`, `proposed_changes`, and source decision packet as review inputs only.

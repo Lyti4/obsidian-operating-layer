@@ -63,6 +63,16 @@ Semantic query proposal-only reports are review-candidate artifacts, not target-
 - Approval phrase is not applicable until a later, separate target-diff proposal and explicit approval manifest exists.
 - Candidate notes are inputs for review only; they do not authorize live vault mutation.
 
+## Targeted semantic proposal packets
+
+Targeted semantic proposal packets promote one decision group into an operator-review packet, still without live edit targets. For these packets:
+
+- `targets: []` and `live_mutation_authorized: false` are expected.
+- `candidate_paths` are source/evidence inputs, not paths to edit.
+- `proposed_changes` describe review actions, not an apply plan.
+- `tools/obsidian_review_dashboard.py explain path/to/proposal.json` must render the targeted review section even when no approval manifest exists.
+- Approval phrase remains not applicable until a separate target-diff proposal is explicitly approved.
+
 ## Review queue
 
 ```dataview

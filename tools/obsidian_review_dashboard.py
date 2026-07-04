@@ -131,6 +131,30 @@ def _semantic_candidates(proposal: dict[str, Any], *, limit: int = 10) -> list[d
     return rows
 
 
+def _targeted_candidate_paths(proposal: dict[str, Any], *, limit: int = 25) -> list[str]:
+    candidate_paths = proposal.get("candidate_paths", [])
+    if not isinstance(candidate_paths, list):
+        return []
+    return [str(path) for path in candidate_paths[:limit] if isinstance(path, str)]
+
+
+def _proposed_changes(proposal: dict[str, Any]) -> list[str]:
+    proposed_changes = proposal.get("proposed_changes", [])
+    if not isinstance(proposed_changes, list):
+        return []
+    return [str(change) for change in proposed_changes if isinstance(change, str)]
+
+
+def _is_safe_proposal_only(proposal: dict[str, Any], targets: list[Any]) -> bool:
+    safety = proposal.get("safety", {})
+    safety_proposal_only = isinstance(safety, dict) and safety.get("proposal_only") is True
+    return (
+        not targets
+        and proposal.get("live_mutation_authorized") is False
+        and (safety_proposal_only or str(proposal.get("mode", "")).startswith("semantic-"))
+    )
+
+
 def _approval_phrase(proposal: dict[str, Any], targets: list[Any]) -> str:
     if (
         proposal.get("mode") == "semantic-query-proposal-only-report"
@@ -146,11 +170,13 @@ def explain_proposal(proposal_path: str | Path) -> dict[str, Any]:
     proposal = load_json(path)
     if not isinstance(proposal, dict):
         raise GuardrailError(f"Proposal must be a JSON object: {path}")
-    if proposal.get("approval_required") is not True or proposal.get("dry_run_default") is not True:
-        raise GuardrailError("Unsafe proposal explanation refused: proposal must require approval and default to dry-run")
     targets = proposal.get("targets", [])
     if not isinstance(targets, list):
         raise GuardrailError("Unsafe proposal explanation refused: targets must be a list")
+    if not _is_safe_proposal_only(proposal, targets) and (
+        proposal.get("approval_required") is not True or proposal.get("dry_run_default") is not True
+    ):
+        raise GuardrailError("Unsafe proposal explanation refused: proposal must require approval and default to dry-run")
     target_dicts = [target for target in targets if isinstance(target, dict)]
     mode = str(proposal.get("mode") or "")
     summary = proposal.get("summary")
@@ -170,6 +196,9 @@ def explain_proposal(proposal_path: str | Path) -> dict[str, Any]:
         "query_intents": [str(query) for query in proposal.get("queries", []) if isinstance(query, str)],
         "semantic_candidate_count": len(proposal.get("candidates", [])) if isinstance(proposal.get("candidates"), list) else 0,
         "semantic_candidates": _semantic_candidates(proposal),
+        "targeted_candidate_paths": _targeted_candidate_paths(proposal),
+        "proposed_changes": _proposed_changes(proposal),
+        "source_decision_packet": proposal.get("source_decision_packet"),
         "safety": proposal.get("safety", {}) if isinstance(proposal.get("safety"), dict) else {},
         "live_mutation_authorized": bool(proposal.get("live_mutation_authorized", bool(targets))),
     }
@@ -199,6 +228,24 @@ def render_explanation_markdown(explanation: dict[str, Any]) -> str:
     lines.extend(_render_summary(explanation["summary"]))
     lines.extend(["", "## What will change", ""])
     lines.extend(f"- `{path}`" for path in paths)
+
+    proposed_changes = explanation.get("proposed_changes") or []
+    targeted_paths = explanation.get("targeted_candidate_paths") or []
+    if proposed_changes or targeted_paths:
+        lines.extend(["", "## Targeted proposal review", ""])
+        source_packet = explanation.get("source_decision_packet")
+        if source_packet:
+            lines.append(f"Source decision packet: `{source_packet}`")
+            lines.append("")
+        if proposed_changes:
+            lines.extend(["### Proposed review actions", ""])
+            lines.extend(f"- {change}" for change in proposed_changes)
+            lines.append("")
+        if targeted_paths:
+            lines.extend(["### Candidate source paths", ""])
+            lines.extend(f"- `{_markdown_cell(path)}`" for path in targeted_paths)
+            lines.append("")
+        lines.append("These paths are evidence/candidate inputs only; they are not live edit targets.")
 
     if explanation.get("semantic_candidate_count"):
         lines.extend(
