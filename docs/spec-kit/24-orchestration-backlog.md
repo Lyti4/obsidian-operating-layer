@@ -311,3 +311,21 @@ Boundary:
 - no live vault mutation;
 - no approval manifest generated;
 - semantic candidates remain review inputs, not edit targets.
+
+### 2026-07-04 P2c Nanobot daily local scout approval
+
+Result: Дмитрий approved one supervised Nanobot cron for Obsidian Operating Layer maintenance.
+
+Accepted scope:
+- daily Hermes cron, local delivery only;
+- script: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`;
+- output: `out/reports/nanobot-cron-scout/`;
+- Nanobot uses the accepted Headroom backend Codex bridge wrapper;
+- evidence reads use only the read-only evidence gateway.
+
+Boundary:
+- report-only/proposal-only scout;
+- no live vault mutation;
+- no repository mutation by Nanobot;
+- no auth/profile/service/network/deploy/embedding actions;
+- any additional cron, delivery change, or scope expansion requires separate explicit approval.

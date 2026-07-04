@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "proposal-active",
-  "updated_utc": "2026-07-04T08:47:56Z",
+  "updated_utc": "2026-07-04T10:45:00Z",
   "global_rule": "External LLM-provider traffic routes through Headroom by default; local health/systemd/gateway/Ollama traffic is local.",
   "channels": [
     {
@@ -56,7 +56,7 @@
     },
     {
       "component": "Nanobot Hermes communicator",
-      "role": "standing read-only/proposal worker",
+      "role": "standing read-only/proposal worker; approved daily local cron scout",
       "external_llm_allowed": true,
       "required_route": "/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent -> http://127.0.0.1:8787/backend-api/codex/responses",
       "accepted_endpoint_shape": "Headroom backend Codex bridge, not generic /v1/responses",
@@ -65,9 +65,11 @@
       "forbidden_fallbacks": [
         "filesystem write",
         "service restart",
-        "cron/auth/profile mutation",
+        "auth/profile mutation",
+        "cron mutation beyond approved scout definition",
         "direct provider"
-      ]
+      ],
+      "approved_schedule": "Hermes cron daily local-only Nanobot Obsidian scout via /home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py"
     },
     {
       "component": "Nanobot read-only evidence gateway",

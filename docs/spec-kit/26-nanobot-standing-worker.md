@@ -55,7 +55,7 @@ Nanobot must not:
 - move/delete/rename project files unless Hermes explicitly dispatches a reviewed repository task;
 - start local embeddings automatically;
 - start long-running/high-load jobs without a bounded task packet;
-- change auth, credentials, tokens, provider state, profiles, cron jobs, or server services;
+- change auth, credentials, tokens, provider state, profiles, cron jobs beyond the approved scout job, or server services;
 - install GitHub Apps, enable paid services, publish, deploy, restart production, or expose network ports;
 - read or print secrets.
 
@@ -115,21 +115,21 @@ Use the dedicated Graphify contract in `25-nanobot-graphify-worker.md`:
 {
   "task_id": "nanobot-maint-YYYYMMDD-...",
   "worker": "nanobot-standing-worker",
-  "mode": "observe|proposal|communication_hub|graphify",
+  "mode": "observe|proposal|communication_hub|graphify|scheduled_scout",
   "model": "gpt-5.4-mini",
   "source": {
     "kind": "repo|sandbox-vault|report-bundle|queue",
     "path": "..."
   },
   "allowed_capabilities": ["read", "search", "analyze", "summarize", "graph", "propose", "route"],
-  "forbidden_capabilities": ["secret-read", "live-mutation", "direct-apply", "deploy", "restart", "cron-create", "paid-action", "network-expose", "embedding-auto-run"],
+  "forbidden_capabilities": ["secret-read", "live-mutation", "direct-apply", "deploy", "restart", "cron-create-or-edit-except-approved-scout", "paid-action", "network-expose", "embedding-auto-run"],
   "outputs": {
     "report": "out/reports/.../report.md",
     "findings": "out/reports/.../findings.json",
     "proposal": "out/proposals/.../proposal.json"
   },
   "acceptance_owner": "Hermes",
-  "requires_user_approval_for": ["live_apply", "cron", "third_party_app", "paid_action", "deploy", "service_restart"]
+  "requires_user_approval_for": ["live_apply", "new_or_changed_cron", "third_party_app", "paid_action", "deploy", "service_restart"]
 }
 ```
 
@@ -151,9 +151,20 @@ Allowed without extra approval:
 - reports generated during an active bounded project slice;
 - local `out/` artifacts for verification.
 
-Requires explicit user approval before enabling:
+Approved scheduled scout:
 
-- new cron jobs;
+- Дмитрий approved one supervised Nanobot cron scout on 2026-07-04.
+- Schedule target: daily local-only run via Hermes cron.
+- Script: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`.
+- Delivery: `local`; reports are written under `out/reports/nanobot-cron-scout/`.
+- Scope: Obsidian Operating Layer maintenance only; read-only evidence gateway only; report-only recommendations.
+- The job may run Nanobot through `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent` and Headroom's backend Codex bridge.
+- The job must not mutate the repo, live vault, auth, profiles, cron definition, services, network exposure, deployments, or embeddings.
+- Any blocked/quota/auth/provider result is a reportable blocker, not a reason to bypass Headroom or broaden access.
+
+Requires explicit user approval before enabling/changing:
+
+- additional cron jobs or schedule/scope/delivery changes to the approved scout;
 - daemonized Nanobot service changes;
 - scheduled Telegram/GitHub posting;
 - background jobs that run indefinitely;
@@ -167,7 +178,7 @@ Hermes must verify before acting on a Nanobot result:
 - no protected paths were targeted;
 - no secrets appear in report/proposal artifacts;
 - no live vault mutation happened;
-- no service restart/deploy/cron/auth mutation happened;
+- no service restart/deploy/auth mutation happened, and no cron mutation happened except this pre-approved scout definition;
 - high-load jobs were not started unexpectedly;
 - output has evidence and paths/hashes where relevant;
 - proposal-only output is clearly separated from approved apply.
@@ -196,7 +207,7 @@ Accepted now:
 
 Not accepted without separate approval:
 
-- autonomous cron/schedules;
+- additional autonomous cron/schedules beyond the approved daily local scout;
 - live vault writes;
 - production restarts/deploys;
 - third-party GitHub App installs;
@@ -228,7 +239,7 @@ Minimum evidence for each Nanobot standing-worker result:
 - pre/post mutation check method when a project/vault source is involved;
 - secret-scan result for generated artifacts;
 - protected-path target scan result;
-- confirmation that no cron, service restart, auth/profile mutation, deploy, paid action, network exposure, or embedding auto-run occurred;
+- confirmation that no cron mutation beyond the approved scout, service restart, auth/profile mutation, deploy, paid action, network exposure, or embedding auto-run occurred;
 - explicit blocked reason and required Hermes/user decision for blocked tasks.
 
 Queue packets under `out/queue/` should use immutable task IDs, explicit status transitions, and result pointers to reports/proposals. Blocked queue items must name the decision needed before retry.
