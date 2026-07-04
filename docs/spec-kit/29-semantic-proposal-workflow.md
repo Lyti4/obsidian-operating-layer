@@ -31,6 +31,7 @@ Graphify/index evidence
 - Proposal report CLI: `tools/obsidian_semantic_proposal_report.py`
 - Decision packet CLI: `tools/obsidian_semantic_candidate_decision_packet.py`
 - Targeted proposal CLI: `tools/obsidian_semantic_targeted_proposal.py`
+- Review index CLI: `tools/obsidian_semantic_review_index.py`
 - Review dashboard explain CLI: `tools/obsidian_review_dashboard.py explain`
 
 Generated artifacts stay under:
@@ -39,6 +40,7 @@ Generated artifacts stay under:
 out/proposals/semantic-query-reports/
 out/proposals/semantic-candidate-decisions/
 out/proposals/semantic-targeted-proposals/
+out/proposals/semantic-review-indexes/
 ```
 
 ## Acceptance checks
@@ -78,3 +80,22 @@ Targeted semantic proposals may omit classic apply fields such as `approval_requ
 - `safety.proposal_only: true`.
 
 `tools/obsidian_review_dashboard.py explain` must render their `candidate_paths`, `proposed_changes`, and source decision packet as review inputs only.
+
+## Review index step
+
+A semantic review index is the first artifact after a targeted proposal packet. It lists promoted candidate source paths and the review disposition without reading or mutating the live vault.
+
+Command:
+
+```bash
+make semantic-review-index \
+  SEMANTIC_REVIEW_INDEX_PROPOSAL_JSON=out/proposals/semantic-targeted-proposals/link-hygiene-20260704T112830Z/proposal.json \
+  SEMANTIC_REVIEW_INDEX_OUT=out/proposals/semantic-review-indexes/link-hygiene-manual
+```
+
+Acceptance:
+
+- `live_mutation_authorized: false`
+- `approval_manifest_created: false`
+- no edit targets
+- candidate paths are evidence inputs only

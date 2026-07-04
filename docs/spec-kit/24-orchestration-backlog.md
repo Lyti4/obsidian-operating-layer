@@ -395,3 +395,19 @@ Changed:
 Boundary:
 
 - candidate paths remain evidence inputs, not edit targets; no approval manifest; no live vault mutation.
+
+
+### 2026-07-04 P3 semantic review index
+
+Result: added the first review/index artifact after targeted semantic proposal packets.
+
+Changed:
+
+- Added `src/obslayer/semantic_review_index.py`.
+- Added `tools/obsidian_semantic_review_index.py`.
+- Added `tests/test_semantic_review_index.py`.
+- Added `make semantic-review-index`.
+
+Boundary:
+
+- review index only; candidate paths are evidence inputs; no live vault mutation; no approval manifest; no edit targets.
