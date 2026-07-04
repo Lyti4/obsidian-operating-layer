@@ -159,7 +159,9 @@ Approved scheduled scout:
 - Delivery: `local`; reports are written under `out/reports/nanobot-cron-scout/`.
 - Scope: Obsidian Operating Layer maintenance only; read-only evidence gateway only; report-only recommendations.
 - The job may run Nanobot through `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent` and Headroom's backend Codex bridge.
-- The job uses a lock, timeout, sanitized raw output, preflight, and `project-state.json` to check whether docs/specs lag behind latest commits/proposals/reports.
+- The job uses a lock, timeout, sanitized raw output, preflight, `project-state.json`, and deterministic `docs-lag-audit/REPORT.md` to check whether docs/specs lag behind latest commits/proposals/reports.
+- The job preflights the read-only evidence snapshot at `http://127.0.0.1:18791/snapshot.json`; Nanobot should start from that snapshot rather than guessing gateway URLs.
+- The script supports `--dry-run` for preflight/docs-lag verification without an LLM/Nanobot call; `--help` must not trigger an audit.
 - The job must not mutate the repo, live vault, auth, profiles, services, network exposure, deployments, or embeddings. Cron scope/schedule changes still require explicit user approval.
 - Any blocked/quota/auth/provider result is a reportable blocker, not a reason to bypass Headroom or broaden access.
 
@@ -264,6 +266,8 @@ Runtime boundary:
 - lock: prevents overlapping runs;
 - timeout: bounded Nanobot call;
 - report-only/proposal-only;
-- blocked reports are valid outcomes for quota/auth/provider limits.
+- blocked reports are valid outcomes for quota/auth/provider limits;
+- canonical evidence snapshot: `http://127.0.0.1:18791/snapshot.json`;
+- operator smoke mode: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py --dry-run` (no LLM/Nanobot call).
 
 The 15-minute audit loop is complemented by deterministic repo-side docs lag checks via `tools/obsidian_project_docs_lag_audit.py` / `make project-docs-lag-audit`; this provides non-LLM evidence when Nanobot/provider capacity is blocked.

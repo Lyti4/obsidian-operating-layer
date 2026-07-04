@@ -319,6 +319,7 @@ Result: Дмитрий approved one supervised Nanobot cron for Obsidian Operati
 Accepted scope:
 - initially daily Hermes cron, later explicitly expanded to `every 15m`, local delivery only;
 - script: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`;
+- script smoke: `--dry-run` verifies preflight/project-state/docs-lag without calling Nanobot/LLM;
 - output: `out/reports/nanobot-cron-scout/`;
 - Nanobot uses the accepted Headroom backend Codex bridge wrapper;
 - evidence reads use only the read-only evidence gateway.
@@ -444,3 +445,4 @@ Changed:
 Boundary:
 
 - read-only docs marker audit; no live vault mutation; no LLM required; intended as deterministic companion evidence for the 15-minute Nanobot audit scout.
+- 2026-07-04 follow-up: live gateway service restarted after explicit approval; `/snapshot.json` and `--dry-run` script preflight verified.
