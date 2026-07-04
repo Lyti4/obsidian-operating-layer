@@ -206,18 +206,19 @@ Not accepted without separate approval:
 
 ## Model routing
 
-For Codex-backed Nanobot work, use the localhost Headroom URL bridge rather than direct upstream calls.
+For Codex-backed Nanobot work, use the localhost Headroom Codex backend bridge through the accepted wrapper rather than direct upstream calls.
 
-- URL: `http://127.0.0.1:8787/v1/responses`
+- Accepted wrapper: `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent`
+- Accepted URL: `http://127.0.0.1:8787/backend-api/codex/responses`
 - Env override: `NANOBOT_OPENAI_CODEX_RESPONSES_URL`
 - Default small/Graphify model: `gpt-5.4-mini`
 - Scope: localhost-only, no public exposure
 
-If the URL bridge or OAuth layer is unhealthy, standing tasks should be marked blocked and returned to Hermes. Do not silently fall back to direct upstream provider calls.
+If the wrapper, backend bridge, or OAuth layer is unhealthy, standing tasks should be marked blocked and returned to Hermes. Do not silently fall back to direct upstream provider calls.
 
 ## Runtime fallback and evidence standard
 
-Standing-worker tasks that require Codex subscription capacity must use the localhost Headroom URL bridge. If the bridge/OAuth layer is unhealthy, mark the task `blocked` unless the task packet explicitly permits `local_structural_only` fallback. Any fallback report must be clearly labeled as non-semantic/non-model-backed where applicable.
+Standing-worker tasks that require Codex subscription capacity must use the accepted `nanobot-headroom-agent -> Headroom backend Codex bridge` path. If the wrapper/bridge/OAuth layer is unhealthy, mark the task `blocked` unless the task packet explicitly permits `local_structural_only` fallback. Any fallback report must be clearly labeled as non-semantic/non-model-backed where applicable.
 
 Minimum evidence for each Nanobot standing-worker result:
 

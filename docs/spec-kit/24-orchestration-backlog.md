@@ -195,7 +195,7 @@ Result: green read-only Nanobot compliance review using sanitized excerpts inste
 
 Evidence:
 - Runtime health checked for Nanobot and Headroom.
-- Nanobot was routed through `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses`.
+- Historical note: Nanobot was initially tried through `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses`; this is no longer the accepted route. Current routing is governed by `28-global-headroom-only-llm-channel.md` and uses the `nanobot-headroom-agent -> /backend-api/codex/responses` bridge.
 - Artifacts: `out/reports/nanobot-standing-worker/20260702-compliance-excerpts/`.
 - Secret-pattern scan over generated artifacts returned no findings.
 - Live vault was not mutated; Nanobot did not write into the repository directly.

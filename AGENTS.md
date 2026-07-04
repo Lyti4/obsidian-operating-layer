@@ -8,7 +8,7 @@ This workspace builds a safe local operating layer for Obsidian. Treat the Obsid
 
 - **Hermes** is the orchestrator and acceptance owner: it prepares tasks, checks evidence, enforces safety, and decides whether a proposal can move toward approval.
 - **Codex/subagents** may implement non-trivial code changes when requested, but must stay inside this repository and the active task scope.
-- **Nanobot** may act as a standing maintenance/communication worker through `docs/spec-kit/26-nanobot-standing-worker.md` and as the Graphify worker through `docs/spec-kit/25-nanobot-graphify-worker.md`.
+- **Nanobot** may act as a standing maintenance/communication worker through `docs/spec-kit/26-nanobot-standing-worker.md`, as the Graphify worker through `docs/spec-kit/25-nanobot-graphify-worker.md`, and as a bounded connection-scout/proposal worker under `docs/spec-kit/28-global-headroom-only-llm-channel.md`.
 - External components, MCP servers, RAG engines, Graphify, and indexers are adapters. They may read/search/analyze/graph/propose/render, but they do not own live apply.
 
 ## Ground rules
@@ -30,7 +30,7 @@ Nanobot can be involved continuously in project maintenance and inter-agent comm
 
 Standing Nanobot task packets and reports should stay under `out/queue/`, `out/reports/`, or `out/proposals/` unless a task explicitly says otherwise.
 
-When Nanobot is restricted to its own workspace, hand it sanitized workspace-local copies of Graphify/project evidence and ask it to write a local `REPORT.md`; Hermes then verifies and archives the report under project `out/reports/`. Do not expand Nanobot filesystem permissions just to let it inspect project paths.
+Nanobot should read recurring project/server evidence through the local server-safe read-only gateway (`http://127.0.0.1:18791/`) instead of receiving repeated copied packets. The gateway exposes allowlisted project evidence plus selected server context roots (`~/work`, user systemd units, selected Hermes/Nanobot docs/workspace/skills/cron, and local operator scripts), supports only GET/HEAD/OPTIONS, blocks traversal/hidden/secret-like/sensitive paths, blocks oversized or unsafe-extension files, and does not grant filesystem write permission. Workspace-local copied packets remain a fallback for one-off sanitized bundles. Do not give Nanobot raw `/`, `~/secure`, `.ssh`, `.codex`, browser profiles, live vault roots, or credential directories.
 
 ## Vault safety contract
 
@@ -56,7 +56,7 @@ Protected paths are not writable by adapters or workers:
 - Graph-first before embedding-first.
 - Graphify semantic work runs on sandbox copies first, not the live vault.
 - Use Graphify's native workflow before proposal generation: build/extract to `graphify-out/`, read `GRAPH_REPORT.md`, then use `graphify query`, `graphify path`, or `graphify explain` for decisions. RAG counts are only a preflight/noise guardrail, not the main Graphify deliverable.
-- Nanobot Graphify tasks use the localhost Headroom URL bridge with `gpt-5.4-mini` unless a later task explicitly overrides it.
+- External LLM traffic is governed by `docs/spec-kit/28-global-headroom-only-llm-channel.md`: Graphify uses `graphify-headroom` + `codex-cli` through Headroom; Nanobot external review uses `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent` with the Codex backend-shaped Headroom bridge and per-run Codex CLI auth inheritance.
 - Embeddings are optional and later-stage only: small batches, single worker, `nice`/`ionice` where applicable, checkpoint/resume, and stop-on-load guardrails.
 - No Graphify, MCP, RAG, or embedding component may directly write/delete/move notes in the live vault.
 

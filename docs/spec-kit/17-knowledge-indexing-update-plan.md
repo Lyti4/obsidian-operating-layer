@@ -216,3 +216,32 @@ optional bounded embedding runner consumes only manifest candidates
 ```
 
 Use `tools/obsidian_graphify_embedding_handoff.py` to create `embedding-manifest.json` and `REPORT.md` from `graphify-out/graph.json`. The handoff selects only eligible sandbox markdown/text source files referenced by Graphify nodes, scores them by graph participation, records hashes, and marks `embedding_policy.auto_execute=false`. It does not start embeddings. A later embedding runner must use that manifest as its allowlist, keep concurrency `1`, checkpoint/resume, write only derived cache under `out/external-indexing-spike/graphify-derived/`, and stop before live vault mutation.
+
+
+## Bounded embedding runner
+
+After the handoff manifest exists, the only approved embedding entrypoint is:
+
+```bash
+python3 tools/obsidian_graphify_embedding_run.py \
+  --manifest out/reports/graphify-embedding-handoff/.../embedding-manifest.json \
+  --out-dir out/reports/graphify-embedding-runs/... \
+  --derived-root out/external-indexing-spike/graphify-derived/...
+```
+
+The runner is manifest-only: it refuses arbitrary file discovery, verifies sandbox file hashes against the Graphify-derived manifest, writes checkpoint/resume state, and stores vectors only in the derived cache. The primary semantic provider is local loopback Ollama with `bge-m3`; `local-hashing-v1` is allowed only with an explicit smoke/test gate and must be reported as non-semantic quality. The same manifest-only contract, concurrency `1`, checkpointing, and no live vault mutation apply to every provider. See `27-graphify-nanobot-embedding-orchestration.md` for the full role split and acceptance gates.
+
+## Final468 sandbox embedding acceptance — 2026-07-04
+
+The current Graphify-derived sandbox handoff has a completed full embedding/query acceptance pass:
+
+- records: `468 / 468`
+- processed: `467`
+- skipped: `1` empty file (`empty_text_after_truncation`)
+- embedding sidecar files: `467`
+- query-smoke chunks: `3605`
+- all JSON files in derived cache: `468`
+- acceptance report: `out/reports/graphify-final468-acceptance-20260704T065729Z/REPORT.md`
+- reusable query CLI: `tools/obsidian_graphify_embedding_query.py`
+
+Operational rule learned on the 4 GB VPS: use safe batches with automatic Ollama unload and zram cleanup; do not use hot-mode for long series unless RAM is upgraded or thresholds are revalidated.

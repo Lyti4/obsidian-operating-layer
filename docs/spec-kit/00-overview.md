@@ -46,5 +46,7 @@ Obsidian vault
 - `20-indexing-runtime-acceptance.md` — accepted state of the guarded indexing runtime, evidence, and remaining production-integration blockers.
 - `25-nanobot-graphify-worker.md` — Nanobot-as-Graphify-worker contract: bridge route, `gpt-5.4-mini`, sandbox/read-only, graph-first before embeddings.
 - `26-nanobot-standing-worker.md` — Nanobot standing maintenance/communication worker contract for ongoing project support.
+- `28-global-headroom-only-llm-channel.md` — global Headroom-only LLM channel policy: explicit proxy/subscription inheritance, Graphify accepted route, Nanobot backend bridge, account cooldown semantics.
+- `29-channel-registry.md` — machine-readable карта ролей/маршрутов/прав мутации для Hermes/Codex/Headroom/Nanobot/Graphify.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.

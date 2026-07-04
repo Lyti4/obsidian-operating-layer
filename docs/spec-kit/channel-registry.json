@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "status": "proposal-active",
+  "updated_utc": "2026-07-04T08:47:56Z",
+  "global_rule": "External LLM-provider traffic routes through Headroom by default; local health/systemd/gateway/Ollama traffic is local.",
+  "channels": [
+    {
+      "component": "Hermes default profile",
+      "role": "orchestrator_acceptance_owner",
+      "external_llm_allowed": true,
+      "required_route": "provider/runtime configured Headroom path",
+      "may_mutate": "only with user/tool approval and task scope",
+      "acceptance_owner": "Hermes",
+      "forbidden_fallbacks": [
+        "direct unapproved provider",
+        "secret printing",
+        "silent profile/auth switch"
+      ]
+    },
+    {
+      "component": "Other Hermes profiles",
+      "role": "separate profile contexts",
+      "external_llm_allowed": true,
+      "required_route": "profile-specific Headroom-governed provider config",
+      "may_mutate": "not from default profile unless explicitly requested",
+      "acceptance_owner": "active profile/user",
+      "forbidden_fallbacks": [
+        "cross-profile memory/cron/config mutation without explicit request"
+      ]
+    },
+    {
+      "component": "Codex CLI",
+      "role": "implementation/review worker",
+      "external_llm_allowed": true,
+      "required_route": "OPENAI_BASE_URL=http://127.0.0.1:8787/v1 or provider=headroom",
+      "accepted_endpoint_shape": "OpenAI-compatible via Headroom for CLI; auth synced to active Hermes account when explicitly maintained",
+      "may_mutate": "repository/task scope only",
+      "acceptance_owner": "Hermes",
+      "forbidden_fallbacks": [
+        "direct upstream base_url",
+        "stale auth drift",
+        "printing auth.json"
+      ]
+    },
+    {
+      "component": "Headroom",
+      "role": "local external-LLM router/proxy",
+      "external_llm_allowed": true,
+      "required_route": "loopback service 127.0.0.1:8787",
+      "may_mutate": false,
+      "acceptance_owner": "Hermes/operator",
+      "forbidden_fallbacks": [
+        "public exposure",
+        "Nanobot broad localhost access"
+      ]
+    },
+    {
+      "component": "Nanobot Hermes communicator",
+      "role": "standing read-only/proposal worker",
+      "external_llm_allowed": true,
+      "required_route": "/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent -> http://127.0.0.1:8787/backend-api/codex/responses",
+      "accepted_endpoint_shape": "Headroom backend Codex bridge, not generic /v1/responses",
+      "may_mutate": false,
+      "acceptance_owner": "Hermes",
+      "forbidden_fallbacks": [
+        "filesystem write",
+        "service restart",
+        "cron/auth/profile mutation",
+        "direct provider"
+      ]
+    },
+    {
+      "component": "Nanobot read-only evidence gateway",
+      "role": "bounded evidence transport",
+      "external_llm_allowed": false,
+      "required_route": "http://127.0.0.1:18791/ allowlisted prefixes only",
+      "may_mutate": false,
+      "acceptance_owner": "Hermes",
+      "forbidden_fallbacks": [
+        "CIDR-wide localhost",
+        "raw /",
+        "credential dirs",
+        "live vault roots",
+        "public exposure"
+      ]
+    },
+    {
+      "component": "Graphify",
+      "role": "semantic graph/index adapter",
+      "external_llm_allowed": true,
+      "required_route": "graphify-headroom + codex-cli through Headroom for external semantic extraction; Ollama local for embeddings",
+      "may_mutate": false,
+      "acceptance_owner": "Hermes",
+      "forbidden_fallbacks": [
+        "direct provider",
+        "live vault writes",
+        "embedding auto-run without approval"
+      ]
+    },
+    {
+      "component": "Obsidian apply tooling",
+      "role": "controlled live-vault apply adapter",
+      "external_llm_allowed": false,
+      "required_route": "local manifest-backed apply only",
+      "may_mutate": "only with explicit approval manifest, backup, verify",
+      "acceptance_owner": "Hermes/user",
+      "forbidden_fallbacks": [
+        "direct apply",
+        "protected path writes",
+        "no-backup mutation"
+      ]
+    }
+  ]
+}

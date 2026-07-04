@@ -4,6 +4,9 @@ Status: active operating procedure
 Date: 2026-07-02  
 Scope: Nanobot as the orchestrated Graphify worker for Obsidian semantic graph work
 
+
+> Update 2026-07-04: global external LLM routing is governed by `28-global-headroom-only-llm-channel.md`. The accepted Graphify external path is `graphify-headroom` + `codex-cli` through Headroom. The accepted Nanobot review path is `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent`, which targets Headroom's Codex backend bridge at `http://127.0.0.1:8787/backend-api/codex/responses`. Generic `/v1/responses` is kept only as a historical known-blocker note.
+
 ## Decision
 
 Nanobot is the designated worker for Graphify-style semantic graph tasks, but not the acceptance owner and not a live-vault writer.
@@ -40,7 +43,7 @@ Default Graphify worker route:
 |---|---|
 | worker | Nanobot |
 | model | `gpt-5.4-mini` |
-| route | Headroom/Codex URL bridge; prefer Graphify `--backend codex-cli --model gpt-5.4-mini` for native Graphify semantic extraction, or Nanobot `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses` for Nanobot worker calls |
+| route | Headroom/Codex bridge; prefer Graphify `--backend codex-cli --model gpt-5.4-mini` for native Graphify semantic extraction, or `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent` with `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/backend-api/codex/responses` for Nanobot worker calls |
 | source | sandbox vault copy or approved read-only snapshot |
 | outputs | graph JSON/Markdown, findings, proposal-only bundle |
 | live writes | forbidden |
@@ -203,15 +206,15 @@ Nanobot/Graphify subscription inheritance uses the local Headroom URL bridge, no
 Runtime setting:
 
 ```bash
-NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses
+NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/backend-api/codex/responses
 ```
 
 Expected path:
 
 ```text
-Nanobot openai_codex provider
+nanobot-headroom-agent / Nanobot openai_codex provider
   ↓
-Headroom URL proxy on 127.0.0.1:8787
+Headroom Codex backend bridge on 127.0.0.1:8787
   ↓
 upstream API using the active Codex OAuth/subscription bearer
 ```
@@ -263,3 +266,69 @@ optional bounded embedding runner consumes only manifest candidates
 ```
 
 Use `tools/obsidian_graphify_embedding_handoff.py` to create `embedding-manifest.json` and `REPORT.md` from `graphify-out/graph.json`. The handoff selects only eligible sandbox markdown/text source files referenced by Graphify nodes, scores them by graph participation, records hashes, and marks `embedding_policy.auto_execute=false`. It does not start embeddings. A later embedding runner must use that manifest as its allowlist, keep concurrency `1`, checkpoint/resume, write only derived cache under `out/external-indexing-spike/graphify-derived/`, and stop before live vault mutation.
+
+
+## Bounded embedding runner
+
+After the handoff manifest exists, the only approved embedding entrypoint is:
+
+```bash
+python3 tools/obsidian_graphify_embedding_run.py \
+  --manifest out/reports/graphify-embedding-handoff/.../embedding-manifest.json \
+  --out-dir out/reports/graphify-embedding-runs/... \
+  --derived-root out/external-indexing-spike/graphify-derived/...
+```
+
+The runner is manifest-only: it refuses arbitrary file discovery, verifies sandbox file hashes against the Graphify-derived manifest, writes checkpoint/resume state, and stores vectors only in the derived cache. The primary semantic provider is local loopback Ollama with `bge-m3`; `local-hashing-v1` is allowed only with an explicit smoke/test gate and must be reported as non-semantic quality. The same manifest-only contract, concurrency `1`, checkpointing, and no live vault mutation apply to every provider. See `27-graphify-nanobot-embedding-orchestration.md` for the full role split and acceptance gates.
+
+## Final468 sandbox embedding acceptance — 2026-07-04
+
+The current Graphify-derived sandbox handoff has a completed full embedding/query acceptance pass:
+
+- records: `468 / 468`
+- processed: `467`
+- skipped: `1` empty file (`empty_text_after_truncation`)
+- embedding sidecar files: `467`
+- query-smoke chunks: `3605`
+- all JSON files in derived cache: `468`
+- acceptance report: `out/reports/graphify-final468-acceptance-20260704T065729Z/REPORT.md`
+- reusable query CLI: `tools/obsidian_graphify_embedding_query.py`
+
+Operational rule learned on the 4 GB VPS: use safe batches with automatic Ollama unload and zram cleanup; do not use hot-mode for long series unless RAM is upgraded or thresholds are revalidated.
+
+## Server-safe read-only evidence gateway rule
+
+Repeated Nanobot handoffs should use the local server-safe read-only evidence gateway instead of copying the same project packets into Nanobot's workspace. The gateway is served only on loopback:
+
+```text
+http://127.0.0.1:18791/
+```
+
+Allowed roots:
+
+Project evidence:
+
+- `/reports/` -> project `out/reports/`
+- `/proposals/` -> project `out/proposals/`
+- `/queue/` -> project `out/queue/`
+- `/spec-kit/` -> project `docs/spec-kit/`
+
+Server-safe context:
+
+- `/server-work/` -> `/home/hermesadmin/work/`
+- `/server-user-systemd/` -> `/home/hermesadmin/.config/systemd/user/`
+- `/server-local-bin/` -> `/home/hermesadmin/.local/bin/`
+- `/hermes-skills/` -> `/home/hermesadmin/.hermes/skills/`
+- `/hermes-cron/` -> `/home/hermesadmin/.hermes/cron/`
+- `/nanobot-workspace/` -> `/home/hermesadmin/.nanobot-hermes/workspace/`
+- `/nanobot-docs/` -> `/home/hermesadmin/.nanobot-hermes/docs/`
+
+Safety contract:
+
+- read-only HTTP only: `GET`, `HEAD`, `OPTIONS`; mutating methods return `405`;
+- no raw `/`, live vault root, `~/secure`, `.ssh`, `.codex`, browser profile, or credential directory is exposed;
+- hidden paths, traversal, symlink escapes, secret-like filenames, sensitive path names, unsafe extensions, and files over 2 MB are blocked;
+- Nanobot's internal URL allowlist is prefix-scoped to this gateway URL, not CIDR-wide localhost access;
+- Hermes remains acceptance owner and still writes `HERMES_VERIFICATION.md` for Nanobot claims.
+
+Workspace-local copied packets remain a fallback for one-off sanitized bundles or when the gateway is intentionally stopped. Do not grant Nanobot broad filesystem permissions to project paths.

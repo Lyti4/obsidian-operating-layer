@@ -27,6 +27,21 @@ from .graphify_embedding_handoff import (
     handoff_to_markdown,
     write_graphify_embedding_handoff,
 )
+from .graphify_embedding_query import (
+    GraphifyEmbeddingQueryHit,
+    GraphifyEmbeddingQueryReport,
+    GraphifyEmbeddingQueryResult,
+    graphify_embedding_query_to_markdown,
+    run_graphify_embedding_query_smoke,
+    write_graphify_embedding_query_smoke_report,
+)
+from .graphify_embedding_runner import (
+    EmbeddedFileRecord,
+    GraphifyEmbeddingRunReport,
+    embedding_run_to_markdown,
+    run_graphify_embedding_manifest,
+    write_graphify_embedding_run_report,
+)
 from .guardrails import (
     DEFAULT_APPROVAL_PHRASE,
     DEFAULT_BACKUP_ROOT,
@@ -105,6 +120,7 @@ from .rag_graph_adapter import (
     rag_graph_evaluation_to_markdown,
     write_rag_graph_adapter_evaluation,
 )
+from .resource_preflight import ResourcePreflightReport, collect_resource_preflight
 from .sandbox import SandboxCopyReport, create_sandbox_vault
 
 __all__ = [
@@ -117,9 +133,14 @@ __all__ = [
     "DEFAULT_PROJECT_SLUG",
     "DEFAULT_PROTECTED_RELATIVE",
     "DiagramPdfReportEvaluation",
+    "EmbeddedFileRecord",
     "GuardrailError",
     "GraphifyEmbeddingCandidate",
     "GraphifyEmbeddingHandoff",
+    "GraphifyEmbeddingQueryHit",
+    "GraphifyEmbeddingQueryReport",
+    "GraphifyEmbeddingQueryResult",
+    "GraphifyEmbeddingRunReport",
     "INDEXING_WRAPPER_TOOL_ALLOWLIST",
     "IndexingMcpProcessSpec",
     "IndexingMcpReportBundle",
@@ -129,6 +150,7 @@ __all__ = [
     "NormalizedMcpResult",
     "REDACTED_LIVE_VAULT",
     "RagGraphAdapterEvaluation",
+    "ResourcePreflightReport",
     "SAFE_JOB_KINDS",
     "SanitizedMcpTranscript",
     "SandboxCopyReport",
@@ -148,6 +170,7 @@ __all__ = [
     "canonical_workspace_layout",
     "classify_index_tool",
     "classify_mcp_tool",
+    "collect_resource_preflight",
     "cleanup_stale_running_jobs",
     "controlled_job_exists",
     "controlled_queue_dirs",
@@ -155,9 +178,11 @@ __all__ = [
     "create_sandbox_vault",
     "diagram_pdf_report_to_markdown",
     "discover_indexing_exclude_prefixes",
+    "embedding_run_to_markdown",
     "evaluation_to_markdown",
     "find_controlled_job",
     "hash_vault_tree",
+    "graphify_embedding_query_to_markdown",
     "handoff_to_markdown",
     "indexing_spike_to_markdown",
     "is_protected_relative",
@@ -184,6 +209,8 @@ __all__ = [
     "planned_backup_dir",
     "proposal_to_markdown",
     "rag_graph_evaluation_to_markdown",
+    "run_graphify_embedding_manifest",
+    "run_graphify_embedding_query_smoke",
     "redact_live_vault_paths",
     "run_controlled_job",
     "sanitize_indexing_mcp_transcript",
@@ -191,6 +218,8 @@ __all__ = [
     "validate_targets",
     "verify_indexing_runtime_tools",
     "write_graphify_embedding_handoff",
+    "write_graphify_embedding_run_report",
+    "write_graphify_embedding_query_smoke_report",
     "write_indexing_mcp_report_bundle",
     "write_json",
     "write_acceptance_report",
