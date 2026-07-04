@@ -204,3 +204,21 @@ Follow-up changes:
 - Clarified internal vs sanitized path reporting.
 - Normalized protected-path inheritance for Graphify tasks.
 - Added explicit bridge fallback rules and minimum evidence packet requirements for Nanobot Graphify/standing-worker results.
+
+
+### 2026-07-04 P1.3 dashboard source validation
+
+Result: green source-level dashboard validation; no live vault publication or mutation.
+
+Changes:
+- Added `validate-source` mode to `tools/obsidian_review_dashboard.py`.
+- Added `make dashboard-validate` to write JSON and Markdown validation reports under `out/reports/dashboard-source-validate/`.
+- Added regression tests for dashboard source constraints and pending proposal filtering.
+
+Evidence:
+- `python3 -m pytest tests/test_review_dashboard.py -q` passed.
+- `make dashboard-validate` passed and reported `status: ok`, `checklist_items: 6`, no findings.
+
+Safety:
+- The dashboard remains proposal-only source material.
+- Publishing into the live vault still requires manual copy by Дмитрий or the approved obslayer apply gate.

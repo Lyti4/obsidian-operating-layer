@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify
+.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -47,6 +47,8 @@ RESOURCE_MAX_LOAD_PER_CPU ?= 1.25
 RESOURCE_MAX_SWAP_IO_PAGES_PER_SEC ?= 20
 CHANNEL_REGISTRY ?= docs/spec-kit/channel-registry.json
 CHANNEL_REGISTRY_REPORTS ?= out/reports/channel-registry-verify/manual
+DASHBOARD_SOURCE ?= docs/obsidian-review-dashboard/index.md
+DASHBOARD_VALIDATE_REPORTS ?= out/reports/dashboard-source-validate/manual
 
 test:
 	python3 -m pytest -q
@@ -64,6 +66,12 @@ smoke:
 
 dashboard-list:
 	python3 tools/obsidian_review_dashboard.py list --proposal-root $(PROPOSAL_ROOT) --json
+
+
+dashboard-validate:
+	mkdir -p $(DASHBOARD_VALIDATE_REPORTS)
+	python3 tools/obsidian_review_dashboard.py validate-source --dashboard $(DASHBOARD_SOURCE) --json --out $(DASHBOARD_VALIDATE_REPORTS)/dashboard-validation.json
+	python3 tools/obsidian_review_dashboard.py validate-source --dashboard $(DASHBOARD_SOURCE) --out $(DASHBOARD_VALIDATE_REPORTS)/REPORT.md
 
 live-proposal-only:
 	stamp=$$(date -u +%Y%m%dT%H%M%SZ); \

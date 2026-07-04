@@ -14,7 +14,7 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `tools/obsidian_apply.py` — dry-run by default; live apply only with an explicit approval manifest.
 - `tools/obsidian_verify.py` — verify observation/proposal consistency.
 - `tools/obsidian_backfill_report.py` — write an operator report into Obsidian Reports.
-- `tools/obsidian_review_dashboard.py` — list/explain pending dry-run proposals for human review without vault mutation.
+- `tools/obsidian_review_dashboard.py` — list/explain pending dry-run proposals and validate the Dataview dashboard source without vault mutation.
 - `tools/obsidian_sandbox.py` — create/reset protected-path-excluding sandbox vault copies under `out/`.
 - `tools/obsidian_controlled_autonomy.py` — explicit Phase 08 observe/index/report queue jobs and acceptance reports; no scheduler is installed.
 - `tools/obsidian_field_slice.py` — proposal-only field acceptance slice: observe → finding → proposal → verify → dashboard list → decision record.
@@ -82,6 +82,7 @@ Safe make aliases for common flows:
 
 ```bash
 make dashboard-list PROPOSAL_ROOT=out/proposals
+make dashboard-validate
 make field-slice-example VAULT=/tmp/approved-vault-subset FIELD_SLICE_OUT=out/field-slices/example
 make render-diagrams DIAGRAM_OUT=out/diagrams/manual-acceptance REPORT_OUT=out/reports/manual-acceptance
 make rag-benchmark RAG_SANDBOX=out/sandbox-vaults/rag-benchmark RAG_REPORTS=out/reports/rag-benchmark

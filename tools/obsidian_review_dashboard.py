@@ -159,6 +159,92 @@ def render_explanation_markdown(explanation: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+REQUIRED_DASHBOARD_STATUSES = {"proposed", "needs-review", "applied", "rejected"}
+REQUIRED_DASHBOARD_SECTIONS = (
+    "## Safety contract",
+    "## Status labels",
+    "## Review queue",
+    "## Proposal index",
+    "## Report index",
+    "## Task index",
+    "## Manual review checklist",
+)
+REQUIRED_DATAVIEW_MARKERS = (
+    'FROM "Hermes/Review"',
+    'FROM "Hermes/Review/Proposals"',
+    'FROM "Hermes/Reports"',
+)
+
+
+def validate_dashboard_source(dashboard_path: str | Path) -> dict[str, Any]:
+    path = Path(dashboard_path).expanduser().resolve()
+    if not path.is_file():
+        raise GuardrailError(f"Dashboard source does not exist: {path}")
+    text = path.read_text(encoding="utf-8")
+    findings: list[str] = []
+
+    if "write_policy: proposal_only" not in text:
+        findings.append("frontmatter must include write_policy: proposal_only")
+    if "status: proposed" not in text:
+        findings.append("frontmatter must keep status: proposed until explicitly published")
+    if "/home/hermesadmin/Obsidian" in text and "approved obslayer proposal/apply run" not in text:
+        findings.append("live vault path mention must stay inside explicit publish-gate wording")
+    if "```dataview" not in text:
+        findings.append("dashboard must include Dataview blocks")
+
+    for section in REQUIRED_DASHBOARD_SECTIONS:
+        if section not in text:
+            findings.append(f"missing required section: {section}")
+    for marker in REQUIRED_DATAVIEW_MARKERS:
+        if marker not in text:
+            findings.append(f"missing Dataview source marker: {marker}")
+    for status in REQUIRED_DASHBOARD_STATUSES:
+        if f"`{status}`" not in text:
+            findings.append(f"missing constrained status label: {status}")
+
+    checklist_count = sum(1 for line in text.splitlines() if line.startswith("- [ ] "))
+    if checklist_count < 5:
+        findings.append("manual checklist must contain at least 5 unchecked safety items")
+
+    result = {
+        "status": "ok" if not findings else "failed",
+        "dashboard_path": str(path),
+        "required_sections": list(REQUIRED_DASHBOARD_SECTIONS),
+        "dataview_sources": list(REQUIRED_DATAVIEW_MARKERS),
+        "status_labels": sorted(REQUIRED_DASHBOARD_STATUSES),
+        "checklist_items": checklist_count,
+        "findings": findings,
+    }
+    if findings:
+        raise GuardrailError("Dashboard validation failed: " + "; ".join(findings))
+    return result
+
+
+def render_dashboard_validation_markdown(result: dict[str, Any]) -> str:
+    lines = [
+        "# Obsidian Review Dashboard Validation",
+        "",
+        f"Status: `{result['status']}`",
+        f"Dashboard: `{result['dashboard_path']}`",
+        f"Checklist items: `{result['checklist_items']}`",
+        "",
+        "## Required sections",
+        "",
+    ]
+    lines.extend(f"- {item}" for item in result["required_sections"])
+    lines.extend(["", "## Dataview sources", ""])
+    lines.extend(f"- `{item}`" for item in result["dataview_sources"])
+    lines.extend(["", "## Status labels", ""])
+    lines.extend(f"- `{item}`" for item in result["status_labels"])
+    lines.extend(["", "## Findings", ""])
+    if result["findings"]:
+        lines.extend(f"- {item}" for item in result["findings"])
+    else:
+        lines.append("- none")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Review Obsidian Operating Layer proposals without mutating any vault.")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -172,6 +258,11 @@ def main() -> int:
     explain_parser.add_argument("--proposal", required=True, help="Path to proposal.json")
     explain_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON instead of Markdown")
     explain_parser.add_argument("--out", help="Optional output path for the rendered explanation")
+
+    validate_parser = subparsers.add_parser("validate-source", help="Validate the Dataview dashboard source without vault mutation")
+    validate_parser.add_argument("--dashboard", default="docs/obsidian-review-dashboard/index.md", help="Dashboard markdown source")
+    validate_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON instead of Markdown")
+    validate_parser.add_argument("--out", help="Optional output path for the rendered validation report")
 
     args = parser.parse_args()
     if args.command == "list":
@@ -199,6 +290,20 @@ def main() -> int:
             print(text, end="")
             return 0
         text = render_explanation_markdown(explanation)
+        if args.out:
+            Path(args.out).expanduser().resolve().write_text(text, encoding="utf-8")
+        print(text, end="")
+        return 0
+
+    if args.command == "validate-source":
+        result = validate_dashboard_source(args.dashboard)
+        if args.json:
+            text = json.dumps(result, indent=2, sort_keys=True) + "\n"
+            if args.out:
+                write_json(args.out, result)
+            print(text, end="")
+            return 0
+        text = render_dashboard_validation_markdown(result)
         if args.out:
             Path(args.out).expanduser().resolve().write_text(text, encoding="utf-8")
         print(text, end="")

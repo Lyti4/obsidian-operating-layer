@@ -124,6 +124,8 @@ Acceptance:
 
 ### P1.3 Dashboard field review
 
+Status: source-level validation implemented via `make dashboard-validate`; live-vault publication still requires manual copy or approved apply.
+
 Goal: validate that the dashboard is useful inside Obsidian, not only as markdown files.
 
 Acceptance:
@@ -132,6 +134,13 @@ Acceptance:
 - Dataview/Templater-facing sections are readable;
 - status labels work: `proposed`, `needs-review`, `applied`, `rejected`;
 - manual checklist covers safety boundary, paths, evidence, and verify result.
+
+Verification:
+
+```bash
+make dashboard-validate
+pytest tests/test_review_dashboard.py
+```
 
 ### P1.4 Diagram readability pass
 
