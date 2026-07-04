@@ -93,3 +93,50 @@ def test_collect_pending_proposals_filters_closed(tmp_path: Path) -> None:
     rows = collect_pending_proposals(tmp_path)
 
     assert [row["proposal_id"] for row in rows] == ["p1"]
+
+
+def test_explain_semantic_proposal_only_includes_candidates(tmp_path: Path) -> None:
+    proposal = tmp_path / "proposal.json"
+    proposal.write_text(
+        json.dumps(
+            {
+                "mode": "semantic-query-proposal-only-report",
+                "proposal_id": "semantic-p1",
+                "status": "needs-review",
+                "risk_class": "read_only_only",
+                "approval_required": True,
+                "dry_run_default": True,
+                "live_mutation_authorized": False,
+                "targets": [],
+                "summary": {"candidate_paths": 2, "chunks_indexed": 5},
+                "queries": ["link hygiene", "approval manifest"],
+                "candidates": [
+                    {
+                        "path": "Memory-Vault/Hermes/Reports/A.md",
+                        "best_score": 0.9,
+                        "hit_count": 2,
+                        "queries": ["link hygiene", "approval manifest"],
+                        "chunks": [0, 1],
+                    }
+                ],
+                "safety": {
+                    "proposal_only": True,
+                    "targets_empty": True,
+                    "live_mutation_authorized": False,
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    from obsidian_review_dashboard import explain_proposal, render_explanation_markdown
+
+    explanation = explain_proposal(proposal)
+    text = render_explanation_markdown(explanation)
+
+    assert explanation["approval_phrase"] == "not applicable — proposal-only / no targets"
+    assert explanation["semantic_candidate_count"] == 1
+    assert "## Semantic review candidates" in text
+    assert "Memory-Vault/Hermes/Reports/A.md" in text
+    assert "Semantic candidates are review inputs only" in text
+    assert "live mutation authorized: `False`" in text

@@ -270,3 +270,24 @@ Evidence:
 
 Boundary:
 - candidate review only; no proposed file edits; no live vault mutation; no approval manifest generated.
+
+
+### 2026-07-04 P3 semantic proposal explanation UX
+
+Result: dashboard/explain now understands semantic query proposal-only reports.
+
+Changes:
+- `tools/obsidian_review_dashboard.py explain` renders semantic candidate count, top candidates, query intents, and safety boundary.
+- Empty-target proposal-only reports now show approval phrase as `not applicable — proposal-only / no targets` instead of `None`.
+- Regression test added in `tests/test_review_dashboard.py`.
+
+Evidence:
+- `pytest tests/test_review_dashboard.py -q` passed.
+- `make verify` passed.
+- Generated explanation: `out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/EXPLANATION.md`.
+
+Boundary:
+- review UX only;
+- no live vault mutation;
+- no approval manifest generated;
+- semantic candidates remain review inputs, not edit targets.

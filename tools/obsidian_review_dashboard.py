@@ -106,6 +106,36 @@ def _target_diff(target: dict[str, Any], *, max_chars: int = 4000) -> dict[str, 
     return {"path": target_path, "diff": diff}
 
 
+def _semantic_candidates(proposal: dict[str, Any], *, limit: int = 10) -> list[dict[str, Any]]:
+    candidates = proposal.get("candidates", [])
+    if not isinstance(candidates, list):
+        return []
+    rows: list[dict[str, Any]] = []
+    for item in candidates[:limit]:
+        if not isinstance(item, dict):
+            continue
+        rows.append(
+            {
+                "path": str(item.get("path") or "<missing>"),
+                "best_score": item.get("best_score"),
+                "hit_count": item.get("hit_count"),
+                "queries": [str(query) for query in item.get("queries", []) if isinstance(query, str)],
+                "chunks": item.get("chunks", []),
+            }
+        )
+    return rows
+
+
+def _approval_phrase(proposal: dict[str, Any], targets: list[Any]) -> str:
+    if (
+        proposal.get("mode") == "semantic-query-proposal-only-report"
+        or proposal.get("live_mutation_authorized") is False
+        or not targets
+    ):
+        return "not applicable — proposal-only / no targets"
+    return str(proposal.get("approval_phrase") or "<missing>")
+
+
 def explain_proposal(proposal_path: str | Path) -> dict[str, Any]:
     path = Path(proposal_path).expanduser().resolve()
     proposal = load_json(path)
@@ -117,19 +147,33 @@ def explain_proposal(proposal_path: str | Path) -> dict[str, Any]:
     if not isinstance(targets, list):
         raise GuardrailError("Unsafe proposal explanation refused: targets must be a list")
     target_dicts = [target for target in targets if isinstance(target, dict)]
+    mode = str(proposal.get("mode") or "")
+    summary = proposal.get("summary")
     return {
         "proposal_id": _proposal_id(path, proposal),
+        "mode": mode,
         "status": _proposal_status(proposal),
         "risk": str(proposal.get("risk_class") or proposal.get("risk") or "unknown"),
-        "summary": str(proposal.get("summary") or "No summary provided."),
+        "summary": summary if isinstance(summary, dict) else str(summary or "No summary provided."),
         "what_will_change": [str(target.get("path", "<missing>")) for target in target_dicts],
         "target_diffs": [_target_diff(target) for target in target_dicts],
         "target_count": len(targets),
-        "approval_phrase": proposal.get("approval_phrase"),
+        "approval_phrase": _approval_phrase(proposal, targets),
         "next_safe_step": proposal.get("next_safe_step"),
         "rollback": proposal.get("backup_plan", {}),
         "proposal_path": str(path),
+        "query_intents": [str(query) for query in proposal.get("queries", []) if isinstance(query, str)],
+        "semantic_candidate_count": len(proposal.get("candidates", [])) if isinstance(proposal.get("candidates"), list) else 0,
+        "semantic_candidates": _semantic_candidates(proposal),
+        "safety": proposal.get("safety", {}) if isinstance(proposal.get("safety"), dict) else {},
+        "live_mutation_authorized": bool(proposal.get("live_mutation_authorized", bool(targets))),
     }
+
+
+def _render_summary(summary: Any) -> list[str]:
+    if isinstance(summary, dict):
+        return [f"- {key}: `{value}`" for key, value in summary.items()]
+    return [str(summary)]
 
 
 def render_explanation_markdown(explanation: dict[str, Any]) -> str:
@@ -137,24 +181,59 @@ def render_explanation_markdown(explanation: dict[str, Any]) -> str:
     lines = [
         f"# Proposal explanation: {explanation['proposal_id']}",
         "",
+        f"- mode: `{explanation.get('mode') or 'standard-proposal'}`",
         f"- status: `{explanation['status']}`",
         f"- risk: `{explanation['risk']}`",
         f"- targets: `{explanation['target_count']}`",
         f"- approval phrase: `{explanation.get('approval_phrase')}`",
+        f"- live mutation authorized: `{explanation.get('live_mutation_authorized')}`",
         "",
         "## Summary",
         "",
-        explanation["summary"],
-        "",
-        "## What will change",
-        "",
     ]
+    lines.extend(_render_summary(explanation["summary"]))
+    lines.extend(["", "## What will change", ""])
     lines.extend(f"- `{path}`" for path in paths)
+
+    if explanation.get("semantic_candidate_count"):
+        lines.extend(
+            [
+                "",
+                "## Semantic review candidates",
+                "",
+                f"Candidate paths: `{explanation['semantic_candidate_count']}`",
+                "",
+            ]
+        )
+        queries = explanation.get("query_intents") or []
+        if queries:
+            lines.extend(["### Query intents", ""])
+            lines.extend(f"- {query}" for query in queries)
+            lines.append("")
+        lines.extend(["### Top candidates", "", "| rank | best score | hits | path | query matches |", "|---:|---:|---:|---|---|"])
+        for index, item in enumerate(explanation.get("semantic_candidates") or [], 1):
+            queries_text = "; ".join(item.get("queries") or [])
+            lines.append(
+                f"| {index} | `{item.get('best_score')}` | `{item.get('hit_count')}` | `{item['path']}` | {queries_text} |"
+            )
+        lines.extend(
+            [
+                "",
+                "Semantic candidates are review inputs only. They are not edit targets and do not authorize apply.",
+            ]
+        )
+
     diffs = explanation.get("target_diffs") or []
     if diffs:
         lines.extend(["", "## Proposed diff", ""])
         for item in diffs:
             lines.extend([f"### `{item['path']}`", "", "```diff", item["diff"].rstrip(), "```", ""])
+
+    safety = explanation.get("safety") or {}
+    if safety:
+        lines.extend(["", "## Safety boundary", ""])
+        for key, value in safety.items():
+            lines.append(f"- {key}: `{value}`")
     lines.extend(["", "## Next safe step", "", str(explanation.get("next_safe_step") or "Review before any apply.")])
     return "\n".join(lines) + "\n"
 
