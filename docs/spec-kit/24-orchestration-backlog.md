@@ -428,3 +428,19 @@ Changed runtime:
 Boundary:
 
 - read-only/proposal-only audit; no live vault mutation; no repo mutation by Nanobot; no auth/profile/service/network/deploy/embedding changes; blocked reports are acceptable when provider capacity is unavailable.
+
+
+### 2026-07-04 P2c deterministic docs lag audit
+
+Result: added a local structural audit that checks whether key docs/specs mention the current accepted Nanobot, channel, and semantic workflow markers.
+
+Changed:
+
+- Added `src/obslayer/project_docs_lag_audit.py`.
+- Added `tools/obsidian_project_docs_lag_audit.py`.
+- Added `tests/test_project_docs_lag_audit.py`.
+- Added `make project-docs-lag-audit`.
+
+Boundary:
+
+- read-only docs marker audit; no live vault mutation; no LLM required; intended as deterministic companion evidence for the 15-minute Nanobot audit scout.

@@ -265,3 +265,5 @@ Runtime boundary:
 - timeout: bounded Nanobot call;
 - report-only/proposal-only;
 - blocked reports are valid outcomes for quota/auth/provider limits.
+
+The 15-minute audit loop is complemented by deterministic repo-side docs lag checks via `tools/obsidian_project_docs_lag_audit.py` / `make project-docs-lag-audit`; this provides non-LLM evidence when Nanobot/provider capacity is blocked.

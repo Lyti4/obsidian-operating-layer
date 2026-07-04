@@ -92,6 +92,8 @@ DEFAULT_ROOTS = (
     EvidenceRoot("proposals", PROJECT_ROOT / "out" / "proposals"),
     EvidenceRoot("queue", PROJECT_ROOT / "out" / "queue"),
     EvidenceRoot("spec-kit", PROJECT_ROOT / "docs" / "spec-kit"),
+    EvidenceRoot("project-docs", PROJECT_ROOT / "docs"),
+    EvidenceRoot("project-policy", PROJECT_ROOT),
     # Broader server-safe read-only roots for Nanobot communicator/reviewer use.
     # These are intentionally selected roots, not raw / or /home exposure.
     EvidenceRoot("server-work", Path.home() / "work"),
@@ -165,6 +167,17 @@ def allowed_roots(existing_only: bool = True) -> dict[str, Path]:
     return roots
 
 
+PROJECT_POLICY_ALLOWED_RELS = {"AGENTS.md", "README.md", "Makefile"}
+
+
+def _alias_allows_rel(alias: str, rel: Path) -> bool:
+    if alias != "project-policy":
+        return True
+    if rel.as_posix() == ".":
+        return True
+    return rel.as_posix() in PROJECT_POLICY_ALLOWED_RELS
+
+
 def resolve_evidence_path(url_path: str, roots: dict[str, Path] | None = None) -> tuple[str, Path]:
     """Resolve /<alias>/<relative-path> under an allowlisted root.
 
@@ -183,6 +196,8 @@ def resolve_evidence_path(url_path: str, roots: dict[str, Path] | None = None) -
     rel = Path(*parts[1:]) if len(parts) > 1 else Path(".")
     if rel.is_absolute() or ".." in rel.parts:
         raise AccessDenied("path traversal is not allowed")
+    if not _alias_allows_rel(alias, rel):
+        raise AccessDenied("path is not exposed for this alias")
     if _has_hidden_part(rel):
         raise AccessDenied("hidden paths are not exposed")
     if _has_secret_like_name(rel):
@@ -214,6 +229,7 @@ def list_index(roots: dict[str, Path] | None = None) -> bytes:
             "unsafe_extensions": "blocked",
         },
         "roots": {alias: f"/{alias}/" for alias in sorted(roots)},
+        "snapshot": "/snapshot.json",
     }
     return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode()
 
@@ -270,6 +286,36 @@ def audit_roots(roots: dict[str, Path] | None = None, *, max_entries_per_root: i
     return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode()
 
 
+def snapshot_index(roots: dict[str, Path] | None = None) -> bytes:
+    roots = allowed_roots() if roots is None else roots
+    urls = {
+        "policy": ["/project-policy/AGENTS.md", "/project-policy/README.md", "/project-policy/Makefile"],
+        "specs": [
+            "/spec-kit/24-orchestration-backlog.md",
+            "/spec-kit/26-nanobot-standing-worker.md",
+            "/spec-kit/28-global-headroom-only-llm-channel.md",
+            "/spec-kit/29-semantic-proposal-workflow.md",
+            "/spec-kit/29-channel-registry.md",
+            "/spec-kit/channel-registry.json",
+        ],
+        "acceptance": ["/project-docs/acceptance/index.md"],
+        "reports": ["/reports/project-docs-lag-audit/", "/reports/nanobot-cron-scout/"],
+        "proposals": ["/proposals/semantic-review-indexes/", "/proposals/semantic-targeted-proposals/"],
+    }
+    available_urls = {
+        group: [url for url in items if url.lstrip("/").split("/", 1)[0] in roots]
+        for group, items in urls.items()
+    }
+    payload = {
+        "status": "ok",
+        "mode": "server-safe-read-only-snapshot",
+        "description": "Canonical safe URLs for scheduled Nanobot docs/project lag audits.",
+        "mutating_methods": "disabled",
+        "urls": available_urls,
+    }
+    return (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode()
+
+
 class EvidenceRequestHandler(BaseHTTPRequestHandler):
     server_version = "NanobotReadonlyEvidenceGateway/1.0"
     roots: ClassVar[dict[str, Path]] = {}
@@ -310,6 +356,9 @@ class EvidenceRequestHandler(BaseHTTPRequestHandler):
         if parsed.path == "/audit.json":
             self._send_bytes(audit_roots(self.roots), content_type="application/json; charset=utf-8")
             return
+        if parsed.path == "/snapshot.json":
+            self._send_bytes(snapshot_index(self.roots), content_type="application/json; charset=utf-8")
+            return
         if parsed.path == "/health":
             self._send_bytes(
                 b'{"status":"ok","mode":"server-safe-read-only"}\n',
@@ -328,6 +377,8 @@ class EvidenceRequestHandler(BaseHTTPRequestHandler):
             items = []
             for child in sorted(target.iterdir(), key=lambda p: (not p.is_dir(), p.name.lower())):
                 rel = child.relative_to(self.roots[alias])
+                if not _alias_allows_rel(alias, rel):
+                    continue
                 if not _is_exposed_directory_entry(child, self.roots[alias]):
                     continue
                 suffix = "/" if child.is_dir() else ""
@@ -368,12 +419,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
     parser.add_argument("--print-index", action="store_true", help="Print root index JSON and exit")
     parser.add_argument("--print-audit", action="store_true", help="Print content-free root exposure audit JSON and exit")
+    parser.add_argument("--print-snapshot", action="store_true", help="Print canonical safe audit URLs JSON and exit")
     args = parser.parse_args(argv)
     if args.print_index:
         print(list_index().decode(), end="")
         return 0
     if args.print_audit:
         print(audit_roots().decode(), end="")
+        return 0
+    if args.print_snapshot:
+        print(snapshot_index().decode(), end="")
         return 0
     server = make_server(args.host, args.port)
     print(f"nanobot evidence gateway: http://{args.host}:{args.port}/ (read-only)", flush=True)

@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal llm-channel-smoke llm-channel-smoke-live semantic-review-index
+.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal llm-channel-smoke llm-channel-smoke-live semantic-review-index project-docs-lag-audit
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -60,6 +60,7 @@ SEMANTIC_TARGETED_OUT ?= out/proposals/semantic-targeted-proposals/manual
 SEMANTIC_TARGETED_GROUP ?= link_hygiene_reports
 SEMANTIC_REVIEW_INDEX_PROPOSAL_JSON ?= out/proposals/semantic-targeted-proposals/link-hygiene-20260704T112830Z/proposal.json
 SEMANTIC_REVIEW_INDEX_OUT ?= out/proposals/semantic-review-indexes/manual
+PROJECT_DOCS_LAG_AUDIT_OUT ?= out/reports/project-docs-lag-audit/manual
 
 test:
 	python3 -m pytest -q
@@ -159,3 +160,6 @@ llm-channel-smoke-live:
 
 semantic-review-index:
 	python3 tools/obsidian_semantic_review_index.py --targeted-proposal-json $(SEMANTIC_REVIEW_INDEX_PROPOSAL_JSON) --out-dir $(SEMANTIC_REVIEW_INDEX_OUT)
+
+project-docs-lag-audit:
+	python3 tools/obsidian_project_docs_lag_audit.py --repo . --out-dir $(PROJECT_DOCS_LAG_AUDIT_OUT)

@@ -11,11 +11,11 @@ Safety invariant: Nanobot proposes; Hermes verifies and accepts/rejects; live va
 
 ## Approved Nanobot scheduled scout
 
-Dmitry approved one bounded Nanobot cron on 2026-07-04. The approved job is local-delivery only and uses `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py` to run a daily read-only/proposal-only Obsidian Operating Layer scout.
+Dmitry approved one bounded Nanobot cron on 2026-07-04. The approved job is local-delivery only and uses `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py` to run a 15-minute read-only/proposal-only Obsidian Operating Layer audit scout.
 
 Constraints:
 
-- evidence access only through `http://127.0.0.1:18791/`;
+- evidence access only through `http://127.0.0.1:18791/`, including `/snapshot.json` for canonical audit URLs;
 - external LLM access only through `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent` and the Headroom backend Codex bridge;
 - reports only under `out/reports/nanobot-cron-scout/`;
 - no live vault/repo mutation, no auth/profile mutation, no service restart, no network exposure, no embedding auto-run;
