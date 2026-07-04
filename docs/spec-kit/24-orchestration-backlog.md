@@ -291,3 +291,23 @@ Boundary:
 - no live vault mutation;
 - no approval manifest generated;
 - semantic candidates remain review inputs, not edit targets.
+
+
+### 2026-07-04 P3 semantic proposal explanation CLI hardening
+
+Result: dashboard/explain remains read-only but is easier and safer to use from operator handoffs.
+
+Changes:
+- `tools/obsidian_review_dashboard.py explain` accepts a positional `proposal.json` path as shorthand for `--proposal`.
+- Semantic candidate Markdown table cells escape pipe delimiters in paths, queries, scores, and chunks.
+- Regression tests cover positional CLI invocation and table escaping.
+
+Evidence:
+- `pytest tests/test_review_dashboard.py -q` passed.
+- `make verify` passed.
+
+Boundary:
+- CLI/report UX only;
+- no live vault mutation;
+- no approval manifest generated;
+- semantic candidates remain review inputs, not edit targets.

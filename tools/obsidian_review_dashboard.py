@@ -106,6 +106,11 @@ def _target_diff(target: dict[str, Any], *, max_chars: int = 4000) -> dict[str, 
     return {"path": target_path, "diff": diff}
 
 
+def _markdown_cell(value: Any) -> str:
+    text = str(value)
+    return text.replace("\n", " ").replace("|", "\\|")
+
+
 def _semantic_candidates(proposal: dict[str, Any], *, limit: int = 10) -> list[dict[str, Any]]:
     candidates = proposal.get("candidates", [])
     if not isinstance(candidates, list):
@@ -219,14 +224,14 @@ def render_explanation_markdown(explanation: dict[str, Any]) -> str:
             ]
         )
         for index, item in enumerate(explanation.get("semantic_candidates") or [], 1):
-            queries_text = "; ".join(item.get("queries") or [])
+            queries_text = _markdown_cell("; ".join(item.get("queries") or []))
             chunks = item.get("chunks", [])
-            chunks_text = ", ".join(str(chunk) for chunk in chunks[:5]) if isinstance(chunks, list) else str(chunks)
+            chunks_text = ", ".join(_markdown_cell(chunk) for chunk in chunks[:5]) if isinstance(chunks, list) else _markdown_cell(chunks)
             if isinstance(chunks, list) and len(chunks) > 5:
                 chunks_text += ", ..."
             lines.append(
-                f"| {index} | `{item.get('best_score')}` | `{item.get('hit_count')}` | `{chunks_text}` | "
-                f"`{item['path']}` | {queries_text} |"
+                f"| {index} | `{_markdown_cell(item.get('best_score'))}` | `{_markdown_cell(item.get('hit_count'))}` | `{chunks_text}` | "
+                f"`{_markdown_cell(item['path'])}` | {queries_text} |"
             )
         lines.extend(
             [
@@ -346,7 +351,8 @@ def main() -> int:
     list_parser.add_argument("--out", help="Optional output path for the rendered list")
 
     explain_parser = subparsers.add_parser("explain", help="Explain one safe dry-run proposal in human language")
-    explain_parser.add_argument("--proposal", required=True, help="Path to proposal.json")
+    explain_parser.add_argument("proposal_path", nargs="?", help="Path to proposal.json (positional shorthand)")
+    explain_parser.add_argument("--proposal", help="Path to proposal.json")
     explain_parser.add_argument("--json", action="store_true", help="Print machine-readable JSON instead of Markdown")
     explain_parser.add_argument("--out", help="Optional output path for the rendered explanation")
 
@@ -372,7 +378,10 @@ def main() -> int:
         return 0
 
     if args.command == "explain":
-        explanation = explain_proposal(args.proposal)
+        proposal_arg = args.proposal or args.proposal_path
+        if not proposal_arg:
+            explain_parser.error("the following argument is required: proposal_path or --proposal")
+        explanation = explain_proposal(proposal_arg)
         if args.json:
             payload = {"status": "ok", "explanation": explanation}
             text = json.dumps(payload, indent=2, sort_keys=True) + "\n"

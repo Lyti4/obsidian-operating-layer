@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -168,3 +169,69 @@ def test_explain_real_semantic_proposal_artifact_if_present() -> None:
     assert "## Semantic review candidates" in text
     assert "| rank | best score | hits | chunks | path | query matches |" in text
     assert "## Safety boundary" in text
+
+
+def test_explain_semantic_markdown_escapes_table_cells(tmp_path: Path) -> None:
+    proposal = tmp_path / "proposal.json"
+    proposal.write_text(
+        json.dumps(
+            {
+                "mode": "semantic-query-proposal-only-report",
+                "proposal_id": "semantic-pipe",
+                "status": "needs-review",
+                "risk_class": "read_only_only",
+                "approval_required": True,
+                "dry_run_default": True,
+                "live_mutation_authorized": False,
+                "targets": [],
+                "summary": {"candidate_paths": 1},
+                "queries": ["query | with pipe"],
+                "candidates": [
+                    {
+                        "path": "Folder/A | B.md",
+                        "best_score": "0.9 | suspicious",
+                        "hit_count": 1,
+                        "queries": ["query | with pipe"],
+                        "chunks": ["chunk | 1"],
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    from obsidian_review_dashboard import explain_proposal, render_explanation_markdown
+
+    text = render_explanation_markdown(explain_proposal(proposal))
+
+    assert "Folder/A \\| B.md" in text
+    assert "query \\| with pipe" in text
+    assert "0.9 \\| suspicious" in text
+
+
+def test_explain_cli_accepts_positional_proposal_path(tmp_path: Path) -> None:
+    proposal = tmp_path / "proposal.json"
+    proposal.write_text(
+        json.dumps(
+            {
+                "proposal_id": "cli-positional",
+                "status": "needs-review",
+                "risk_class": "read_only_only",
+                "approval_required": True,
+                "dry_run_default": True,
+                "targets": [],
+                "summary": "safe dry-run proposal",
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = subprocess.run(
+        [sys.executable, str(repo_root() / "tools" / "obsidian_review_dashboard.py"), "explain", str(proposal)],
+        check=True,
+        text=True,
+        capture_output=True,
+    )
+
+    assert "# Proposal explanation: cli-positional" in result.stdout
+    assert "not applicable — proposal-only / no targets" in result.stdout

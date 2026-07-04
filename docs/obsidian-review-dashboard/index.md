@@ -58,6 +58,8 @@ Semantic query proposal-only reports are review-candidate artifacts, not target-
 - `targets: []` is expected and means no apply target is authorized.
 - The primary review surface is `candidates`, `summary`, `queries`, and `safety`.
 - `tools/obsidian_review_dashboard.py explain` must show candidate notes, query intents, chunk references, safety boundary, and next safe step.
+- `explain` accepts either `--proposal path/to/proposal.json` or the shorter positional form `explain path/to/proposal.json`; both are read-only.
+- Candidate tables must escape Markdown table delimiters from paths, queries, scores, and chunk labels so review output cannot be structurally misleading.
 - Approval phrase is not applicable until a later, separate target-diff proposal and explicit approval manifest exists.
 - Candidate notes are inputs for review only; they do not authorize live vault mutation.
 
