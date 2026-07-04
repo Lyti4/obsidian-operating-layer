@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report
+.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -52,6 +52,8 @@ DASHBOARD_VALIDATE_REPORTS ?= out/reports/dashboard-source-validate/manual
 SEMANTIC_PROPOSAL_QUERY_JSON ?= out/reports/graphify-embedding-query-smoke/final468-20260704T065635Z/query-smoke.json
 SEMANTIC_PROPOSAL_OUT ?= out/proposals/semantic-query-reports/manual
 SEMANTIC_PROPOSAL_MAX_CANDIDATES ?= 25
+SEMANTIC_DECISION_PROPOSAL_JSON ?= out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/proposal.json
+SEMANTIC_DECISION_OUT ?= out/proposals/semantic-candidate-decisions/manual
 
 test:
 	python3 -m pytest -q
@@ -135,3 +137,6 @@ channel-registry-verify:
 
 semantic-proposal-report:
 	python3 tools/obsidian_semantic_proposal_report.py --query-smoke-json $(SEMANTIC_PROPOSAL_QUERY_JSON) --out-dir $(SEMANTIC_PROPOSAL_OUT) --max-candidates $(SEMANTIC_PROPOSAL_MAX_CANDIDATES)
+
+semantic-candidate-decision-packet:
+	python3 tools/obsidian_semantic_candidate_decision_packet.py --semantic-proposal-json $(SEMANTIC_DECISION_PROPOSAL_JSON) --out-dir $(SEMANTIC_DECISION_OUT)

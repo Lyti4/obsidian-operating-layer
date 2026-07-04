@@ -329,3 +329,20 @@ Boundary:
 - no repository mutation by Nanobot;
 - no auth/profile/service/network/deploy/embedding actions;
 - any additional cron, delivery change, or scope expansion requires separate explicit approval.
+
+### 2026-07-04 P3 semantic candidate decision packet
+
+Result: added the next proposal-only step after semantic candidate discovery.
+
+Implemented:
+
+- Added `tools/obsidian_semantic_candidate_decision_packet.py`.
+- Added `make semantic-candidate-decision-packet`.
+- Added tests in `tests/test_semantic_candidate_decision_packet.py`.
+- Generated an operator decision packet from the final468 semantic proposal report.
+
+Boundary:
+
+- decision packet only; no edit targets; no approval manifest; no live vault mutation; no Nanobot/repo mutation by worker.
+- promotion means a later targeted proposal may be drafted and reviewed separately.
+- first recommended promotion group is link hygiene reports; Nanobot orchestration remains repo/spec-kit follow-up only.

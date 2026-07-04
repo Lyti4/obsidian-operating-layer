@@ -122,6 +122,13 @@ from .rag_graph_adapter import (
 )
 from .resource_preflight import ResourcePreflightReport, collect_resource_preflight
 from .sandbox import SandboxCopyReport, create_sandbox_vault
+from .semantic_candidate_decision_packet import (
+    CandidateDecisionGroup,
+    CandidateDecisionPacket,
+    build_candidate_decision_packet,
+    candidate_decision_packet_to_markdown,
+    write_candidate_decision_packet,
+)
 from .semantic_proposal_report import (
     SemanticProposalCandidate,
     SemanticProposalReport,
@@ -131,6 +138,11 @@ from .semantic_proposal_report import (
 )
 
 __all__ = [
+    "write_candidate_decision_packet",
+    "candidate_decision_packet_to_markdown",
+    "build_candidate_decision_packet",
+    "CandidateDecisionPacket",
+    "CandidateDecisionGroup",
     "ApprovalManifest",
     "BackupPlan",
     "DEFAULT_APPROVAL_PHRASE",

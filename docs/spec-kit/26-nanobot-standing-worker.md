@@ -243,3 +243,9 @@ Minimum evidence for each Nanobot standing-worker result:
 - explicit blocked reason and required Hermes/user decision for blocked tasks.
 
 Queue packets under `out/queue/` should use immutable task IDs, explicit status transitions, and result pointers to reports/proposals. Blocked queue items must name the decision needed before retry.
+
+### 2026-07-04 manual scout runtime result
+
+A manual run of the approved scout was attempted immediately after cron setup. Preflight passed, but the Codex/Headroom-backed Nanobot model call was blocked by provider capacity/quota/auth state. The scout script now treats quota/auth/provider-rejected text as `blocked` even when the Nanobot wrapper exits with return code `0`, and writes a blocked `REPORT.md` plus sanitized `nanobot.raw.md`.
+
+Boundary remains unchanged: no fallback route may bypass Headroom, no broader localhost access is allowed, and no live vault/repo/service/auth/cron mutation is allowed from Nanobot. Hermes may continue local structural-only spec-kit work while the model-backed scout is blocked.
