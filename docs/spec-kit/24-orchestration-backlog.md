@@ -320,6 +320,7 @@ Accepted scope:
 - initially daily Hermes cron, later explicitly expanded to `every 15m`, local delivery only;
 - script: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`;
 - script smoke: `--dry-run` verifies preflight/project-state/docs-lag without calling Nanobot/LLM;
+- audit model config: `NANOBOT_CONFIG=/home/hermesadmin/.nanobot-hermes/config.audit.json`, preset `codex-small` / `gpt-5.4-mini`;
 - output: `out/reports/nanobot-cron-scout/`;
 - Nanobot uses the accepted Headroom backend Codex bridge wrapper;
 - evidence reads use only the read-only evidence gateway.

@@ -159,6 +159,7 @@ Approved scheduled scout:
 - Delivery: `local`; reports are written under `out/reports/nanobot-cron-scout/`.
 - Scope: Obsidian Operating Layer maintenance only; read-only evidence gateway only; report-only recommendations.
 - The job may run Nanobot through `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent` and Headroom's backend Codex bridge.
+- Scheduled audit runs use `/home/hermesadmin/.nanobot-hermes/config.audit.json` via `NANOBOT_CONFIG`; this selects the `codex-small` preset (`gpt-5.4-mini`, low reasoning) so 15-minute audits do not consume the default strong Nanobot model.
 - The job uses a lock, timeout, sanitized raw output, preflight, `project-state.json`, and deterministic `docs-lag-audit/REPORT.md` to check whether docs/specs lag behind latest commits/proposals/reports.
 - The job preflights the read-only evidence snapshot at `http://127.0.0.1:18791/snapshot.json`; Nanobot should start from that snapshot rather than guessing gateway URLs.
 - The script supports `--dry-run` for preflight/docs-lag verification without an LLM/Nanobot call; `--help` must not trigger an audit.
