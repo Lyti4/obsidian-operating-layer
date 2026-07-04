@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/obslayer/llm-channel.schema.json",
+  "title": "Obsidian Operating Layer LLM Channel Smoke",
+  "type": "object",
+  "required": ["status", "generated_utc", "registry", "assertions", "probes", "findings"],
+  "properties": {
+    "status": {"enum": ["ok", "failed"]},
+    "generated_utc": {"type": "string"},
+    "registry": {"type": "string"},
+    "assertions": {
+      "type": "object",
+      "required": ["registry_valid", "external_llm_default_headroom", "codex_cli_headroom_route", "graphify_headroom_route", "nanobot_uses_backend_codex_bridge", "nanobot_rejects_generic_v1_responses", "evidence_gateway_local_read_only", "local_ollama_embedding_exception_documented"],
+      "additionalProperties": {"type": "boolean"}
+    },
+    "probes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "url", "expected", "status", "http_status", "detail"],
+        "properties": {
+          "name": {"type": "string"},
+          "url": {"type": "string"},
+          "expected": {"type": "string"},
+          "status": {"enum": ["ok", "skipped", "http-error", "unreachable", "unexpected"]},
+          "http_status": {"type": ["integer", "null"]},
+          "detail": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "findings": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

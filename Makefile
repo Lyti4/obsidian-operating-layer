@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal
+.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal llm-channel-smoke llm-channel-smoke-live
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -47,6 +47,7 @@ RESOURCE_MAX_LOAD_PER_CPU ?= 1.25
 RESOURCE_MAX_SWAP_IO_PAGES_PER_SEC ?= 20
 CHANNEL_REGISTRY ?= docs/spec-kit/channel-registry.json
 CHANNEL_REGISTRY_REPORTS ?= out/reports/channel-registry-verify/manual
+LLM_CHANNEL_SMOKE_REPORTS ?= out/reports/llm-channel-smoke/manual
 DASHBOARD_SOURCE ?= docs/obsidian-review-dashboard/index.md
 DASHBOARD_VALIDATE_REPORTS ?= out/reports/dashboard-source-validate/manual
 SEMANTIC_PROPOSAL_QUERY_JSON ?= out/reports/graphify-embedding-query-smoke/final468-20260704T065635Z/query-smoke.json
@@ -147,3 +148,9 @@ semantic-candidate-decision-packet:
 
 semantic-targeted-proposal:
 	python3 tools/obsidian_semantic_targeted_proposal.py --decision-packet-json $(SEMANTIC_TARGETED_PACKET_JSON) --out-dir $(SEMANTIC_TARGETED_OUT) --group $(SEMANTIC_TARGETED_GROUP)
+
+llm-channel-smoke:
+	python3 tools/obsidian_llm_channel_smoke.py --registry $(CHANNEL_REGISTRY) --out-dir $(LLM_CHANNEL_SMOKE_REPORTS)
+
+llm-channel-smoke-live:
+	python3 tools/obsidian_llm_channel_smoke.py --registry $(CHANNEL_REGISTRY) --out-dir $(LLM_CHANNEL_SMOKE_REPORTS) --live-probes

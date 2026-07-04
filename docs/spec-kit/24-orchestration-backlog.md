@@ -362,3 +362,21 @@ Safety boundary:
 
 - proposal-only targeted packet; no edit targets; no approval manifest; no live vault mutation; no backups.
 - first promoted group remains `link_hygiene_reports`; exact documentation/edit targets must be selected in a later operator-reviewed diff proposal.
+
+
+### 2026-07-04 P3 LLM channel smoke and semantic workflow discoverability
+
+Result: acted on Nanobot scout followups without mutating the live vault.
+
+Added:
+
+- `docs/spec-kit/schemas/llm-channel.schema.json` for secret-free LLM channel smoke artifacts.
+- `tools/obsidian_llm_channel_smoke.py` and `src/obslayer/llm_channel_smoke.py`.
+- `make llm-channel-smoke` and `make llm-channel-smoke-live`.
+- `docs/spec-kit/29-semantic-proposal-workflow.md` as the standalone proposal-only semantic workflow spec.
+
+Boundary:
+
+- Smoke asserts route shape and probes only local Headroom/evidence-gateway health when `--live-probes` is requested.
+- No repo/vault/auth/profile/service mutation by Nanobot.
+- Generic `/v1/responses` remains a documented anti-pattern for Nanobot Codex bridge work.

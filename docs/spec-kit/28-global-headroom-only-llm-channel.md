@@ -250,9 +250,9 @@ A separate sanitized Codex CLI reviewer through Headroom agreed with the same re
    - proxy outage stop;
    - protocol mismatch stop.
 4. Implement Nanobot bridge Option A or B above.
-5. Add machine-readable channel registry, e.g. `docs/spec-kit/schemas/llm-channel.schema.json` and `out/reports/.../llm-channel-smoke.json`.
-6. Add a recurring smoke that verifies channel shape without printing secrets.
-7. Update older Nanobot/Graphify docs to reference this spec instead of the invalid `/v1/responses` assumption.
+5. Done 2026-07-04: machine-readable channel registry and smoke schema exist: `docs/spec-kit/channel-registry.json`, `docs/spec-kit/schemas/llm-channel.schema.json`, and `make llm-channel-smoke`.
+6. Done 2026-07-04: `make llm-channel-smoke-live` creates `out/reports/.../llm-channel-smoke.json` with local health probes and no secrets.
+7. Keep older Nanobot/Graphify docs referencing this spec instead of the invalid `/v1/responses` assumption.
 
 ## Acceptance criteria
 

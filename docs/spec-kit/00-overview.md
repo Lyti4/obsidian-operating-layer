@@ -48,5 +48,7 @@ Obsidian vault
 - `26-nanobot-standing-worker.md` — Nanobot standing maintenance/communication worker contract for ongoing project support.
 - `28-global-headroom-only-llm-channel.md` — global Headroom-only LLM channel policy: explicit proxy/subscription inheritance, Graphify accepted route, Nanobot backend bridge, account cooldown semantics.
 - `29-channel-registry.md` — machine-readable карта ролей/маршрутов/прав мутации для Hermes/Codex/Headroom/Nanobot/Graphify.
+- `29-semantic-proposal-workflow.md` — proposal-only semantic review pipeline: Graphify/index evidence → reports → decision packets → targeted proposals.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
+- `schemas/llm-channel.schema.json` — secret-free LLM channel smoke artifact schema.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.

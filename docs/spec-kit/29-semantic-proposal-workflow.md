@@ -1,0 +1,69 @@
+# 29 — Semantic Proposal Workflow
+
+Status: active proposal-only workflow  
+Updated: 2026-07-04
+
+## Purpose
+
+Make the completed semantic/indexing work discoverable as a safe review pipeline. This workflow turns Graphify/index evidence into proposal artifacts and operator decision packets without mutating the live vault.
+
+## Boundary
+
+- Live vault mutation is forbidden in this workflow.
+- Nanobot may review only sanitized evidence through the read-only evidence gateway.
+- Hermes remains acceptance owner.
+- Any future apply requires a separate explicit approval manifest, backup, apply, and verify cycle.
+
+## Flow
+
+```text
+Graphify/index evidence
+  -> semantic query smoke / evidence bundle
+  -> proposal-only semantic report
+  -> candidate decision packet
+  -> targeted semantic proposal
+  -> Nanobot/Hermes review
+  -> optional future approval manifest (separate explicit approval only)
+```
+
+## Current artifacts
+
+- Proposal report CLI: `tools/obsidian_semantic_proposal_report.py`
+- Decision packet CLI: `tools/obsidian_semantic_candidate_decision_packet.py`
+- Targeted proposal CLI: `tools/obsidian_semantic_targeted_proposal.py`
+- Review dashboard explain CLI: `tools/obsidian_review_dashboard.py explain`
+
+Generated artifacts stay under:
+
+```text
+out/proposals/semantic-query-reports/
+out/proposals/semantic-candidate-decisions/
+out/proposals/semantic-targeted-proposals/
+```
+
+## Acceptance checks
+
+For code/workflow changes in this path, run:
+
+```bash
+pytest tests/test_semantic_proposal_report.py tests/test_semantic_candidate_decision_packet.py tests/test_semantic_targeted_proposal.py -q
+make verify
+git diff --check
+```
+
+For generated proposal artifacts, acceptance means:
+
+- `live_mutation_authorized: false`
+- no approval manifest unless explicitly requested
+- clear source proposal/evidence path
+- clear target count and candidate count
+- readable operator report
+
+## Related specs
+
+- `24-orchestration-backlog.md`
+- `25-nanobot-graphify-worker.md`
+- `26-nanobot-standing-worker.md`
+- `27-graphify-nanobot-embedding-orchestration.md`
+- `28-global-headroom-only-llm-channel.md`
+- `29-channel-registry.md`
