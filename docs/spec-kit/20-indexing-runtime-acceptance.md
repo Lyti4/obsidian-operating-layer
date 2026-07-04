@@ -18,8 +18,8 @@ It records what is accepted, what remains blocked, and which evidence proves the
 | `DalecB/obsidian-semantic-mcp` candidate | Accepted as guarded sandbox/read-only backend candidate, not raw direct agent surface |
 | Runtime wrapper | Accepted as mandatory boundary for candidate execution and transcript sanitization |
 | Live vault access | Read-only probes may be evaluated only through guarded/dry-run paths; live writes remain out of scope |
-| Semantic quality | Bounded real local `bge-m3` smoke accepted; full semantic quality/routine indexing still requires budgeted pass |
-| Production integration | Not yet accepted; needs automatic MCP stdio wrapping, quality pass, and proposal normalization |
+| Semantic quality | Full Graphify-derived sandbox semantic pass accepted for the final468 handoff set; routine unattended production indexing is still not accepted |
+| Production integration | Accepted for guarded sandbox/read-only and proposal-only consumers; live apply still requires proposal normalization and explicit approval manifest |
 
 ## Current accepted boundary
 
@@ -38,6 +38,18 @@ Hermes/Operating Layer proposal-only consumers
 ```
 
 The wrapper is required because the raw candidate can return note snippets that contain absolute live-vault paths as note text. Those are not evidence of filesystem access, but they are still sensitive enough to require redaction before agent exposure.
+
+## Current status correction — 2026-07-04
+
+The current accepted semantic/indexing evidence is no longer only a smoke or pending medium/full sandbox probe. The final468 Graphify-derived sandbox pass is complete and accepted:
+
+- acceptance report: `out/reports/graphify-final468-acceptance-20260704T065729Z/REPORT.md`;
+- embedding run: `out/reports/graphify-embedding-runs/step468-final-safe-20260703T192852Z/embedding-run.json`;
+- query smoke: `out/reports/graphify-embedding-query-smoke/final468-20260704T065635Z/query-smoke.json`;
+- records: `468`; processed: `467`; skipped: `1` empty file;
+- embedding sidecars: `467`; query-smoke chunks: `3605`; missing embeddings: `0`.
+
+This acceptance is still sandbox/derived-cache only. It does not authorize live vault mutation or unattended routine production indexing.
 
 ## Evidence table
 
@@ -87,7 +99,7 @@ Not accepted for production integration:
 1. Direct raw candidate MCP connection from Codex/Hermes/agents.
 2. Live write, patch, move, delete, rename, or Git operations through the indexing candidate.
 3. Remote embeddings or paid/cloud model endpoints.
-4. Full routine semantic quality claims based only on fake/stub Ollama, smoke runs, or incomplete night-run results.
+4. Routine unattended semantic indexing claims beyond the accepted final468 sandbox pass.
 5. Using indexed findings as automatic edits without Obslayer proposal normalization and approval manifest.
 6. Treating the older night-run failure count as solved without the focused post-fix probe/evidence path.
 
@@ -109,10 +121,11 @@ Not accepted for production integration:
 
 ## Remaining blockers before stronger integration
 
-1. Run the real `@dalecb/obsidian-semantic-mcp` candidate through the stdio probe harness so every invocation automatically goes through the runtime wrapper.
-2. Run a budgeted semantic quality pass with real local Ollama + `bge-m3` before treating semantic indexing as routine acceptance.
-3. Add a stable Make target for the focused guarded live-read-only probe if it should become repeatable acceptance evidence.
-4. Compare against `DeusData/codebase-memory-mcp` only as an isolated benchmark candidate, not as a replacement for the Obslayer safety boundary.
+The earlier budgeted semantic quality pass blocker is closed for the Graphify-derived final468 sandbox handoff: Hermes completed local Ollama `bge-m3` embeddings and semantic query smoke on 2026-07-04. Remaining blockers are only for broader/routine productionization, not for the accepted final468 evidence.
+
+1. Keep real MCP/stdout candidates behind the runtime wrapper; raw direct candidate access remains forbidden.
+2. Add stable make targets for any focused guarded live-read-only probe that should become repeatable acceptance evidence.
+3. Compare against `DeusData/codebase-memory-mcp` only as an isolated benchmark candidate, not as a replacement for the Obslayer safety boundary.
 5. Normalize indexed findings into Obslayer proposal bundles with path, quote/span, hash/version, risk classification, and dry-run-only default.
 6. Update Kanban/roadmap wording so Phase 04 reflects the indexing runtime acceptance state rather than the older generic RAG/graph phase label.
 

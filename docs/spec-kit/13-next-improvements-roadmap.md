@@ -144,6 +144,8 @@ pytest tests/test_review_dashboard.py
 
 ### P1.4 Diagram readability pass
 
+Status: accepted by server-side visual/readability review; see `14-operational-acceptance-report.md` and `15-manual-and-adapter-acceptance.md`.
+
 Goal: make diagrams useful for planning and user communication.
 
 Acceptance:
@@ -216,14 +218,20 @@ Acceptance:
 
 ## Proposed next kanban batch
 
-1. `p0_controlled_autonomy_report_format_docs_tests`
-2. `p0_sandbox_apply_rehearsal`
-3. `p1_pending_proposals_command`
-4. `p1_dashboard_manual_review`
-5. `p1_diagram_readability_acceptance`
-6. `p2_field_test_slice_no_live_apply`
-7. `p2_rag_graph_sandbox_benchmark_evidence`
-8. `p2_mcp_readonly_benchmark_evidence`
+Status: historical batch mostly executed. Do not treat these items as current pending work.
+
+Closed or superseded:
+
+1. `p0_controlled_autonomy_report_format_docs_tests` — closed.
+2. `p0_sandbox_apply_rehearsal` — closed.
+3. `p1_pending_proposals_command` — closed.
+4. `p1_dashboard_manual_review` — closed/source-validated.
+5. `p1_diagram_readability_acceptance` — closed.
+6. `p2_field_test_slice_no_live_apply` — closed.
+7. `p2_rag_graph_sandbox_benchmark_evidence` — closed.
+8. `p2_mcp_readonly_benchmark_evidence` — closed.
+
+Current next batch should be chosen from: proposal report generation from final468 semantic results, release/acceptance doc hygiene, or a new P3 proposal-only real usage pass.
 
 The remaining manual/UI and adapter benchmark contracts are defined in
 `15-manual-and-adapter-acceptance.md`.

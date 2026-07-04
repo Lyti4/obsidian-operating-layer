@@ -144,6 +144,29 @@ Acceptance result:
 
 - The project has a safe end-to-end proposal-only field scenario.
 
+
+### P2.4 Graphify-derived final468 semantic indexing/query smoke
+
+Status: accepted for sandbox/derived-cache use; live vault mutation remains gated.
+
+Evidence:
+
+- Acceptance report: `out/reports/graphify-final468-acceptance-20260704T065729Z/REPORT.md`.
+- Embedding run: `out/reports/graphify-embedding-runs/step468-final-safe-20260703T192852Z/embedding-run.json`.
+- Query smoke: `out/reports/graphify-embedding-query-smoke/final468-20260704T065635Z/query-smoke.json`.
+
+Counts:
+
+- records: `468`; processed: `467`; skipped: `1` empty/whitespace file;
+- embedding sidecars: `467`; query chunks: `3605`; missing embeddings: `0`.
+
+Acceptance result:
+
+- Full Graphify-derived sandbox semantic pass completed with local Ollama `bge-m3`.
+- Query smoke proved the derived cache is searchable.
+- On the 4 GB VPS, safe-batch mode with Ollama unload/cleanup is the accepted operating mode; hot-mode remains rejected for long runs.
+- No live vault mutation was performed or authorized.
+
 ## Verification commands
 
 Canonical verification for this acceptance state:
@@ -181,7 +204,8 @@ These remain future roadmap work, not blockers for the current operational accep
 
 1. Decide whether any specific real proposal should ever be approved for live apply.
 2. Scheduled observe/index reports, only after explicit cron approval.
-3. Optional additional visual themes for diagrams.
+3. Routine unattended semantic indexing, only after explicit schedule/resource approval.
+4. Optional additional visual themes for diagrams.
 
 Closed after the original acceptance pass:
 

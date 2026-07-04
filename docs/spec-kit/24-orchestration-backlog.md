@@ -18,7 +18,7 @@ The project should advance through narrow, verifiable slices. Live Obsidian muta
 | Observe/propose/verify/apply | stable CLI, JSON + Markdown artifacts, dry-run default | baseline accepted | smoke live read-only proposal flow |
 | Review/operator UX | list/explain, review bundle, decision record, runbooks | mostly accepted | use on real proposal-only pass |
 | Sandbox layer | disposable copies, protected-path exclusions, reset controls | baseline accepted | medium sandbox indexing probe |
-| Indexing/MCP/RAG | guarded wrapper, sanitized reports, derived storage, batching/resume | sandbox/read-only accepted | diagnose medium/full sandbox timeout path |
+| Indexing/MCP/RAG | guarded wrapper, sanitized reports, derived storage, batching/resume, final468 semantic query smoke | final468 sandbox/derived-cache accepted | productize repeatable query/proposal reports; routine unattended indexing still gated |
 | Docs/productization | release gate, acceptance index, runbooks, changelog | productization slice added | keep docs in sync after each slice |
 | Application layer | proposal-only live operation, then approved narrow apply | P3 proposal-only pass green | optional narrow approved apply after explicit manifest |
 
@@ -48,11 +48,19 @@ The project should advance through narrow, verifiable slices. Live Obsidian muta
 
 ### P2 — indexing runtime stabilization
 
-- Reproduce the previous 3/5 indexed failure in a small sandbox.
-- Add a clearer failure report for file-level indexing errors if missing.
-- Run a medium sandbox probe.
-- Run full sandbox indexing only after medium probe passes.
-- Update `docs/spec-kit/20-indexing-runtime-acceptance.md` with evidence.
+Status: accepted for the current Graphify-derived final468 sandbox/derived-cache pass. The old medium/full sandbox probe wording is superseded by the 2026-07-04 final468 evidence.
+
+Done:
+- Graphify-derived sandbox handoff created a bounded manifest.
+- Local Ollama `bge-m3` embedding run completed in safe batches.
+- Final counts: `468` records, `467` processed, `1` skipped empty file, `467` embedding sidecars, `3605` query-smoke chunks, `0` missing embeddings.
+- Semantic query smoke succeeded and is reusable through `tools/obsidian_graphify_embedding_query.py`.
+- `docs/spec-kit/20-indexing-runtime-acceptance.md` and `27-graphify-nanobot-embedding-orchestration.md` record the accepted boundary.
+
+Still gated:
+- routine unattended semantic indexing;
+- live vault mutation from semantic findings;
+- external/cloud embeddings without explicit approval.
 
 ### P3 — first real usage without mutation
 
@@ -222,3 +230,25 @@ Evidence:
 Safety:
 - The dashboard remains proposal-only source material.
 - Publishing into the live vault still requires manual copy by Дмитрий or the approved obslayer apply gate.
+
+
+### 2026-07-04 P2 final468 Graphify semantic acceptance
+
+Result: full Graphify-derived sandbox semantic pass accepted; this supersedes the older “medium/full sandbox probe pending” backlog item for the current handoff set.
+
+Evidence:
+- `out/reports/graphify-final468-acceptance-20260704T065729Z/REPORT.md`
+- `out/reports/graphify-embedding-runs/step468-final-safe-20260703T192852Z/embedding-run.json`
+- `out/reports/graphify-embedding-query-smoke/final468-20260704T065635Z/query-smoke.json`
+
+Counts:
+- records `468`, processed `467`, skipped `1` empty file;
+- embedding sidecars `467`;
+- query-smoke chunks `3605`;
+- missing embeddings `0`.
+
+Boundary:
+- sandbox/derived-cache/query only;
+- no live vault mutation;
+- no routine unattended production indexing;
+- safe-batch mode is required on this 4 GB VPS.
