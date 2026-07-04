@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet
+.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -54,6 +54,9 @@ SEMANTIC_PROPOSAL_OUT ?= out/proposals/semantic-query-reports/manual
 SEMANTIC_PROPOSAL_MAX_CANDIDATES ?= 25
 SEMANTIC_DECISION_PROPOSAL_JSON ?= out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/proposal.json
 SEMANTIC_DECISION_OUT ?= out/proposals/semantic-candidate-decisions/manual
+SEMANTIC_TARGETED_PACKET_JSON ?= out/proposals/semantic-candidate-decisions/final468-operator-review-20260704T105830Z/decision-packet.json
+SEMANTIC_TARGETED_OUT ?= out/proposals/semantic-targeted-proposals/manual
+SEMANTIC_TARGETED_GROUP ?= link_hygiene_reports
 
 test:
 	python3 -m pytest -q
@@ -140,3 +143,7 @@ semantic-proposal-report:
 
 semantic-candidate-decision-packet:
 	python3 tools/obsidian_semantic_candidate_decision_packet.py --semantic-proposal-json $(SEMANTIC_DECISION_PROPOSAL_JSON) --out-dir $(SEMANTIC_DECISION_OUT)
+
+
+semantic-targeted-proposal:
+	python3 tools/obsidian_semantic_targeted_proposal.py --decision-packet-json $(SEMANTIC_TARGETED_PACKET_JSON) --out-dir $(SEMANTIC_TARGETED_OUT) --group $(SEMANTIC_TARGETED_GROUP)

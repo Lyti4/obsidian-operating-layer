@@ -346,3 +346,19 @@ Boundary:
 - decision packet only; no edit targets; no approval manifest; no live vault mutation; no Nanobot/repo mutation by worker.
 - promotion means a later targeted proposal may be drafted and reviewed separately.
 - first recommended promotion group is link hygiene reports; Nanobot orchestration remains repo/spec-kit follow-up only.
+
+### 2026-07-04 P3 targeted semantic proposal packet
+
+Result: added the next proposal-only promotion step for the `link_hygiene_reports` decision group.
+
+Artifacts/code:
+
+- `src/obslayer/semantic_targeted_proposal.py`
+- `tools/obsidian_semantic_targeted_proposal.py`
+- `tests/test_semantic_targeted_proposal.py`
+- `make semantic-targeted-proposal`
+
+Safety boundary:
+
+- proposal-only targeted packet; no edit targets; no approval manifest; no live vault mutation; no backups.
+- first promoted group remains `link_hygiene_reports`; exact documentation/edit targets must be selected in a later operator-reviewed diff proposal.
