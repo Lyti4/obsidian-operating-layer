@@ -154,6 +154,12 @@ from .safe_auto_proposal_thresholds import (
     serialize_safe_auto_proposal_bundle,
     write_safe_auto_proposal_bundle,
 )
+from .safe_auto_proposal_thresholds_v1 import (
+    build_safe_auto_proposal_thresholds_packet,
+    evaluate_candidate_packet_for_auto_proposal,
+    safe_auto_proposal_thresholds_to_markdown,
+    write_safe_auto_proposal_thresholds_packet,
+)
 from .sandbox import SandboxCopyReport, create_sandbox_vault
 from .semantic_candidate_decision_packet import (
     CandidateDecisionGroup,
@@ -218,6 +224,10 @@ __all__ = [
     "SemanticProposalReport",
     "build_semantic_proposal_report",
     "build_safe_auto_proposal_bundle",
+    "build_safe_auto_proposal_thresholds_packet",
+    "evaluate_candidate_packet_for_auto_proposal",
+    "safe_auto_proposal_thresholds_to_markdown",
+    "write_safe_auto_proposal_thresholds_packet",
     "safe_auto_proposal_bundle_to_markdown",
     "semantic_proposal_report_to_markdown",
     "serialize_safe_auto_proposal_bundle",

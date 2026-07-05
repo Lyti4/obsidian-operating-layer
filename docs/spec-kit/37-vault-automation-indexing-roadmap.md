@@ -206,19 +206,27 @@ Acceptance:
 
 ### R5 — `safe-auto-proposal-thresholds`
 
+Status: accepted as a repo-only/evidence-only dry-run proposal threshold packet and CLI writer.
+
+Acceptance evidence: `src/obslayer/safe_auto_proposal_thresholds_v1.py`, `tools/obsidian_safe_auto_proposal_thresholds.py`, `tests/test_safe_auto_proposal_thresholds_v1.py`, and `out/reports/safe-auto-proposal-thresholds-v1/20260705T181910Z/REPORT.md`.
+
+Accepted boundary: consumes `candidate-scorer-v1` packets and emits `safe-auto-proposal-thresholds-v1.json`, `dry-run-proposals.jsonl`, and `REPORT.md`; keeps `behavior: evidence-only`, `live_mutation_authorized: false`, `approval_manifest_created: false`, `approval_manifest_authority: false`, `targets: []`, and `apply_authority: none`. Current full-vault evidence produced `0` dry-run proposals and held all `779` scored links for review.
+
 Goal: raise automation without bypassing review/apply gates.
 
 Deliverables:
 
-- auto-generation of proposal bundles only for deterministic-high, non-sensitive, non-archive-collision candidates;
-- dry-run manifest candidates with rollback keys;
-- predicted metric delta.
+- auto-generation of dry-run proposal bundles only for deterministic-high, non-sensitive, non-archive-collision candidates;
+- dry-run proposal candidates with file, position, old link, proposed link, confidence, reason, policy tag, and rollback key;
+- held-for-review ledger for unsafe/uncertain candidates.
 
 Acceptance:
 
 - zero live writes;
+- no approval manifests, live targets, or apply authority;
 - no Soul/archive/global/rename/delete/merge candidates in auto-proposal lane;
-- proposal includes file, position, old link, proposed link, confidence, reason, policy tag, rollback key.
+- proposal includes file, position, old link, proposed link, confidence, reason, policy tag, rollback key;
+- current full-vault candidate scorer input is safely held because no candidate meets deterministic auto-proposal gates.
 
 ### R6 — external-tool benchmark
 
