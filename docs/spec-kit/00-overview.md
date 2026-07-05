@@ -48,7 +48,7 @@ Obsidian vault
 - `26-nanobot-standing-worker.md` — Nanobot standing maintenance/communication worker contract for ongoing project support.
 - `28-global-headroom-only-llm-channel.md` — global Headroom-only LLM channel policy: explicit proxy/subscription inheritance, Graphify accepted route, Nanobot backend bridge, account cooldown semantics.
 - `29-channel-registry.md` — machine-readable карта ролей/маршрутов/прав мутации для Hermes/Codex/Headroom/Nanobot/Graphify.
-- `29-semantic-proposal-workflow.md` — proposal-only semantic review pipeline: Graphify/index evidence → reports → decision packets → targeted proposals.
+- `29-semantic-proposal-workflow.md` — proposal-only semantic review pipeline: Graphify/index evidence → reports → decision packets → targeted proposals → semantic indexing manifest.
 - `30-orchestrator-operating-spec.md` — first-read consolidated operator-facing spec for Hermes-as-orchestrator, Nanobot worker boundaries, Headroom channels, semantic proposal workflow, and current generated artifact pointers.
 - `31-operator-flow-and-review-queue.md` — explicit Agentic OS operator flow and evidence-gated review queue state machine for Hermes/Nanobot/proposal artifacts.
 - `32-codex-hermes-communication-channel.md` — local Codex ⇄ Hermes task/report protocol with roles, rights, ACKs, and approval boundaries.
@@ -73,3 +73,7 @@ Codex is made repo-native through `docs/spec-kit/33-codex-native-runtime.md`, `/
 ## Agentic OS control plane map
 
 `docs/spec-kit/35-agentic-os-control-plane-map.md` is the canonical cross-link/index surface requested by repeated Nanobot scout reports. It maps the orchestrator spec, review queue, Codex/Hermes communication channel, Codex native runtime, acceptance gates, channel registry, and docs lag audit into one no-live-mutation control plane.
+
+## Semantic indexing manifest
+
+`tools/obsidian_semantic_manifest.py` / `src/obslayer/semantic_manifest.py` close the current indexing/semantic chain with a generated manifest under `out/reports/semantic-manifests/`. The manifest references only repo `out/` artifacts, checks that proposal artifacts keep `targets: []`, and preserves `live_mutation_authorized: false` / `approval_manifest_created: false`.

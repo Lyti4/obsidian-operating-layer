@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal llm-channel-smoke llm-channel-smoke-live semantic-review-index project-docs-lag-audit
+.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal llm-channel-smoke llm-channel-smoke-live semantic-review-index project-docs-lag-audit semantic-manifest
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -61,6 +61,14 @@ SEMANTIC_TARGETED_GROUP ?= link_hygiene_reports
 SEMANTIC_REVIEW_INDEX_PROPOSAL_JSON ?= out/proposals/semantic-targeted-proposals/link-hygiene-20260704T112830Z/proposal.json
 SEMANTIC_REVIEW_INDEX_OUT ?= out/proposals/semantic-review-indexes/manual
 PROJECT_DOCS_LAG_AUDIT_OUT ?= out/reports/project-docs-lag-audit/manual
+SEMANTIC_MANIFEST_EMBEDDING_MANIFEST ?= out/reports/graphify-embedding-handoff/full-sandbox-20260703T082644Z/handoff/embedding-manifest.json
+SEMANTIC_MANIFEST_EMBEDDING_RUN ?= out/reports/graphify-embedding-runs/step468-final-safe-20260703T192852Z/embedding-run.json
+SEMANTIC_MANIFEST_QUERY_SMOKE ?= out/reports/graphify-embedding-query-smoke/final468-20260704T065635Z/query-smoke.json
+SEMANTIC_MANIFEST_SEMANTIC_PROPOSAL ?= out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/proposal.json
+SEMANTIC_MANIFEST_DECISION_PACKET ?= out/proposals/semantic-candidate-decisions/final468-operator-review-20260704T105830Z/decision-packet.json
+SEMANTIC_MANIFEST_TARGETED_PROPOSAL ?= out/proposals/semantic-targeted-proposals/link-hygiene-20260704T112830Z/proposal.json
+SEMANTIC_MANIFEST_REVIEW_INDEX ?= out/proposals/semantic-review-indexes/link-hygiene-20260704T1200Z/review-index.json
+SEMANTIC_MANIFEST_OUT ?= out/reports/semantic-manifests/manual
 
 test:
 	python3 -m pytest -q
@@ -163,3 +171,7 @@ semantic-review-index:
 
 project-docs-lag-audit:
 	python3 tools/obsidian_project_docs_lag_audit.py --repo . --out-dir $(PROJECT_DOCS_LAG_AUDIT_OUT)
+
+
+semantic-manifest:
+	python3 tools/obsidian_semantic_manifest.py --repo . --embedding-manifest $(SEMANTIC_MANIFEST_EMBEDDING_MANIFEST) --embedding-run $(SEMANTIC_MANIFEST_EMBEDDING_RUN) --query-smoke $(SEMANTIC_MANIFEST_QUERY_SMOKE) --semantic-proposal $(SEMANTIC_MANIFEST_SEMANTIC_PROPOSAL) --decision-packet $(SEMANTIC_MANIFEST_DECISION_PACKET) --targeted-proposal $(SEMANTIC_MANIFEST_TARGETED_PROPOSAL) --review-index $(SEMANTIC_MANIFEST_REVIEW_INDEX) --out-dir $(SEMANTIC_MANIFEST_OUT)

@@ -55,6 +55,17 @@ DEFAULT_CHECKS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
         "docs/acceptance/index.md",
         ("Semantic targeted proposal/review index", "tools/obsidian_semantic_review_index.py"),
     ),
+
+    (
+        "semantic_indexing_manifest_documented",
+        "docs/spec-kit/29-semantic-proposal-workflow.md",
+        ("Semantic/indexing manifest step", "tools/obsidian_semantic_manifest.py", "out/reports/semantic-manifests/"),
+    ),
+    (
+        "semantic_indexing_manifest_acceptance_documented",
+        "docs/acceptance/index.md",
+        ("Semantic indexing manifest", "tools/obsidian_semantic_manifest.py", "no live mutation authorization"),
+    ),
     (
         "llm_channel_smoke_documented",
         "docs/spec-kit/28-global-headroom-only-llm-channel.md",

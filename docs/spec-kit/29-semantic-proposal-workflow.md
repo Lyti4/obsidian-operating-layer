@@ -1,6 +1,6 @@
 # 29 — Semantic Proposal Workflow
 
-Status: active proposal-only workflow  
+Status: active proposal-only workflow
 Updated: 2026-07-04
 
 ## Purpose
@@ -99,3 +99,44 @@ Acceptance:
 - `approval_manifest_created: false`
 - no edit targets
 - candidate paths are evidence inputs only
+
+## Semantic/indexing manifest step
+
+The terminal index artifact for the current semantic/indexing chain is a semantic manifest. It validates and summarizes the generated evidence chain without promoting `out/` artifacts into tracked source files.
+
+Command:
+
+```bash
+make semantic-manifest
+```
+
+Default chain:
+
+```text
+graphify embedding manifest
+  -> bounded embedding run
+  -> query smoke
+  -> semantic query proposal
+  -> candidate decision packet
+  -> targeted semantic proposal
+  -> semantic review index
+  -> semantic indexing manifest
+```
+
+Outputs stay under:
+
+```text
+out/reports/semantic-manifests/
+```
+
+Acceptance:
+
+- `mode: semantic-indexing-manifest`
+- `live_mutation_authorized: false`
+- `approval_manifest_created: false`
+- all referenced artifacts are under repo `out/`
+- semantic proposal artifacts have empty `targets`
+- findings are empty before the chain is considered ready for operator review
+
+CLI: `tools/obsidian_semantic_manifest.py`
+Library: `src/obslayer/semantic_manifest.py`

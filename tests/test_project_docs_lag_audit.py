@@ -9,9 +9,11 @@ def _write_minimal_docs(repo: Path, *, include_marker: bool = True) -> None:
         "docs/spec-kit/24-orchestration-backlog.md": "Nanobot 15-minute audit loop\nevery 15m\nproject-state.json\n",
         "docs/spec-kit/29-semantic-proposal-workflow.md": (
             "tools/obsidian_semantic_review_index.py\nout/proposals/semantic-review-indexes/\nReview index step\n"
+            "Semantic/indexing manifest step\ntools/obsidian_semantic_manifest.py\nout/reports/semantic-manifests/\n"
         ),
         "docs/acceptance/index.md": (
             "Semantic targeted proposal/review index\ntools/obsidian_semantic_review_index.py\n"
+            "Semantic indexing manifest\ntools/obsidian_semantic_manifest.py\nno live mutation authorization\n"
             "Agentic OS control plane map\ndocs/spec-kit/35-agentic-os-control-plane-map.md\n"
             "docs/spec-kit/36-current-evidence-index.md\ndoes not authorize live mutation\n"
         ),

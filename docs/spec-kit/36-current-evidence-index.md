@@ -29,6 +29,7 @@ These paths are generated artifacts and stay ignored by git unless a future revi
 - Candidate decision packet: `out/proposals/semantic-candidate-decisions/final468-operator-review-20260704T105830Z/REPORT.md`
 - Targeted semantic proposal: `out/proposals/semantic-targeted-proposals/link-hygiene-20260704T112830Z/REPORT.md`
 - Semantic review index: `out/proposals/semantic-review-indexes/link-hygiene-20260704T1200Z/REPORT.md`
+- Semantic indexing manifest: `out/reports/semantic-manifests/manual/REPORT.md`
 - Operator decision packet: `out/proposals/operator-decision-packets/link-hygiene-20260704T153221Z/REPORT.md`
 - Link hygiene evidence brief: `out/proposals/link-hygiene-evidence-briefs/20260704T154000Z/REPORT.md`
 - Non-report working-note wikilink triage: `out/proposals/non-report-working-note-wikilink-triage/20260704T154634Z/REPORT.md`
