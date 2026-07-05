@@ -113,7 +113,7 @@ _DEFAULT_CANDIDATES: tuple[dict[str, Any], ...] = (
     },
     {
         "id": "semantic-indexing-manifest",
-        "state": "ready_for_operator_review",
+        "state": "accepted_repo_only",
         "title": "Semantic/indexing manifest chain for Graphify-derived proposals",
         "evidence_paths": [
             "docs/spec-kit/29-semantic-proposal-workflow.md",
@@ -126,7 +126,7 @@ _DEFAULT_CANDIDATES: tuple[dict[str, Any], ...] = (
             "out/reports/semantic-manifests/manual/REPORT.md",
         ],
         "next_step": (
-            "Use as the terminal semantic/indexing review evidence; "
+            "Treat as accepted repo-only terminal semantic/indexing evidence; "
             "live vault application remains a separate explicit approval step."
         ),
     },

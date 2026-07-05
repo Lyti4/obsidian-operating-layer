@@ -85,7 +85,8 @@ def test_default_operator_review_queue_includes_semantic_manifest_boundary(tmp_p
     queue = build_operator_review_queue(tmp_path, created_at="2026-07-04T00:00:00Z")
     item = next(item for item in queue.items if item.id == "semantic-indexing-manifest")
 
-    assert item.state == "ready_for_operator_review"
+    assert item.state == "accepted_repo_only"
     assert item.live_mutation_authorized is False
     assert item.missing_evidence_paths == []
+    assert "accepted repo-only" in item.next_step
     assert "explicit approval" in item.next_step
