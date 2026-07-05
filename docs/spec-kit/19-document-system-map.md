@@ -86,6 +86,7 @@ For a fast orientation read:
 | `25-nanobot-graphify-worker.md` | active operating procedure | Nanobot as Graphify worker via bridge on `gpt-5.4-mini`, sandbox/read-only, graph-first before embeddings |
 | `26-nanobot-standing-worker.md` | active operating procedure | Nanobot as supervised standing worker for maintenance, communication, task packets, and proposal-only reports |
 | `24-orchestration-backlog.md` | active execution plan | Layer-by-layer backlog for finishing, improving, and applying the project |
+| `37-vault-automation-indexing-roadmap.md` | active roadmap | Fixes the 2026-07-05 full-vault indexing stop point and defines lane/schema/scorer/archive-shadow continuation |
 
 ### E. Research and run-specific notes
 
@@ -206,3 +207,7 @@ Stop and ask before:
 - paid/high-volume API/model pulls;
 - secrets, browser profiles, `.env`, tokens;
 - Soul governance/personality edits.
+
+## Current state after 2026-07-05 full-vault indexing
+
+The active continuation point is `docs/spec-kit/37-vault-automation-indexing-roadmap.md`. It supersedes ad hoc next-action notes for link cleanup automation and keeps live vault mutation out of scope until a separate approved apply pilot.

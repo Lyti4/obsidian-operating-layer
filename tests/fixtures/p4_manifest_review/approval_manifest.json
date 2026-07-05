@@ -1,0 +1,15 @@
+{
+  "approval_phrase": "APPROVE OBSIDIAN APPLY",
+  "approved": true,
+  "approver": "Dmitry",
+  "backup_root": "_Backups/obsidian-operating-layer",
+  "dry_run": false,
+  "proposal": "{fixture_proposal}",
+  "reason": "repo-only p4 manifest review fixture",
+  "require_post_verify": true,
+  "targets": [
+    "{fixture_vault}/Notes/alpha.md"
+  ],
+  "task_id": "t_p4_manifest_review_fixture",
+  "vault_root": "{fixture_vault}"
+}

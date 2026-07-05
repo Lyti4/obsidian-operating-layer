@@ -49,6 +49,12 @@ A live apply may proceed only when all items are true:
 - Bot dependency PRs may auto-merge only when required checks are green and advisory findings are reviewed.
 - Workflow/security changes require explicit mention of security scan outcome before merge.
 
-## Next proposed slice
+## Latest repo-only slice
 
-Prepare a P4 manifest-review fixture and test that proves live-like approval manifests fail closed when proposal paths, target lists, or vault roots drift. This remains sandbox-only and does not touch the live vault.
+P4 manifest-review fixture added: `tests/fixtures/p4_manifest_review/` plus `tests/test_p4_manifest_review_fixture.py` prove live-like approval manifests fail closed when proposal paths, target lists, or vault roots drift. This remains sandbox-only and does not touch the live vault.
+
+Nanobot recommendation decisions are now fixed in `docs/spec-kit/36-current-evidence-index.md`: generated-artifacts index and unified queue/state/decision surface are accepted, candidate scoring is accepted only as read-only/proposal-only, acceptance-gate synthesis is deferred, and any autonomous/live apply authority is rejected for the current scope.
+
+## Next active Kanban slice
+
+Kanban card `t_423691d1` (`generated-artifacts-registry-drift / docs_update`) is the next active repo-only slice. It should close the remaining generated-artifacts registry drift by adding only concise, source-controlled pointers for accepted current slices; generated `out/` artifacts remain evidence only, and live apply stays blocked until an explicit approval manifest is provided.

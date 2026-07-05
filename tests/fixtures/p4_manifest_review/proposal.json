@@ -1,0 +1,11 @@
+{
+  "targets": [
+    {
+      "evidence": "p4 manifest-review fixture",
+      "new_text": "changed",
+      "old_text": "alpha",
+      "path": "Notes/alpha.md"
+    }
+  ],
+  "vault_root": "{fixture_vault}"
+}

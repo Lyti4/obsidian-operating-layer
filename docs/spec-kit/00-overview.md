@@ -56,6 +56,7 @@ Obsidian vault
 - `34-agentic-improvement-loop.md` — continuous Nanobot → Hermes → spec-kit/queue → Codex review/implementation improvement loop for agentic OS work.
 - `35-agentic-os-control-plane-map.md` — single operator control-plane map linking orchestrator, review queue, Codex/Hermes channel, runtime, acceptance gates, channel registry, and docs-lag checks.
 - `36-current-evidence-index.md` — tracked source index for current generated evidence pointers, keeping acceptance/backlog docs concise while preserving review paths.
+- `37-vault-automation-indexing-roadmap.md` — current full-vault indexing stop point, external/Codex/Nanobot research fixation, document audit, and next lane/scorer/archive-shadow roadmap.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/llm-channel.schema.json` — secret-free LLM channel smoke artifact schema.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.
@@ -77,3 +78,7 @@ Codex is made repo-native through `docs/spec-kit/33-codex-native-runtime.md`, `/
 ## Semantic indexing manifest
 
 `tools/obsidian_semantic_manifest.py` / `src/obslayer/semantic_manifest.py` close the current indexing/semantic chain with a generated manifest under `out/reports/semantic-manifests/`. The manifest references only repo `out/` artifacts, checks that proposal artifacts keep `targets: []`, and preserves `live_mutation_authorized: false` / `approval_manifest_created: false`.
+
+## Vault automation indexing roadmap
+
+`docs/spec-kit/37-vault-automation-indexing-roadmap.md` fixes the 2026-07-05 full-vault indexing stop point and defines the next safe repo-only continuation: lane schema, archive shadow index, candidate scorer, decision ledger, safe auto-proposal thresholds, and only later a separately approved narrow apply pilot.

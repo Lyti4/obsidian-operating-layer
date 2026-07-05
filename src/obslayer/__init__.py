@@ -20,6 +20,12 @@ from .diagram_pdf_adapter import (
     load_diagram_renderer_record,
     write_diagram_pdf_report_evaluation,
 )
+from .external_tool_benchmark import (
+    ExternalToolBenchmarkReport,
+    build_external_tool_benchmark_report,
+    external_tool_benchmark_to_markdown,
+    write_external_tool_benchmark_report,
+)
 from .graphify_embedding_handoff import (
     GraphifyEmbeddingCandidate,
     GraphifyEmbeddingHandoff,
@@ -106,11 +112,27 @@ from .mcp_adapter import (
     normalize_mcp_tool_request,
     write_mcp_adapter_evaluation,
 )
+from .operator_decision_ledger_v1 import (
+    OperatorDecisionLedger,
+    OperatorDecisionRecord,
+    append_decision_record,
+    build_operator_decision_ledger,
+    normalize_decision_record,
+    serialize_operator_decision_ledger,
+    write_operator_decision_ledger,
+)
 from .proposal_normalization import (
     load_findings_bundle,
     normalize_findings_to_proposal,
     proposal_to_markdown,
     write_normalized_proposal,
+)
+from .proposal_routing_contract_v1 import (
+    ROUTE_AUTO_PROPOSE,
+    ROUTE_NEEDS_HUMAN_REVIEW,
+    ROUTE_SUGGEST,
+    ProposalRoutingDecision,
+    route_proposal_candidate,
 )
 from .rag_graph_adapter import (
     RagGraphAdapterEvaluation,
@@ -121,6 +143,13 @@ from .rag_graph_adapter import (
     write_rag_graph_adapter_evaluation,
 )
 from .resource_preflight import ResourcePreflightReport, collect_resource_preflight
+from .safe_auto_proposal_thresholds import (
+    SafeAutoProposalBundle,
+    build_safe_auto_proposal_bundle,
+    safe_auto_proposal_bundle_to_markdown,
+    serialize_safe_auto_proposal_bundle,
+    write_safe_auto_proposal_bundle,
+)
 from .sandbox import SandboxCopyReport, create_sandbox_vault
 from .semantic_candidate_decision_packet import (
     CandidateDecisionGroup,
@@ -153,6 +182,7 @@ __all__ = [
     "DEFAULT_PROTECTED_RELATIVE",
     "DiagramPdfReportEvaluation",
     "EmbeddedFileRecord",
+    "ExternalToolBenchmarkReport",
     "GuardrailError",
     "GraphifyEmbeddingCandidate",
     "GraphifyEmbeddingHandoff",
@@ -167,17 +197,28 @@ __all__ = [
     "IndexingWrapperPolicy",
     "McpAdapterEvaluation",
     "NormalizedMcpResult",
+    "OperatorDecisionLedger",
+    "OperatorDecisionRecord",
+    "ProposalRoutingDecision",
     "REDACTED_LIVE_VAULT",
     "RagGraphAdapterEvaluation",
     "ResourcePreflightReport",
+    "ROUTE_AUTO_PROPOSE",
+    "ROUTE_NEEDS_HUMAN_REVIEW",
+    "ROUTE_SUGGEST",
     "SAFE_JOB_KINDS",
     "SanitizedMcpTranscript",
     "SandboxCopyReport",
+    "SafeAutoProposalBundle",
     "SemanticProposalCandidate",
     "SemanticProposalReport",
     "build_semantic_proposal_report",
+    "build_safe_auto_proposal_bundle",
+    "safe_auto_proposal_bundle_to_markdown",
     "semantic_proposal_report_to_markdown",
+    "serialize_safe_auto_proposal_bundle",
     "write_semantic_proposal_report",
+    "write_safe_auto_proposal_bundle",
     "acceptance_report_to_markdown",
     "assert_indexing_tool_allowed",
     "build_acceptance_report",
@@ -188,7 +229,9 @@ __all__ = [
     "build_indexing_wrapper_policy",
     "build_read_only_index",
     "build_diagram_pdf_report_evaluation",
+    "build_external_tool_benchmark_report",
     "build_mcp_adapter_evaluation",
+    "build_operator_decision_ledger",
     "build_rag_graph_adapter_evaluation",
     "canonical_run_commands",
     "canonical_workspace_layout",
@@ -204,6 +247,7 @@ __all__ = [
     "discover_indexing_exclude_prefixes",
     "embedding_run_to_markdown",
     "evaluation_to_markdown",
+    "external_tool_benchmark_to_markdown",
     "find_controlled_job",
     "hash_vault_tree",
     "graphify_embedding_query_to_markdown",
@@ -220,7 +264,9 @@ __all__ = [
     "manifest_backup_plan",
     "move_controlled_job",
     "list_indexing_runtime_tools",
+    "append_decision_record",
     "normalize_findings_to_proposal",
+    "normalize_decision_record",
     "normalize_index_tool",
     "normalize_indexing_exclude_prefixes",
     "normalize_indexing_mcp_result",
@@ -233,11 +279,13 @@ __all__ = [
     "planned_backup_dir",
     "proposal_to_markdown",
     "rag_graph_evaluation_to_markdown",
+    "route_proposal_candidate",
     "run_graphify_embedding_manifest",
     "run_graphify_embedding_query_smoke",
     "redact_live_vault_paths",
     "run_controlled_job",
     "sanitize_indexing_mcp_transcript",
+    "serialize_operator_decision_ledger",
     "validate_approval_manifest",
     "validate_targets",
     "verify_indexing_runtime_tools",
@@ -248,8 +296,10 @@ __all__ = [
     "write_json",
     "write_acceptance_report",
     "write_diagram_pdf_report_evaluation",
+    "write_external_tool_benchmark_report",
     "write_indexing_spike_evaluation",
     "write_mcp_adapter_evaluation",
     "write_normalized_proposal",
+    "write_operator_decision_ledger",
     "write_rag_graph_adapter_evaluation",
 ]

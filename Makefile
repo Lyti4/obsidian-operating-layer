@@ -1,4 +1,4 @@
-.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal llm-channel-smoke llm-channel-smoke-live semantic-review-index project-docs-lag-audit semantic-manifest
+.PHONY: test lint compile verify smoke dashboard-list dashboard-validate live-proposal-only field-slice-example render-diagrams rag-benchmark mcp-benchmark external-tool-benchmark indexing-sandbox indexing-spike indexing-runtime-auto-probe indexing-runtime-stdio-probe-fake resource-preflight graphify-embedding-handoff graphify-embedding-run graphify-embedding-query nanobot-evidence-gateway channel-registry-verify semantic-proposal-report semantic-candidate-decision-packet semantic-targeted-proposal llm-channel-smoke llm-channel-smoke-live semantic-review-index project-docs-lag-audit semantic-manifest
 
 VAULT ?= /home/hermesadmin/Obsidian
 PROPOSAL_ROOT ?= out/proposals
@@ -69,6 +69,7 @@ SEMANTIC_MANIFEST_DECISION_PACKET ?= out/proposals/semantic-candidate-decisions/
 SEMANTIC_MANIFEST_TARGETED_PROPOSAL ?= out/proposals/semantic-targeted-proposals/link-hygiene-20260704T112830Z/proposal.json
 SEMANTIC_MANIFEST_REVIEW_INDEX ?= out/proposals/semantic-review-indexes/link-hygiene-20260704T1200Z/review-index.json
 SEMANTIC_MANIFEST_OUT ?= out/reports/semantic-manifests/manual
+EXTERNAL_TOOL_BENCHMARK_OUT ?= out/reports/external-tool-benchmark/manual
 
 test:
 	python3 -m pytest -q
@@ -113,6 +114,9 @@ rag-benchmark:
 
 mcp-benchmark:
 	python3 tools/obsidian_mcp_adapter.py --adapter-record docs/spec-kit/research/sample-adapter-records/cyanheads-obsidian-mcp-server.json --sandbox-vault $(MCP_SANDBOX) --out-dir $(MCP_REPORTS) --probe-tool read_note --probe-tool search_notes --probe-tool write_note
+
+external-tool-benchmark:
+	python3 tools/obsidian_external_tool_benchmark.py --out-dir $(EXTERNAL_TOOL_BENCHMARK_OUT)
 
 indexing-sandbox:
 	python3 tools/obsidian_sandbox.py --source-vault $(VAULT) --sandbox-root $(INDEX_SANDBOX_ROOT) --name $(INDEX_SANDBOX_NAME) --reset --out $(INDEX_REPORTS)/sandbox-copy.json

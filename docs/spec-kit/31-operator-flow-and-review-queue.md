@@ -18,6 +18,56 @@ It is an operating contract, not live-apply authorization. The queue coordinates
 - Any live vault change still requires: explicit approval manifest -> backup -> apply -> verify -> post-observe.
 - Auth/profile/service/cron/network changes remain out of scope unless Dmitry explicitly approves the exact action.
 
+## Proposal routing contract
+
+Proposal candidates are routed through four explicit states:
+
+```text
+suggest -> auto-propose -> needs-human-review -> blocked/refuse
+```
+
+The routing contract keeps the decision ledger as weak evidence only. It may influence scoring, but it never grants live apply or approval-manifest authority.
+
+Decision rules:
+
+- `suggest`: evidence exists, but confidence or separation is insufficient for automation;
+- `auto-propose`: deterministic-high candidates that clear the threshold policy;
+- `needs-human-review`: ambiguous, sensitive, or operator-gated candidates;
+- `blocked/refuse`: protected surfaces, hard-stop risk, or any attempted apply/manifest authority.
+
+No route authorizes live mutation by itself.
+
+## Unified queue/state/decision surface v1
+
+The next simplification step is to make queue state, candidate lane shape, decision evidence, and routing outcome share one contract boundary instead of living in partially overlapping documents.
+
+This surface is proposal-only and does not grant apply authority. It binds the existing primitives into one control-plane slice:
+
+| Primitive | Role in the unified surface |
+|---|---|
+| `lane_schema_v1` | Defines the machine-readable lane packet shape: source class, issue class, counts, allowed next action, forbidden actions, approval class, confidence policy, sensitive-surface flags. |
+| `candidate_scorer_v1` | Produces candidate ranks and reason codes for a lane without editing vault content. |
+| `operator_decision_ledger_v1` | Stores weak evidence/prior decisions only; it can influence future scoring but never authorizes apply or approval manifests. |
+| `safe_auto_proposal_thresholds` | Gates dry-run proposal generation for deterministic-high, non-sensitive candidates only. |
+| `proposal_routing_contract_v1` | Routes each candidate into `suggest`, `auto-propose`, `needs-human-review`, or `blocked/refuse`. |
+
+Contract boundary:
+
+- queue state tells us where an item is in the review flow;
+- lane schema tells us what class of candidate the item is;
+- scorer tells us why this candidate is preferred;
+- ledger records weak evidence only;
+- thresholds decide whether proposal generation is safe;
+- routing decides the operator-facing disposition.
+
+The unified surface must preserve the existing safety invariant:
+
+```text
+live_mutation_authorized: false
+```
+
+It is acceptable for a candidate to be review-ready or auto-proposable while still being blocked from live apply. That distinction is the point of the unified boundary.
+
 ## Operator flow
 
 ```text
@@ -92,7 +142,7 @@ States:
 | `observed` | signal/evidence exists | source path and boundary recorded |
 | `triaged` | Hermes classified risk and scope | promote/hold/reject decision written |
 | `proposal_drafted` | proposal-only artifact exists | candidate paths/changes are explainable |
-| `review_ready` | operator can decide | evidence, tests, and safety boundary are present |
+| `review_ready` | operator can decide | evidence, tests, safety boundary, and routing state are present |
 | `approved_for_manifest` | Dmitry approved exact candidate | approval manifest may be generated |
 | `applied_verified` | approved apply completed | backup/apply/verify/post-observe evidence exists |
 | `held` | not safe/actionable now | reason and revisit condition recorded |
