@@ -230,6 +230,12 @@ Acceptance:
 
 ### R6 — external-tool benchmark
 
+Status: accepted as a repo-only/evidence-only deterministic read-only simulation/comparison against external-tool behavior patterns.
+
+Acceptance evidence: `src/obslayer/external_tool_benchmark.py`, `tools/obsidian_external_tool_benchmark.py`, `tests/test_external_tool_benchmark.py`, and `out/reports/external-tool-benchmark/20260705T183948Z/REPORT.md`.
+
+Accepted boundary: consumes current `candidate-scorer-v1` packet shapes (`scored_links` / `candidate_packets`) and emits `external-tool-benchmark.json` plus `REPORT.md`; no external tool subprocess, API, or write mode is executed. Differences become scorer test cases/proposal-only records, with `behavior: evidence-only`, `live_mutation_authorized: false`, `approval_manifest_created: false`, and `targets: []`.
+
 Goal: compare our scanner/scorer against external tools while keeping write rights disabled.
 
 Tools/patterns:

@@ -27,10 +27,9 @@ def _read_json_records(path: Path) -> list[dict[str, Any]]:
 
     payload = json.loads(text)
     if isinstance(payload, dict):
-        if isinstance(payload.get("scored_packets"), list):
-            return [record for record in payload["scored_packets"] if isinstance(record, dict)]
-        if isinstance(payload.get("scorer_packets"), list):
-            return [record for record in payload["scorer_packets"] if isinstance(record, dict)]
+        for key in ("scored_packets", "scorer_packets", "scored_links", "candidate_packets"):
+            if isinstance(payload.get(key), list):
+                return [record for record in payload[key] if isinstance(record, dict)]
         if isinstance(payload.get("candidates"), list) and payload.get("source"):
             return [payload]
     if isinstance(payload, list):

@@ -87,3 +87,56 @@ def test_obsidian_external_tool_benchmark_cli_writes_report(tmp_path: Path) -> N
     report = json.loads(Path(payload["report_json"]).read_text(encoding="utf-8"))
     assert report["benchmark_id"] == "cli-test"
     assert report["direct_write_disabled"] is True
+
+def test_obsidian_external_tool_benchmark_cli_accepts_candidate_scorer_v1_shape(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[1]
+    scored_input = tmp_path / "candidate-scorer-v1.json"
+    scored_input.write_text(
+        json.dumps(
+            {
+                "packet_id": "candidate-scorer-v1-test",
+                "scored_links": [
+                    {
+                        "source": "Memory/A.md",
+                        "status": "ambiguous",
+                        "old_link": "[[B]]",
+                        "candidates": [
+                            {"path": "Memory/B.md", "confidence": 0.7},
+                            {"path": "_Archive/B.md", "confidence": 0.6},
+                        ],
+                        "review_required": True,
+                        "hard_stop": False,
+                    }
+                ],
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    out_dir = tmp_path / "reports"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_external_tool_benchmark.py"),
+            "--scored-packets",
+            str(scored_input),
+            "--out-dir",
+            str(out_dir),
+            "--benchmark-id",
+            "candidate-shape-test",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr + completed.stdout
+    payload = json.loads(completed.stdout)
+    report = json.loads(Path(payload["report_json"]).read_text(encoding="utf-8"))
+    assert report["benchmark_id"] == "candidate-shape-test"
+    assert len(report["scorer_packets"]) == 1
+    assert report["live_mutation_authorized"] is False
+    assert report["approval_manifest_created"] is False
+    assert report["targets"] == []
+    assert all(comparison["write_attempted"] is False for comparison in report["comparisons"])
