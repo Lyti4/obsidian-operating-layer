@@ -153,35 +153,31 @@ Acceptance:
 
 ### R3 — `candidate-scorer-v1`
 
-Goal: rank link-fix candidates without editing notes.
+Status: accepted as a repo-only/evidence-only scorer packet and CLI writer.
 
-Features:
+Acceptance evidence: `src/obslayer/candidate_scorer_v1.py`, `tools/obsidian_candidate_scorer.py`, `tests/test_candidate_scorer_v1.py`, and `out/reports/candidate-scorer-v1/20260705T175815Z/REPORT.md`.
 
-- exact title/path/alias match;
-- same top-level vault / folder locality;
-- backlink and outlink graph support;
-- tag/frontmatter compatibility;
-- archive-shadow penalty;
-- source/target sensitivity class;
-- previous operator decision ledger prior;
-- optional semantic similarity only as a weak supporting feature later.
+Accepted boundary: emits `candidate-scorer-v1.json` and `REPORT.md`; keeps `mode: repo-only/evidence-only`, `behavior: evidence-only`, `live_mutation_authorized: false`, `approval_manifest_created: false`, `targets: []`, and `apply_authority: none`. It scores candidate evidence only and never creates approval manifests or live apply targets.
+
+Current generated summary from `out/reports/full-vault-index-analysis/20260705T084734Z/`: 779 candidate packets, 3,699 candidates, 779 review-required packets, 779 hard-stop packets, and max top-two gap 135.
+
+Implemented features:
+
+- reason codes on every packet and candidate;
+- feature breakdown on every candidate;
+- top-two candidate gap on every packet;
+- archive, backup, duplicate, redirect, canonical, missing, Soul, and protected candidates remain review-required or hard-stop/human-gated;
+- no candidate grants live apply authority.
 
 Confidence bands:
 
 | Band | Score | Allowed | Forbidden |
 |---|---:|---|---|
 | deterministic-high | `>= 0.95` | `auto-propose` | live apply without explicit approval |
-| review-medium | `0.75–0.95` | `needs-human-review` | manifest without human review |
+| review-medium | `0.75-0.95` | `needs-human-review` | manifest without human review |
 | evidence-low | `< 0.75` | `suggest` | patch proposal by default |
 
 The `blocked/refuse` route is reserved for protected surfaces, hard-stop risk codes, or any attempted authority over live apply / approval-manifest creation.
-
-Acceptance:
-
-- produces candidate packets for `active_memory_ambiguous_memory_plus_archive` first;
-- every candidate has reason codes and feature breakdown;
-- top-two candidate gap is recorded;
-- candidates with Soul/archive/canonical risk remain human-gated.
 
 ### R4 — `operator-decision-ledger-v1`
 
