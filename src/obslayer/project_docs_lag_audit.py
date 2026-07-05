@@ -71,6 +71,17 @@ DEFAULT_CHECKS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
         "docs/acceptance/index.md",
         ("Agentic OS control plane map", "docs/spec-kit/35-agentic-os-control-plane-map.md"),
     ),
+
+    (
+        "current_evidence_index_documented",
+        "docs/spec-kit/36-current-evidence-index.md",
+        ("Control-plane source surfaces", "Current generated evidence pointers", "Safety boundary"),
+    ),
+    (
+        "current_evidence_index_acceptance_linked",
+        "docs/acceptance/index.md",
+        ("docs/spec-kit/36-current-evidence-index.md", "does not authorize live mutation"),
+    ),
     (
         "operator_policy_mentions_15m_audit",
         "AGENTS.md",

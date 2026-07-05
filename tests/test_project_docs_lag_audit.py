@@ -13,12 +13,16 @@ def _write_minimal_docs(repo: Path, *, include_marker: bool = True) -> None:
         "docs/acceptance/index.md": (
             "Semantic targeted proposal/review index\ntools/obsidian_semantic_review_index.py\n"
             "Agentic OS control plane map\ndocs/spec-kit/35-agentic-os-control-plane-map.md\n"
+            "docs/spec-kit/36-current-evidence-index.md\ndoes not authorize live mutation\n"
         ),
         "docs/spec-kit/28-global-headroom-only-llm-channel.md": (
             "docs/spec-kit/schemas/llm-channel.schema.json\nmake llm-channel-smoke\nmake llm-channel-smoke-live\n"
         ),
         "docs/spec-kit/35-agentic-os-control-plane-map.md": (
             "Control-plane surfaces\nQueue state model\nAcceptance gates\nCurrent Nanobot synthesis\n"
+        ),
+        "docs/spec-kit/36-current-evidence-index.md": (
+            "Control-plane source surfaces\nCurrent generated evidence pointers\nSafety boundary\n"
         ),
         "AGENTS.md": "15 minutes\n212b7e8f3c21\nbounded read-only/proposal-only\n",
     }

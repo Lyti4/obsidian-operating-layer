@@ -55,6 +55,7 @@ Obsidian vault
 - `33-codex-native-runtime.md` — repo-native Codex runner, task/report schemas, and sandbox fallback policy.
 - `34-agentic-improvement-loop.md` — continuous Nanobot → Hermes → spec-kit/queue → Codex review/implementation improvement loop for agentic OS work.
 - `35-agentic-os-control-plane-map.md` — single operator control-plane map linking orchestrator, review queue, Codex/Hermes channel, runtime, acceptance gates, channel registry, and docs-lag checks.
+- `36-current-evidence-index.md` — tracked source index for current generated evidence pointers, keeping acceptance/backlog docs concise while preserving review paths.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/llm-channel.schema.json` — secret-free LLM channel smoke artifact schema.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.
