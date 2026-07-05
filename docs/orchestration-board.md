@@ -53,7 +53,7 @@ A live apply may proceed only when all items are true:
 
 P4 manifest-review fixture added: `tests/fixtures/p4_manifest_review/` plus `tests/test_p4_manifest_review_fixture.py` prove live-like approval manifests fail closed when proposal paths, target lists, or vault roots drift. This remains sandbox-only and does not touch the live vault.
 
-Nanobot recommendation decisions are now fixed in `docs/spec-kit/36-current-evidence-index.md`: generated-artifacts index and unified queue/state/decision surface are accepted, candidate scoring is accepted only as read-only/proposal-only, acceptance-gate synthesis is deferred, and any autonomous/live apply authority is rejected for the current scope.
+Nanobot recommendation decisions are now fixed in `docs/spec-kit/36-current-evidence-index.md`: the accepted current-slice pointers stay source-controlled, generated-artifacts evidence remains under `out/` only, unified queue/state/decision surface stays proposal-only, candidate scoring is accepted only as read-only/proposal-only, acceptance-gate synthesis is deferred, and any autonomous/live apply authority is rejected for the current scope.
 
 ## Next active Kanban slice
 

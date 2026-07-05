@@ -68,7 +68,7 @@ Live apply remains opt-in per proposal.
 
 ## Current semantic/orchestrator evidence pointers
 
-Current generated report/proposal pointers live in `docs/spec-kit/36-current-evidence-index.md` so this acceptance page stays concise. The index is proposal-only/read-only and does not authorize live mutation.
+Current generated report/proposal pointers live in `docs/spec-kit/36-current-evidence-index.md` so this acceptance page stays concise. The index now also carries the accepted current-slice pointers for the registry drift fix, remains proposal-only/read-only, and does not authorize live mutation.
 
 ## Codex native runtime
 

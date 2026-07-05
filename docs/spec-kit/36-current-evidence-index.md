@@ -94,6 +94,17 @@ R7 is not a blanket apply authorization. Future live apply packets still require
 
 This section records Hermes acceptance decisions for recent Nanobot scout recommendations so recurring reports become an auditable decision input rather than an untracked chat-only signal. It does not authorize live mutation.
 
+## Accepted current slices / canonical source pointers
+
+These are the concise source-controlled pointers for the current accepted slices. They keep `out/` as evidence only and avoid promoting generated artifacts into source of truth.
+
+| Slice | Canonical source pointer | Evidence pointer | Boundary |
+|---|---|---|---|
+| Generated-artifacts registry index | `docs/spec-kit/36-current-evidence-index.md` | current report/proposal pointers under `out/` | read-only index; no live mutation authorization |
+| Unified queue/state/decision surface v1 | `docs/spec-kit/31-operator-flow-and-review-queue.md`, `docs/spec-kit/37-vault-automation-indexing-roadmap.md`, `docs/spec-kit/38-unified-queue-state-decision-surface-v1.md` | `out/reports/unified-queue-state-decision-surface-v1/` | proposal-only boundary; `live_mutation_authorized: false` |
+| Roadmap continuation from full-vault fixation | `docs/spec-kit/37-vault-automation-indexing-roadmap.md` | `out/reports/full-vault-index-analysis/20260705T084734Z/` | repo-only continuation roadmap; no apply authorization |
+| Nanobot scout / docs-lag evidence | `AGENTS.md`, `docs/orchestration-board.md` | `out/reports/nanobot-cron-scout/` | advisory read-only evidence; Hermes-accepted decisions only |
+
 | Nanobot recommendation | Decision | Accepted boundary / next gate | Evidence |
 |---|---|---|---|
 | Add a canonical generated artifacts index / registry for latest proposals and reports | Accepted, partial | Maintain this source index as the canonical concise pointer surface; keep generated `out/` artifacts as evidence, not source of truth. Next gate: close remaining drift by adding only distilled entries. | `out/reports/nanobot-cron-scout/20260705T162320Z/REPORT.md`, this document |
