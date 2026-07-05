@@ -12,6 +12,20 @@ def _load_tool():
     return module
 
 
+def _sandbox_comm(tool, tmp_path: Path, monkeypatch) -> Path:
+    comm = tmp_path / "codex-hermes" / "comm"
+    monkeypatch.setattr(tool, "COMM", comm)
+    monkeypatch.setattr(tool, "CODEX_INBOX", comm / "codex-inbox")
+    monkeypatch.setattr(tool, "HERMES_INBOX", comm / "hermes-inbox")
+    monkeypatch.setattr(tool, "STATE_DIR", comm / "state")
+    monkeypatch.setattr(tool, "PROCESSING_DIR", comm / "processing")
+    monkeypatch.setattr(tool, "DONE_DIR", comm / "done")
+    monkeypatch.setattr(tool, "FAILED_DIR", comm / "failed")
+    monkeypatch.setattr(tool, "PROCESSED_PATH", comm / "state" / "processed.json")
+    monkeypatch.setattr(tool, "ROLE_POLICY", tmp_path / "codex-hermes" / "docs" / "ROLE_POLICY.json")
+    return comm
+
+
 def test_default_rights_for_review_are_read_only() -> None:
     tool = _load_tool()
     rights = tool.default_rights("review")
@@ -44,8 +58,24 @@ def test_classify_report_requires_hermes_verification_for_changes() -> None:
     assert any("verify" in line.lower() for line in reply)
 
 
-def test_role_policy_json_has_gated_rights() -> None:
-    policy = json.loads(Path("/home/hermesadmin/.codex-hermes/docs/ROLE_POLICY.json").read_text(encoding="utf-8"))
+def test_role_policy_json_has_gated_rights(tmp_path, monkeypatch) -> None:
+    tool = _load_tool()
+    _sandbox_comm(tool, tmp_path, monkeypatch)
+    policy_payload = {
+        "roles": {
+            "hermes": {"role": "orchestrator_acceptance_owner"},
+            "codex": {"role": "bounded_implementation_and_review_worker"},
+        },
+        "rights": {
+            "live_vault_mutation": "forbidden without explicit approval manifest",
+            "auth_profile_mutation": "forbidden",
+            "service_restart_deploy_cron_network": "forbidden",
+        },
+    }
+    tool.ROLE_POLICY.parent.mkdir(parents=True, exist_ok=True)
+    tool.ROLE_POLICY.write_text(json.dumps(policy_payload), encoding="utf-8")
+
+    policy = json.loads(tool.ROLE_POLICY.read_text(encoding="utf-8"))
 
     assert policy["roles"]["hermes"]["role"] == "orchestrator_acceptance_owner"
     assert policy["roles"]["codex"]["role"] == "bounded_implementation_and_review_worker"
@@ -152,8 +182,9 @@ def test_review_snapshot_detects_content_change_with_same_git_status(tmp_path) -
     assert runner.snapshot_delta(before_snapshot, after_snapshot) == ["tracked.txt"]
 
 
-def test_generated_codex_task_packet_matches_v1_shape(tmp_path) -> None:
+def test_generated_codex_task_packet_matches_v1_shape(tmp_path, monkeypatch) -> None:
     tool = _load_tool()
+    _sandbox_comm(tool, tmp_path, monkeypatch)
 
     class Args:
         id = "pytest-generated-review-task"
