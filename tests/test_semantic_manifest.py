@@ -127,6 +127,48 @@ def test_build_semantic_manifest_accepts_safe_artifact_chain(tmp_path: Path) -> 
     assert "- none" in text
 
 
+def test_build_semantic_manifest_accepts_repo_relative_chain_pointers_from_other_cwd(tmp_path: Path) -> None:
+    paths = _artifact_paths(tmp_path)
+    pointer_map = {
+        "embedding_run": ("manifest", "embedding_manifest"),
+        "query_smoke": ("run_json", "embedding_run"),
+        "semantic_proposal": ("query_smoke_json", "query_smoke"),
+        "decision_packet": ("source_proposal", "semantic_proposal"),
+        "targeted_proposal": ("source_decision_packet", "decision_packet"),
+        "review_index": ("source_proposal", "targeted_proposal"),
+    }
+    for source_name, (key, target_name) in pointer_map.items():
+        payload = json.loads(paths[source_name].read_text(encoding="utf-8"))
+        payload[key] = str(paths[target_name].relative_to(tmp_path))
+        paths[source_name].write_text(json.dumps(payload), encoding="utf-8")
+
+    other_cwd = tmp_path / "elsewhere"
+    other_cwd.mkdir()
+    path_literals = {key: str(value) for key, value in paths.items()}
+    code = (
+        "from obslayer.semantic_manifest import build_semantic_manifest; "
+        f"paths = {path_literals!r}; "
+        f"manifest = build_semantic_manifest(repo={str(tmp_path)!r}, **paths); "
+        "print(manifest.status); print(manifest.findings)"
+    )
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            code,
+        ],
+        cwd=other_cwd,
+        env={"PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")},
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr + completed.stdout
+    assert completed.stdout.splitlines()[0] == "ready-for-operator-review"
+
+
+
 def test_build_semantic_manifest_blocks_unsafe_semantic_artifact(tmp_path: Path) -> None:
     paths = _artifact_paths(tmp_path)
     payload = json.loads(paths["targeted_proposal"].read_text(encoding="utf-8"))
@@ -199,5 +241,49 @@ def test_semantic_manifest_cli_writes_report(tmp_path: Path) -> None:
     assert completed.returncode == 0, completed.stderr + completed.stdout
     result = json.loads(completed.stdout)
     assert result["status"] == "ready-for-operator-review"
+    assert Path(result["manifest"]).is_file()
+    assert Path(result["report"]).is_file()
+
+
+def test_semantic_manifest_cli_writes_blocked_report_and_returns_failure(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[1]
+    paths = _artifact_paths(repo)
+    payload = json.loads(paths["targeted_proposal"].read_text(encoding="utf-8"))
+    payload["targets"] = [{"path": "live.md"}]
+    paths["targeted_proposal"].write_text(json.dumps(payload), encoding="utf-8")
+    out_dir = repo / "out" / "reports" / "semantic-manifests" / f"cli-blocked-{tmp_path.name}"
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_semantic_manifest.py"),
+            "--repo",
+            str(repo),
+            "--embedding-manifest",
+            str(paths["embedding_manifest"]),
+            "--embedding-run",
+            str(paths["embedding_run"]),
+            "--query-smoke",
+            str(paths["query_smoke"]),
+            "--semantic-proposal",
+            str(paths["semantic_proposal"]),
+            "--decision-packet",
+            str(paths["decision_packet"]),
+            "--targeted-proposal",
+            str(paths["targeted_proposal"]),
+            "--review-index",
+            str(paths["review_index"]),
+            "--out-dir",
+            str(out_dir),
+        ],
+        cwd=repo,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 1
+    result = json.loads(completed.stdout)
+    assert result["status"] == "blocked"
     assert Path(result["manifest"]).is_file()
     assert Path(result["report"]).is_file()

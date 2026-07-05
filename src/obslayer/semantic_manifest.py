@@ -127,13 +127,24 @@ def _read_payload(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
-def _same_resolved_path(left: Any, right: Path) -> bool:
+def _candidate_pointer_paths(pointer: str, *, repo: Path, source_artifact: Path) -> tuple[Path, ...]:
+    raw = Path(pointer).expanduser()
+    if raw.is_absolute():
+        return (raw.resolve(),)
+    return (
+        (repo / raw).resolve(),
+        (source_artifact.parent / raw).resolve(),
+    )
+
+
+def _same_resolved_path(left: Any, right: Path, *, repo: Path, source_artifact: Path) -> bool:
     if not isinstance(left, str) or not left.strip():
         return False
-    return Path(left).expanduser().resolve() == right.resolve()
+    expected = right.resolve()
+    return any(candidate == expected for candidate in _candidate_pointer_paths(left, repo=repo, source_artifact=source_artifact))
 
 
-def _chain_findings(paths: dict[str, Path]) -> list[str]:
+def _chain_findings(paths: dict[str, Path], *, repo: Path) -> list[str]:
     payloads = {name: _read_payload(path) for name, path in paths.items()}
     checks = (
         ("embedding_run", "manifest", "graphify_embedding_manifest"),
@@ -149,7 +160,7 @@ def _chain_findings(paths: dict[str, Path]) -> list[str]:
         expected_path = paths[target_name]
         if source_key not in source_payload:
             findings.append(f"{source_name}: missing chain pointer {source_key}")
-        elif not _same_resolved_path(source_payload[source_key], expected_path):
+        elif not _same_resolved_path(source_payload[source_key], expected_path, repo=repo, source_artifact=paths[source_name]):
             findings.append(f"{source_name}: {source_key} does not point to {target_name}")
     return findings
 
@@ -179,7 +190,7 @@ def build_semantic_manifest(
     artifacts = [_load_json_artifact(name, path, repo_path) for name, path in paths.items()]
     findings = [f"{artifact.name}: {finding}" for artifact in artifacts for finding in artifact.findings]
     if all(artifact.exists for artifact in artifacts):
-        findings.extend(_chain_findings(paths))
+        findings.extend(_chain_findings(paths, repo=repo_path))
     summary = {
         "artifact_count": len(artifacts),
         "existing_artifacts": sum(1 for artifact in artifacts if artifact.exists),
