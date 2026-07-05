@@ -253,17 +253,24 @@ Acceptance:
 
 ### R7 — narrow approved apply pilot, only after separate approval
 
-Goal: prove end-to-end apply on a tiny safe batch after the repo-only layers are stable.
+Status: repo-only readiness gate accepted; live apply remains blocked without a fresh explicit approval manifest.
 
-Preconditions:
+Acceptance evidence for readiness gate: `src/obslayer/approved_apply_readiness_v1.py`, `tools/obsidian_approved_apply_readiness.py`, `tests/test_approved_apply_readiness_v1.py`, and `out/reports/approved-apply-readiness-v1/20260705T185155Z/REPORT.md`.
 
-- R1–R5 accepted;
+Accepted readiness boundary: validates a proposal/approval-manifest bundle without applying it; checks proposal-manifest path alignment, vault-root agreement, protected target refusal, hash binding, evidence references, target count, backup-root policy, and post-verify requirement; emits `approved-apply-readiness-v1.json` and `REPORT.md` with `behavior: readiness-only/evidence-only`, `live_mutation_authorized: false`, `approval_manifest_created: false`, `approval_manifest_authority: false`, `targets: []`, and `apply_authority: none`.
+
+Goal: prove end-to-end apply readiness on a tiny safe batch after the repo-only layers are stable.
+
+Preconditions for any future live apply:
+
+- R1–R6 accepted;
 - generated proposal reviewed;
-- explicit approval manifest exists;
+- explicit approval manifest exists for that exact proposal;
+- readiness gate passes;
 - backup root and expected hashes are present;
 - batch size starts at 1–5 files.
 
-Acceptance:
+Acceptance for actual live apply, only after separate explicit approval:
 
 - backup created;
 - apply is hash-bound;
@@ -300,16 +307,6 @@ Acceptance:
 
 ## Next command-level target
 
-Implement R1–R3 as a repo-only slice:
+R1–R7 readiness gates are now repo-only accepted. The next safe continuation point is **post-readiness operator review**, not live apply: select one generated proposal candidate, run readiness evidence, ask for explicit human approval if and only if the bundle remains narrow, hash-bound, backed up, and non-protected.
 
-```text
-schemas/lane-schema.v1.json
-src/obslayer/lane_schema.py
-tools/obsidian_lane_queue.py
-src/obslayer/archive_shadow_index.py
-tools/obsidian_candidate_scorer.py
-out/reports/lane-schema-v1/<run>/
-out/reports/candidate-scorer-v1/<run>/
-```
-
-This is the next safe continuation point from indexing.
+Live vault mutation remains blocked until Dmitry approves a fresh manifest for a specific proposal.
