@@ -112,6 +112,25 @@ _DEFAULT_CANDIDATES: tuple[dict[str, Any], ...] = (
         "next_step": "Use as the canonical cross-link surface for future Nanobot docs-lag findings.",
     },
     {
+        "id": "semantic-indexing-manifest",
+        "state": "ready_for_operator_review",
+        "title": "Semantic/indexing manifest chain for Graphify-derived proposals",
+        "evidence_paths": [
+            "docs/spec-kit/29-semantic-proposal-workflow.md",
+            "docs/spec-kit/36-current-evidence-index.md",
+            "docs/acceptance/index.md",
+            "src/obslayer/semantic_manifest.py",
+            "tools/obsidian_semantic_manifest.py",
+            "tests/test_semantic_manifest.py",
+            "out/reports/semantic-manifests/manual/semantic-manifest.json",
+            "out/reports/semantic-manifests/manual/REPORT.md",
+        ],
+        "next_step": (
+            "Use as the terminal semantic/indexing review evidence; "
+            "live vault application remains a separate explicit approval step."
+        ),
+    },
+    {
         "id": "codex-native-runtime",
         "state": "review_ready",
         "title": "Codex native Hermes runner, schemas, and Nanobot/Codex role separation",
