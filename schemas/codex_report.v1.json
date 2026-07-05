@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "codex_report.v1",
+  "type": "object",
+  "required": [
+    "schema",
+    "task_id",
+    "status",
+    "mode",
+    "summary",
+    "changed_files",
+    "commands_run"
+  ],
+  "properties": {
+    "schema": {
+      "const": "codex_report.v1"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "ok",
+        "blocked",
+        "failed",
+        "proposal_only",
+        "needs_approval",
+        "dry-run-ok"
+      ]
+    },
+    "mode": {
+      "enum": [
+        "implementation",
+        "review",
+        "audit",
+        "plan-review"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "changed_files": {
+      "type": "array"
+    },
+    "commands_run": {
+      "type": "array"
+    },
+    "blockers": {
+      "type": "array"
+    },
+    "findings": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

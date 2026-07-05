@@ -3,7 +3,7 @@ from pathlib import Path
 from obslayer.llm_channel_smoke import run_llm_channel_smoke
 
 
-def _registry(path: Path, nanobot_shape: str = "Headroom backend Codex bridge, not generic /v1/responses") -> Path:
+def _registry(path: Path, nanobot_shape: str = "Headroom backend Codex bridge only") -> Path:
     payload = {
         "schema_version": 1,
         "global_rule": "External LLM-provider traffic routes through Headroom by default.",
@@ -12,7 +12,7 @@ def _registry(path: Path, nanobot_shape: str = "Headroom backend Codex bridge, n
                 "component": "Codex CLI",
                 "role": "worker",
                 "external_llm_allowed": True,
-                "required_route": "OPENAI_BASE_URL=http://127.0.0.1:8787/v1 through Headroom",
+                "required_route": "provider=headroom through Headroom",
                 "may_mutate": "repository/task scope only",
                 "acceptance_owner": "Hermes",
                 "forbidden_fallbacks": ["direct upstream base_url"],
@@ -74,13 +74,13 @@ def test_llm_channel_smoke_offline_ok(tmp_path: Path) -> None:
 
     assert report.status == "ok"
     assert report.assertions["nanobot_uses_backend_codex_bridge"] is True
-    assert report.assertions["nanobot_rejects_generic_v1_responses"] is True
+    assert report.assertions["nanobot_uses_canonical_backend_only"] is True
     assert {probe.status for probe in report.probes} == {"skipped"}
 
 
-def test_llm_channel_smoke_flags_generic_nanobot_route(tmp_path: Path) -> None:
-    report = run_llm_channel_smoke(_registry(tmp_path, "generic /v1/responses"))
+def test_llm_channel_smoke_flags_noncanonical_nanobot_route(tmp_path: Path) -> None:
+    report = run_llm_channel_smoke(_registry(tmp_path, "generic responses route"))
 
     assert report.status == "failed"
-    assert report.assertions["nanobot_rejects_generic_v1_responses"] is False
-    assert "assertion failed: nanobot_rejects_generic_v1_responses" in report.findings
+    assert report.assertions["nanobot_uses_canonical_backend_only"] is False
+    assert "assertion failed: nanobot_uses_canonical_backend_only" in report.findings

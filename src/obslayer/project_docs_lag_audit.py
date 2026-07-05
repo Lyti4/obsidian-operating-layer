@@ -60,6 +60,17 @@ DEFAULT_CHECKS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
         "docs/spec-kit/28-global-headroom-only-llm-channel.md",
         ("docs/spec-kit/schemas/llm-channel.schema.json", "make llm-channel-smoke", "make llm-channel-smoke-live"),
     ),
+
+    (
+        "agentic_control_plane_map_documented",
+        "docs/spec-kit/35-agentic-os-control-plane-map.md",
+        ("Control-plane surfaces", "Queue state model", "Acceptance gates", "Current Nanobot synthesis"),
+    ),
+    (
+        "agentic_control_plane_acceptance_documented",
+        "docs/acceptance/index.md",
+        ("Agentic OS control plane map", "docs/spec-kit/35-agentic-os-control-plane-map.md"),
+    ),
     (
         "operator_policy_mentions_15m_audit",
         "AGENTS.md",

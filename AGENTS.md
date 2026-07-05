@@ -20,9 +20,24 @@ This workspace builds a safe local operating layer for Obsidian. Treat the Obsid
 - Do not print or store secrets, tokens, cookies, private keys, `.env` values, or credential file contents.
 - Do not touch money, public posting, production restarts, network exposure, or account/OAuth changes unless the user explicitly asks.
 
+## Codex implementation/review worker policy
+
+Codex is the primary coding/review executor for non-trivial implementation work, but remains bounded by Hermes orchestration:
+
+- allowed: repo-scoped implementation/review tasks, patch proposals, tests, and concise reports;
+- forbidden without explicit approval: live vault mutation, auth/profile mutation, service restart, deployment, cron creation, network exposure, paid actions, public posting, and secret printing/storage;
+- task communication uses the local Codex ⇄ Hermes channel in `docs/spec-kit/32-codex-hermes-communication-channel.md`;
+- Hermes remains acceptance owner and must verify Codex outputs before reporting success.
+
+Codex task packets/reports use `~/.codex-hermes/comm/` and the role policy in `~/.codex-hermes/docs/ROLE_POLICY.json`.
+
+Codex native invocation uses `/home/hermesadmin/.codex-hermes/bin/hermes-codex-run` from `docs/spec-kit/33-codex-native-runtime.md`. Task/report packets are schema-versioned as `codex_task.v1` and `codex_report.v1` (`schemas/codex_task.v1.json`, `schemas/codex_report.v1.json`). Review mode must leave no diff; implementation mode must report changed files and verification.
+
 ## Nanobot standing worker policy
 
 Nanobot can be involved continuously in project maintenance and inter-agent communication, but only as a supervised worker:
+
+Nanobot's job is to say what it observes and what it recommends: architecture risks, simplification opportunities, scale bottlenecks, docs lag, proposal candidates, and possible Codex task suggestions. It does not dispatch Codex, approve patches, mutate the repo/vault/auth/services, or bypass Hermes acceptance.
 
 - allowed: observe, summarize, route task packets, draft reports, draft proposal-only artifacts, run sandbox/read-only Graphify tasks;
 - forbidden without explicit approval: live vault mutation, direct apply, cron creation beyond the approved 15-minute local Nanobot audit scout, service restart, deployment, auth/profile changes, paid actions, third-party GitHub App installs, automatic embeddings;

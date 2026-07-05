@@ -5,7 +5,7 @@ Date: 2026-07-02
 Scope: Nanobot as the orchestrated Graphify worker for Obsidian semantic graph work
 
 
-> Update 2026-07-04: global external LLM routing is governed by `28-global-headroom-only-llm-channel.md`. The accepted Graphify external path is `graphify-headroom` + `codex-cli` through Headroom. The accepted Nanobot review path is `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent`, which targets Headroom's Codex backend bridge at `http://127.0.0.1:8787/backend-api/codex/responses`. Generic `/v1/responses` is kept only as a historical known-blocker note.
+> Update 2026-07-04: global external LLM routing is governed by `28-global-headroom-only-llm-channel.md`. The accepted Graphify external path is `graphify-headroom` + `codex-cli` through Headroom. The accepted Nanobot review path is `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent`, which targets Headroom's Codex backend bridge at `http://127.0.0.1:8787/backend-api/codex/responses`. Do not use alternate HTTP bridge guesses for Nanobot.
 
 ## Decision
 
@@ -141,7 +141,7 @@ For Obsidian Layer work, the safe sequence is:
 1. Prepare a sandbox copy or narrow read-only snapshot of the vault. Never point Graphify at the live vault for exploratory work.
 2. Add a `.graphifyignore` in the sandbox root before extraction. It should exclude protected/generated/noisy areas such as `.obsidian/`, `_Backups/`, `_Archive/`, `.trash/`, `out/`, derived reports, caches, secrets, browser profiles, and any Soul-protected paths not explicitly scoped.
 3. Prefer the assistant skill path when Nanobot is the worker: dispatch a bounded task packet equivalent to `/graphify <sandbox-path> --no-viz` or `/graphify <sandbox-path> --wiki --no-viz` when an agent-crawlable wiki is needed.
-4. For headless/scripted extraction, use `graphify extract <sandbox-path> --out <report-dir>` with an explicit backend/model. For the Headroom bridge use the OpenAI-compatible route only if the bridge has been smoked healthy, e.g. `OPENAI_BASE_URL=http://127.0.0.1:8787/v1`, `OPENAI_MODEL=gpt-5.4-mini`, and a non-empty API key placeholder handled through secure env. Do not print the key.
+4. For headless/scripted extraction, use `graphify extract <sandbox-path> --out <report-dir>` with an explicit backend/model. For Graphify Headroom runs, use the project-approved `graphify-headroom`/Codex CLI bridge after a healthy smoke check. Keep Nanobot on its canonical `nanobot-headroom-agent` backend Codex bridge. Do not print keys or token material.
 5. Read `GRAPH_REPORT.md` first. Use the graph to answer project questions with `graphify query`, `graphify path`, and `graphify explain` before generating cleanup proposals.
 6. Use `--update` only after the same sandbox corpus changes. Use `--cluster-only` only to relabel/recluster an existing graph. Do not treat either command as a full fresh semantic pass.
 7. Use exports intentionally: `graphify export callflow-html` for readable architecture/call-flow pages, `--wiki` for markdown wiki, `--mcp`/`graphify.serve` for repeated tool access, and Neo4j/FalkorDB/GraphML/SVG only when the task packet asks for those artifacts.

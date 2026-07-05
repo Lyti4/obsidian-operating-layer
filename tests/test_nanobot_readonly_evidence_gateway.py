@@ -282,3 +282,27 @@ def test_http_snapshot_and_project_policy_listing(tmp_path: Path) -> None:
     assert "AGENTS.md" in listing_body
     assert "README.md" in listing_body
     assert "docs/" not in listing_body
+
+
+def test_http_generated_markdown_indexes_for_reports_and_proposals(tmp_path: Path) -> None:
+    reports = tmp_path / "reports"
+    proposals = tmp_path / "proposals"
+    reports.mkdir()
+    proposals.mkdir()
+    (reports / "demo").mkdir()
+    (reports / "demo" / "REPORT.md").write_text("report", encoding="utf-8")
+    (proposals / "demo").mkdir()
+    (proposals / "demo" / "PROPOSAL.md").write_text("proposal", encoding="utf-8")
+
+    with _ServerContext({"reports": reports.resolve(), "proposals": proposals.resolve()}) as base_url:
+        reports_status, reports_body = _request(f"{base_url}/reports/index.md")
+        proposals_status, proposals_body = _request(f"{base_url}/proposals/index.md")
+        snapshot_status, snapshot_body = _request(f"{base_url}/snapshot.json")
+
+    assert reports_status == 200
+    assert proposals_status == 200
+    assert "/reports/demo/REPORT.md" in reports_body
+    assert "/proposals/demo/PROPOSAL.md" in proposals_body
+    assert snapshot_status == 200
+    assert "/reports/index.md" in snapshot_body
+    assert "/proposals/index.md" in snapshot_body

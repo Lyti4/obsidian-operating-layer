@@ -11,7 +11,7 @@ from .channel_registry import load_channel_registry, validate_channel_registry
 from .guardrails import GuardrailError
 
 NANOBOT_BRIDGE = "http://127.0.0.1:8787/backend-api/codex/responses"
-GENERIC_RESPONSES = "/v1/responses"
+CANONICAL_SHAPE_MARKER = "backend codex bridge only"
 
 
 @dataclass(frozen=True)
@@ -99,7 +99,7 @@ def run_llm_channel_smoke(
         "codex_cli_headroom_route": "127.0.0.1:8787" in codex_route or "headroom" in codex_route.lower(),
         "graphify_headroom_route": "headroom" in graphify_route.lower(),
         "nanobot_uses_backend_codex_bridge": NANOBOT_BRIDGE in nanobot_route,
-        "nanobot_rejects_generic_v1_responses": GENERIC_RESPONSES in nanobot_shape and "not" in nanobot_shape.lower(),
+        "nanobot_uses_canonical_backend_only": CANONICAL_SHAPE_MARKER in nanobot_shape.lower(),
         "evidence_gateway_local_read_only": (
             "127.0.0.1:18791" in gateway_route
             and gateway.get("external_llm_allowed") is False

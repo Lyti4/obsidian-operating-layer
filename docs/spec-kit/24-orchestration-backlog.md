@@ -203,7 +203,7 @@ Result: green read-only Nanobot compliance review using sanitized excerpts inste
 
 Evidence:
 - Runtime health checked for Nanobot and Headroom.
-- Historical note: Nanobot was initially tried through `NANOBOT_OPENAI_CODEX_RESPONSES_URL=http://127.0.0.1:8787/v1/responses`; this is no longer the accepted route. Current routing is governed by `28-global-headroom-only-llm-channel.md` and uses the `nanobot-headroom-agent -> /backend-api/codex/responses` bridge.
+- Current Nanobot routing is governed by `28-global-headroom-only-llm-channel.md` and uses only the `nanobot-headroom-agent` wrapper.
 - Artifacts: `out/reports/nanobot-standing-worker/20260702-compliance-excerpts/`.
 - Secret-pattern scan over generated artifacts returned no findings.
 - Live vault was not mutated; Nanobot did not write into the repository directly.
@@ -381,7 +381,7 @@ Boundary:
 
 - Smoke asserts route shape and probes only local Headroom/evidence-gateway health when `--live-probes` is requested.
 - No repo/vault/auth/profile/service mutation by Nanobot.
-- Generic `/v1/responses` remains a documented anti-pattern for Nanobot Codex bridge work.
+- Alternate Nanobot HTTP bridge guesses are not accepted operating paths.
 
 
 ### 2026-07-04 P3 targeted semantic proposal explanation
@@ -447,3 +447,357 @@ Boundary:
 
 - read-only docs marker audit; no live vault mutation; no LLM required; intended as deterministic companion evidence for the 15-minute Nanobot audit scout.
 - 2026-07-04 follow-up: live gateway service restarted after explicit approval; `/snapshot.json` and `--dry-run` script preflight verified.
+
+### 2026-07-04 P1/P2c orchestrator consolidation spec
+
+Result: active operating rules were consolidated into one operator-facing spec without deleting the source specs.
+
+Changed:
+- Added `docs/spec-kit/30-orchestrator-operating-spec.md` as the first-read orchestration document.
+- Updated `docs/spec-kit/00-overview.md` to list the consolidated spec.
+
+Boundary:
+- This is docs-only.
+- Live vault mutation remains forbidden without explicit approval manifest.
+- Nanobot remains proposal-only and supervised by Hermes.
+
+Runtime note:
+- Manual Nanobot scout was launched; deterministic docs-lag audit reported `ok`.
+- Initial Nanobot Codex backend review was blocked by `HTTP 401`; after Codex device login and per-run Codex auth inheritance check, the scout completed successfully at `out/reports/nanobot-cron-scout/20260704T152408Z/REPORT.md` with verdict `current`.
+
+Follow-up from Nanobot scout:
+- keep a generated-artifact pointer section in `30-orchestrator-operating-spec.md` and `docs/acceptance/index.md`;
+- keep gateway evidence URL traversal explicit via `/snapshot.json`;
+- treat Nanobot as second opinion, with deterministic docs-lag audit as companion evidence.
+
+### 2026-07-04 Orchestrator semantic decision packet
+
+Result: proposal-only operator decision packet created for the current semantic/link-hygiene findings.
+
+Decision:
+- Promote `link_hygiene_reports` to the next proposal-only evidence brief/review-index refresh.
+- Promote `nanobot_orchestration_context` only as a repo spec-kit follow-up checklist.
+- Keep `approval_safety_context` as guardrail evidence.
+- Keep `graphify_context` as roadmap/context evidence.
+
+Evidence:
+- Operator decision packet: `out/proposals/operator-decision-packets/link-hygiene-20260704T153221Z/REPORT.md`
+- Source review index: `out/proposals/semantic-review-indexes/link-hygiene-20260704T1200Z/REPORT.md`
+- Nanobot scout second opinion: `out/reports/nanobot-cron-scout/20260704T152408Z/REPORT.md`
+
+Safety:
+- Proposal-only/read-only.
+- `live_mutation_authorized: false`.
+- No approval manifest created.
+- No live vault targets selected.
+
+Next safe slice:
+- Create the link-hygiene evidence brief with `targets_empty: true`, classifying old report noise vs current signal before any future target-diff proposal.
+
+### 2026-07-04 Link hygiene evidence brief
+
+Result: proposal-only link-hygiene evidence brief created after reading the 8 semantic review-index items and running a fresh read-only live-vault signal check.
+
+Evidence:
+- Link hygiene evidence brief: `out/proposals/link-hygiene-evidence-briefs/20260704T154000Z/REPORT.md`
+- Fresh read-only current scan: `out/reports/link-hygiene-current-scan/20260704T-current-brief/REPORT.md`
+- Source operator decision packet: `out/proposals/operator-decision-packets/link-hygiene-20260704T153221Z/REPORT.md`
+
+Decision:
+- Historical link-hygiene reports confirm a persistent link-debt signal, but the old samples are report-heavy and partly Soul/policy-sensitive.
+- The next safe target class is a fresh `non-report working-note wikilink triage report`, proposal-only first.
+- Do not directly edit links from old report samples.
+- Do not auto-archive duplicates or touch Soul-adjacent material without a separate policy decision.
+
+Safety:
+- Proposal-only/read-only.
+- `live_mutation_authorized: false`.
+- `targets_empty: true`.
+- No approval manifest created.
+- Generated artifacts only under `out/`.
+
+Next safe slice:
+- Generate the non-report working-note wikilink triage report with examples/classes only and no edit targets.
+
+### 2026-07-04 Non-report working-note wikilink triage
+
+Result: fresh proposal-only triage generated for current wikilink debt outside generated reports.
+
+Evidence:
+- Triage report: `out/proposals/non-report-working-note-wikilink-triage/20260704T154634Z/REPORT.md`
+- Machine-readable triage: `out/proposals/non-report-working-note-wikilink-triage/20260704T154634Z/triage.json`
+- Docs lag audit: `out/reports/project-docs-lag-audit/orchestrator-20260704T-working-note-triage/REPORT.md`
+- Channel registry verify: `out/reports/channel-registry-verify/orchestrator-20260704T-working-note-triage/REPORT.md`
+- Source evidence brief: `out/proposals/link-hygiene-evidence-briefs/20260704T154000Z/REPORT.md`
+
+Observed signal:
+- `markdown_files_scanned`: `538`
+- `total_issues`: `6126`
+- `non_report_issues`: `389`
+- `working_note_issues_excluding_reports_and_soul_policy_sensitive`: `105`
+- `soul_or_policy_sensitive_issues_report_only`: `284`
+- `report_or_generated_issues`: `5737`
+
+Decision:
+- Promote only non-sensitive working-note clusters to the next proposal slice.
+- Keep report/generated and Soul/policy-sensitive findings as evidence only.
+- Do not mutate live vault from triage samples.
+
+Safety:
+- Proposal-only/read-only.
+- `live_mutation_authorized: false`.
+- `targets_empty: true`.
+- No approval manifest created.
+- Generated artifacts only under `out/`.
+
+Next safe slice:
+- Draft a targeted proposal for non-sensitive working-note clusters with exact candidate files/targets, still without apply.
+
+### 2026-07-04 Working-note link targeted proposal
+
+Result: targeted proposal-only candidate set created from the 105 non-sensitive working-note ambiguous wikilinks.
+
+Evidence:
+- Targeted proposal report: `out/proposals/working-note-link-targeted-proposals/20260704T155803Z/REPORT.md`
+- Machine-readable proposal: `out/proposals/working-note-link-targeted-proposals/20260704T155803Z/proposal.json`
+- Docs lag audit: `out/reports/project-docs-lag-audit/orchestrator-20260704T-working-note-targeted/REPORT.md`
+- Channel registry verify: `out/reports/channel-registry-verify/orchestrator-20260704T-working-note-targeted/REPORT.md`
+- Source triage: `out/proposals/non-report-working-note-wikilink-triage/20260704T154634Z/REPORT.md`
+
+Observed signal:
+- `observed_working_ambiguous_records`: `105`
+- `candidate_rewrites`: `102`
+- `held_for_human_review`: `3`
+- `candidate_files`: `26`
+
+Decision:
+- Candidate rewrites are same top-level vault-root disambiguations, mainly `Memory-Vault/...` links avoiding ambiguous `Soul-Vault/...` duplicates.
+- Hold the 3 records with no single same-root target for human/domain review.
+- Do not apply yet; next step is operator review and, if approved later, an explicit approval manifest with backups.
+
+Safety:
+- Proposal-only artifact under `out/`.
+- `live_mutation_authorized: false`.
+- `approval_manifest_created: false`.
+- Report/generated and Soul/policy-sensitive files excluded from candidate targets.
+
+Next safe slice:
+- Run an operator review pass over the 102 proposed rewrites and split them into approve/hold/reject groups before any approval manifest.
+
+### 2026-07-04 Working-note link operator review
+
+Result: operator review pass completed for the 102 targeted working-note disambiguation candidates.
+
+Evidence:
+- Operator review report: `out/proposals/working-note-link-operator-reviews/20260704T161938Z/REPORT.md`
+- Machine-readable review: `out/proposals/working-note-link-operator-reviews/20260704T161938Z/review.json`
+- Source targeted proposal: `out/proposals/working-note-link-targeted-proposals/20260704T155803Z/REPORT.md`
+- Docs lag audit: `out/reports/project-docs-lag-audit/orchestrator-20260704T-operator-review-final/REPORT.md`
+- Channel registry verify: `out/reports/channel-registry-verify/orchestrator-20260704T-operator-review-final/REPORT.md`
+
+Observed decision split:
+- `reviewed_candidates`: `102`
+- `approved_for_manifest_candidate`: `102`
+- `held_for_human_or_rule_review`: `3`
+- `rejected`: `0`
+- `approved_source_files`: `26`
+
+Decision:
+- Approve the 102 same-root working-note disambiguations only as manifest candidates.
+- Keep the 3 inherited held records out of any automated apply path until a human/domain rule resolves them.
+- Do not create an approval manifest or apply edits from this review without Dmitry's explicit named approval.
+
+Safety:
+- Proposal/review-only artifact under `out/`.
+- `live_mutation_authorized: false`.
+- `approval_manifest_created: false`.
+- No live vault files edited.
+
+Next safe slice:
+- Prepare a manifest-candidate/dry-run packet for the 102 approved rewrites, still without live apply, or request explicit live-apply authorization before creating a real approval manifest.
+
+### 2026-07-04 Working-note link manifest-candidate dry-run
+
+Result: manifest-candidate/dry-run packet prepared from the approved operator review set, without creating an approval manifest or mutating the live vault.
+
+Evidence:
+- Dry-run packet report: `out/proposals/working-note-link-manifest-candidates/20260704T162439Z/REPORT.md`
+- Machine-readable packet: `out/proposals/working-note-link-manifest-candidates/20260704T162439Z/manifest-candidate.json`
+- Diff previews: `out/proposals/working-note-link-manifest-candidates/20260704T162439Z/diffs/`
+- Source operator review: `out/proposals/working-note-link-operator-reviews/20260704T161938Z/REPORT.md`
+
+Observed dry-run set:
+- `approved_rewrite_entries`: `102`
+- `target_files`: `26`
+- `dry_run_replacements`: `102`
+- `held_items_excluded`: `3`
+
+Decision:
+- Treat this packet as the current named candidate for future approval review.
+- It is not an approval manifest and does not authorize apply.
+- The 3 held items remain excluded from this change set.
+
+Safety:
+- Dry-run/proposal-only artifact under `out/`.
+- `live_mutation_authorized: false`.
+- `approval_manifest_created: false`.
+- `live_apply_performed: false`.
+- No backups were created because no live apply was attempted.
+
+Next gate:
+- If Dmitry explicitly approves this named packet, create a real approval manifest that binds target vault, packet path, target files, expected hashes, backup root, and change set; then backup, apply, and verify.
+
+### 2026-07-04 Working-note link live apply
+
+Result: Dmitry explicitly approved the named manifest-candidate packet and the 102 approved working-note wikilink disambiguations were applied to the live vault.
+
+Approval and evidence:
+- Approval manifest: `out/approval-manifests/working-note-link-apply/20260704T163336Z/approval-manifest.json`
+- Apply report: `out/reports/working-note-link-apply/20260704T163336Z/REPORT.md`
+- Apply result JSON: `out/reports/working-note-link-apply/20260704T163336Z/apply-result.json`
+- Post-apply verification: `out/reports/working-note-link-post-apply-verify/20260704T163336Z/REPORT.md`
+- Docs lag audit: `out/reports/project-docs-lag-audit/orchestrator-20260704T-live-apply/REPORT.md`
+- Channel registry verify: `out/reports/channel-registry-verify/orchestrator-20260704T-live-apply/REPORT.md`
+- Source dry-run packet: `out/proposals/working-note-link-manifest-candidates/20260704T162439Z/manifest-candidate.json`
+
+Applied set:
+- `target_files`: `26`
+- `replacements`: `102`
+- `backups`: `26`
+- `held_items_excluded`: `3`
+
+Safety and verification:
+- Backups created before writes under `/home/hermesadmin/Obsidian/_Backups/obsidian-operating-layer/20260704T163336Z`.
+- Apply was limited to files listed in the approval manifest.
+- Post-apply verification result: `ok`; `out/reports/working-note-link-post-apply-verify/20260704T163336Z/REPORT.md` reports `old_remaining: 0` and `issues: 0`.
+- The 3 held/domain-review items were not applied.
+
+Next safe slice:
+- Run a fresh post-apply link-hygiene observation and compare the working-note ambiguous count against the pre-apply packet.
+
+### 2026-07-04 Working-note link post-apply observation
+
+Result: fresh observation completed after the approved live apply.
+
+Evidence:
+- Observation report: `out/reports/working-note-link-post-apply-observation/20260704T164100Z/REPORT.md`
+- Machine-readable observation: `out/reports/working-note-link-post-apply-observation/20260704T164100Z/observation.json`
+- Source post-apply verify: `out/reports/working-note-link-post-apply-verify/20260704T163336Z/REPORT.md`
+
+Observed state:
+- `target_files_observed`: `26`
+- `approved_old_remaining`: `0`
+- `approved_new_present_at_least`: `110`
+- `held_excluded_items`: `3`
+- `held_raw_links_still_present`: `3`
+- `held_missing_unexpected`: `0`
+- `target_file_simple_broken_wikilinks_after`: `0`
+
+Decision:
+- Close the approved apply set as successfully applied and observed.
+- Keep the 3 held report/README links out of the apply path.
+- Remaining ambiguity signal still exists and should be handled by a new triage slice, not by extending this approved apply.
+
+Next safe slice:
+- Run full non-report working-note triage again against the post-apply vault state and quantify remaining actionable link debt.
+
+### 2026-07-04 Held Reports README link apply
+
+Result: the 3 previously held `Reports/.../README` links were resolved with an explicit domain rule and applied to the live vault.
+
+Domain rule:
+- For sources under `Memory-Vault/Hermes/*`, `Reports/.../README` resolves to `Memory-Vault/Hermes/Reports/.../README`.
+
+Evidence:
+- Mini-proposal: `out/proposals/working-note-held-report-readme-fixes/20260704T165250Z/REPORT.md`
+- Approval manifest: `out/approval-manifests/working-note-held-report-readme-apply/20260704T165519Z/approval-manifest.json`
+- Apply report: `out/reports/working-note-held-report-readme-apply/20260704T165519Z/REPORT.md`
+- Apply result JSON: `out/reports/working-note-held-report-readme-apply/20260704T165519Z/apply-result.json`
+
+Applied set:
+- `target_files`: `3`
+- `replacements`: `3`
+- `backups`: `3`
+- `issues`: `0`
+
+Safety and verification:
+- Backups created before writes under `/home/hermesadmin/Obsidian/_Backups/obsidian-operating-layer/20260704T165519Z`.
+- Apply was limited to the 3 approved source files.
+- Post-apply verification result: `ok`.
+
+Search note:
+- Graph links now point explicitly to `Memory-Vault/Hermes/Reports/graphify-spark-corpus-c10-2026-06-27/README`, so graph traversal and future hybrid retrieval can resolve them deterministically.
+
+### 2026-07-04 Post-held working-note link triage and next proposal
+
+Result: after the 3 held report README links were applied, Hermes ran a fresh read-only working-note triage and prepared the next proposal-only disambiguation packet. No live vault edits were performed in this slice.
+
+Evidence:
+- Fresh triage report: `out/reports/non-report-working-note-wikilink-post-held-triage/20260704T170534Z/REPORT.md`
+- Fresh triage JSON: `out/reports/non-report-working-note-wikilink-post-held-triage/20260704T170534Z/triage.json`
+- Next safe proposal: `out/proposals/working-note-link-next-safe-disambiguation/20260704T170712Z/REPORT.md`
+- Proposal JSON: `out/proposals/working-note-link-next-safe-disambiguation/20260704T170712Z/proposal.json`
+
+Observed state:
+- `markdown_files_scanned`: `706`
+- `working_note_issues_excluding_reports_and_soul_policy_sensitive`: `286`
+- `report_readme_leftovers`: `0`
+- `candidate_rewrites`: `231`
+- `candidate_files`: `41`
+- `held_for_review`: `55`
+
+Decision:
+- Treat this as a new proposal-only packet, not an extension of the prior approval.
+- Do not apply without a named approval manifest and explicit Dmitry approval.
+- Held items include occurrence-count duplicates and targets without a safe same-project candidate; keep them out of the next apply unless a narrower rule is reviewed.
+
+Next safe slice:
+- Operator-review the 231 candidate rewrites and, only if approved by Dmitry, build a dry-run manifest candidate for those candidates.
+### 2026-07-04 Agentic OS operator flow / review queue spec
+
+Result: added an explicit proposal-only operator flow and evidence-gated review queue state machine.
+
+Changed:
+- Added `docs/spec-kit/31-operator-flow-and-review-queue.md`.
+- Updated `docs/spec-kit/00-overview.md`, `docs/spec-kit/30-orchestrator-operating-spec.md`, and `docs/acceptance/index.md` to point at it.
+
+Purpose:
+- Make intake -> evidence -> route -> proposal -> review -> approval gate explicit.
+- Give Nanobot/Hermes a shared Agentic OS coordination surface without granting Nanobot live mutation rights.
+- Add the first deterministic queue-index generator under `tools/obsidian_operator_review_queue.py`, emitting `out/reports/operator-review-queue/<timestamp>/queue.json` and `REPORT.md`.
+
+Evidence:
+- `pytest tests/test_operator_review_queue.py -q` passed.
+- Generated queue index: `out/reports/operator-review-queue/20260704T-agentic-flow/REPORT.md`.
+
+Safety:
+- Repo docs + deterministic local tool/test change; generated artifacts only under `out/`.
+- `live_mutation_authorized: false`.
+- No approval manifest created.
+- No live vault/service/auth/cron mutation.
+### 2026-07-04 Codex ⇄ Hermes communication channel
+
+Result: added a local task/report/ACK channel for Codex as bounded implementation/review worker.
+
+Changed:
+- Added `docs/spec-kit/32-codex-hermes-communication-channel.md`.
+- Added canonical helper `tools/codex_hermes_comm.py` and wrapper `/home/hermesadmin/.hermes/scripts/codex_hermes_comm.py`.
+- Added tests in `tests/test_codex_hermes_comm.py`.
+- Added role policy files under `~/.codex-hermes/docs/ROLE_POLICY.json` and `.md`.
+- Updated AGENTS, channel registry, acceptance index, and orchestrator specs.
+
+Boundary:
+- Local/server-side task/report files only.
+- No Codex cron installed by default; durable watcher requires explicit user approval.
+- Repo writes are task-scoped only; review tasks are read-only.
+- Live vault/auth/profile/service/deploy/cron/network/public/paid actions remain gated by explicit approval.
+
+Evidence:
+- `python3 tools/codex_hermes_comm.py selftest` returned `status: ok`.
+- Synthetic task/report/watch E2E passed with Hermes ACK.
+- Codex review was attempted in read-only mode; Codex reported environment sandbox read failure and recommended keeping channel code/policy inside the repo plus adding self-test. Both recommendations were applied.
+
+
+## Codex native runtime
+
+Codex is made repo-native through `docs/spec-kit/33-codex-native-runtime.md`, `/home/hermesadmin/.codex-hermes/bin/hermes-codex-run`, schema-versioned task/report packets, and explicit separation from Nanobot's architecture scout channel. Nanobot may recommend Codex tasks; Hermes dispatches and accepts them.

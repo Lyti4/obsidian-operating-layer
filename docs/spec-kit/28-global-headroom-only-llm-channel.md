@@ -8,7 +8,7 @@ Scope: Hermes, Nanobot, Graphify, Obsidian Operating Layer workers, and any loca
 
 Make the LLM communication channels explicit, wide, and fail-closed so external LLM calls do not bypass Headroom, do not lose subscription/account inheritance, and do not get confused with local-only runtime dependencies such as Ollama.
 
-This spec supersedes ad-hoc bridge guesses such as "point every OpenAI-compatible client at `/v1/responses`". A route is accepted only if the protocol shape, auth semantics, proxy path, and account-state handling are verified.
+This spec supersedes ad-hoc bridge guesses. A Nanobot route is accepted only if it uses the canonical backend Codex bridge, active auth inheritance, and verified account-state handling.
 
 ## Non-negotiable policy
 
@@ -114,7 +114,6 @@ The accepted external LLM launch is now the wrapper path:
 
 Why the wrapper is required:
 
-- generic `/v1/responses` is not the Nanobot default because it can bind to the wrong abstraction and stale cached auth;
 - oauth-cli-kit's durable token cache can lag behind the active Codex CLI account, causing `401` even when Codex CLI through Headroom is healthy;
 - the wrapper forces a per-run `OAUTH_CLI_KIT_TOKEN_PATH`, so oauth-cli-kit imports the active Codex CLI auth for that run without Hermes printing token material.
 
@@ -173,7 +172,7 @@ Account/profile states must be explicit and reversible where appropriate.
 | rate limit burst | temporary capacity | shorter cooldown/backoff | re-check after backoff |
 | `token_invalidated` / `refresh_token_invalidated` | auth failure | quarantine or switch to already configured account | only after login/repair or verified replacement |
 | Headroom unhealthy / connection refused | proxy infra | stop and repair proxy | after health probe green |
-| `/v1/responses` returns 401 for Codex OAuth headers | protocol mismatch | stop; fix bridge | after proper bridge implemented |
+| Nanobot wrapper returns 401/auth block | route/auth mismatch or exhausted active profile | stop; repair wrapper route or switch already-configured live profile | after verified smoke |
 | model unsupported / config typo | config failure | stop; fix config | after config verification |
 
 Never mark a usage-limited profile permanently dead. Never rotate accounts to mask bridge/protocol errors.
@@ -236,7 +235,7 @@ Actual Nanobot HTTP attempt through Headroom returned:
 Error calling Codex (CodexHTTPError): HTTP 401: Codex API request failed
 ```
 
-This historical failure came from treating generic `/v1/responses` as the Nanobot/Codex route. The accepted path now uses the wrapper and Headroom backend Codex bridge; keep the old `/v1/responses` result only as a known anti-pattern.
+The accepted Nanobot path uses only the wrapper and Headroom backend Codex bridge. Historical failed bridge guesses are not valid operating instructions.
 
 A separate sanitized Codex CLI reviewer through Headroom agreed with the same recommendations: keep Graphify on `codex-cli -> Headroom`, fail-close direct external routes, implement a real Codex bridge for Nanobot, and split cooldown from auth invalidation.
 
@@ -252,7 +251,7 @@ A separate sanitized Codex CLI reviewer through Headroom agreed with the same re
 4. Implement Nanobot bridge Option A or B above.
 5. Done 2026-07-04: machine-readable channel registry and smoke schema exist: `docs/spec-kit/channel-registry.json`, `docs/spec-kit/schemas/llm-channel.schema.json`, and `make llm-channel-smoke`.
 6. Done 2026-07-04: `make llm-channel-smoke-live` creates `out/reports/.../llm-channel-smoke.json` with local health probes and no secrets.
-7. Keep older Nanobot/Graphify docs referencing this spec instead of the invalid `/v1/responses` assumption.
+7. Keep older Nanobot/Graphify docs referencing this spec instead of stale bridge assumptions.
 
 ## Acceptance criteria
 

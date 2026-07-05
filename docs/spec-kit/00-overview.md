@@ -49,6 +49,26 @@ Obsidian vault
 - `28-global-headroom-only-llm-channel.md` — global Headroom-only LLM channel policy: explicit proxy/subscription inheritance, Graphify accepted route, Nanobot backend bridge, account cooldown semantics.
 - `29-channel-registry.md` — machine-readable карта ролей/маршрутов/прав мутации для Hermes/Codex/Headroom/Nanobot/Graphify.
 - `29-semantic-proposal-workflow.md` — proposal-only semantic review pipeline: Graphify/index evidence → reports → decision packets → targeted proposals.
+- `30-orchestrator-operating-spec.md` — first-read consolidated operator-facing spec for Hermes-as-orchestrator, Nanobot worker boundaries, Headroom channels, semantic proposal workflow, and current generated artifact pointers.
+- `31-operator-flow-and-review-queue.md` — explicit Agentic OS operator flow and evidence-gated review queue state machine for Hermes/Nanobot/proposal artifacts.
+- `32-codex-hermes-communication-channel.md` — local Codex ⇄ Hermes task/report protocol with roles, rights, ACKs, and approval boundaries.
+- `33-codex-native-runtime.md` — repo-native Codex runner, task/report schemas, and sandbox fallback policy.
+- `34-agentic-improvement-loop.md` — continuous Nanobot → Hermes → spec-kit/queue → Codex review/implementation improvement loop for agentic OS work.
+- `35-agentic-os-control-plane-map.md` — single operator control-plane map linking orchestrator, review queue, Codex/Hermes channel, runtime, acceptance gates, channel registry, and docs-lag checks.
 - `schemas/adapter-metadata.schema.json` — machine-readable schema для adapters.
 - `schemas/llm-channel.schema.json` — secret-free LLM channel smoke artifact schema.
 - `schemas/queue-task.schema.json` — machine-readable schema для queue tasks.
+
+
+## Codex native runtime
+
+Codex is made repo-native through `docs/spec-kit/33-codex-native-runtime.md`, `/home/hermesadmin/.codex-hermes/bin/hermes-codex-run`, schema-versioned task/report packets, and explicit separation from Nanobot's architecture scout channel. Nanobot may recommend Codex tasks; Hermes dispatches and accepts them.
+
+
+## Agentic improvement loop
+
+`docs/spec-kit/34-agentic-improvement-loop.md` is the operating contract for the continuous improvement cycle: Nanobot scouts and recommends, Hermes collects/triages/specs/queues, Codex reviews or implements bounded repo tasks, and Hermes verifies before acceptance. Project-wide Codex sweeps are review-only and become smaller accepted tasks after Hermes triage.
+
+## Agentic OS control plane map
+
+`docs/spec-kit/35-agentic-os-control-plane-map.md` is the canonical cross-link/index surface requested by repeated Nanobot scout reports. It maps the orchestrator spec, review queue, Codex/Hermes communication channel, Codex native runtime, acceptance gates, channel registry, and docs lag audit into one no-live-mutation control plane.

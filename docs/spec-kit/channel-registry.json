@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "proposal-active",
-  "updated_utc": "2026-07-04T10:45:00Z",
+  "updated_utc": "2026-07-04T18:45:00Z",
   "global_rule": "External LLM-provider traffic routes through Headroom by default; local health/systemd/gateway/Ollama traffic is local.",
   "channels": [
     {
@@ -43,6 +43,43 @@
       ]
     },
     {
+      "component": "Codex Hermes communicator",
+      "role": "bounded implementation/review task-report channel",
+      "external_llm_allowed": false,
+      "required_route": "~/.codex-hermes/comm/ via tools/codex_hermes_comm.py",
+      "may_mutate": "channel files only; repo mutation only by separately dispatched Codex task scope",
+      "acceptance_owner": "Hermes",
+      "forbidden_fallbacks": [
+        "live vault mutation",
+        "auth/profile mutation",
+        "service restart/deploy/cron/network exposure",
+        "secret printing",
+        "unverified success claims"
+      ],
+      "approved_schedule": "none; no Codex channel cron installed by default"
+    },
+    {
+      "component": "Codex native Hermes runner",
+      "role": "host-specific wrapper for bounded Codex implementation/review",
+      "external_llm_allowed": true,
+      "required_route": "/home/hermesadmin/.codex-hermes/bin/hermes-codex-run with task packet from ~/.codex-hermes/comm/codex-inbox/",
+      "accepted_endpoint_shape": "Codex CLI provider=headroom; runner may use danger-full-access internally only while bwrap is unavailable and only with outer Hermes boundaries",
+      "may_mutate": "repo/task scope only in implementation mode; review mode must leave no diff",
+      "acceptance_owner": "Hermes",
+      "forbidden_fallbacks": [
+        "secret env inheritance",
+        "direct live vault mutation",
+        "auth/profile mutation",
+        "service restart/deploy/cron/network exposure",
+        "unverified success claims"
+      ],
+      "schemas": [
+        "schemas/codex_task.v1.json",
+        "schemas/codex_report.v1.json"
+      ],
+      "nanobot_relationship": "Nanobot may recommend Codex tasks but cannot dispatch, approve, or mutate through this runner."
+    },
+    {
       "component": "Headroom",
       "role": "local external-LLM router/proxy",
       "external_llm_allowed": true,
@@ -59,7 +96,7 @@
       "role": "standing read-only/proposal worker; approved daily local cron scout",
       "external_llm_allowed": true,
       "required_route": "/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent -> http://127.0.0.1:8787/backend-api/codex/responses",
-      "accepted_endpoint_shape": "Headroom backend Codex bridge, not generic /v1/responses",
+      "accepted_endpoint_shape": "Headroom backend Codex bridge only",
       "may_mutate": false,
       "acceptance_owner": "Hermes",
       "forbidden_fallbacks": [
@@ -69,7 +106,7 @@
         "cron mutation beyond approved scout definition",
         "direct provider"
       ],
-      "approved_schedule": "Hermes cron daily local-only Nanobot Obsidian scout via /home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py"
+      "approved_schedule": "Hermes cron every 15 minutes, local-only Nanobot Obsidian scout via /home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py"
     },
     {
       "component": "Nanobot read-only evidence gateway",
