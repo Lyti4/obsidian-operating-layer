@@ -102,6 +102,8 @@ Acceptance:
 
 ### R1 — `lane-schema-v1`
 
+Status: accepted as a repo-only/operator packet layer.
+
 Goal: make all indexing lanes machine-readable for Hermes/Codex/Nanobot and future dashboards.
 
 Deliverables:
@@ -110,11 +112,20 @@ Deliverables:
 - converter from `actionable-lanes.json` into versioned lane packets;
 - generated lane queue under `out/lanes/` or `out/reports/lane-schema-v1/`.
 
-Acceptance:
+Acceptance evidence:
+
+- implementation: `src/obslayer/lane_schema_v1.py`;
+- CLI: `tools/obsidian_lane_schema_v1.py`;
+- tests: `tests/test_lane_schema_v1.py`;
+- current generated packet: `out/reports/lane-schema-v1/20260705T171353Z/lane-schema-packet.json`;
+- current generated report: `out/reports/lane-schema-v1/20260705T171353Z/REPORT.md`.
+
+Accepted boundary:
 
 - validates the four current next lanes: `active_memory_ambiguous_memory_plus_archive`, `active_memory_broken`, `archive_or_backup_noise`, `active_soul_source`;
+- records source class, issue type, count, allowed next action, forbidden actions, approval class, confidence policy, sensitive-surface flags, and `live_mutation_authorized: false`;
 - marks archive/backup and Soul lanes as report-only/human-gated;
-- includes `live_mutation_authorized: false`.
+- creates no approval manifest and no live mutation target.
 
 ### R2 — `archive-shadow-index`
 

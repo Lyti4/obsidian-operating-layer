@@ -21,6 +21,7 @@ class LaneSchemaPacket:
     live_mutation_authorized: bool
     approval_manifest_created: bool
     targets: list[dict[str, Any]]
+    lane_summaries: list[dict[str, Any]]
     approval_classes: list[str]
     forbidden_actions: list[str]
     reason_codes: list[str]
@@ -73,6 +74,110 @@ def _archive_shadow_index(notes: list[dict[str, Any]]) -> dict[str, Any]:
     return build_archive_shadow_index(notes)
 
 
+def _lane_summary(lane: dict[str, Any]) -> dict[str, Any]:
+    lane_id = str(lane.get("lane") or lane.get("id") or "unknown")
+    action = str(lane.get("action") or "")
+    approval_class = str(lane.get("approval_class") or _default_approval_class(lane_id))
+    forbidden_actions = sorted({
+        "live_vault_mutation",
+        "approval_manifest_creation",
+        *[str(item) for item in lane.get("forbidden_actions") or []],
+    })
+    reason_codes = sorted({
+        *_default_lane_reason_codes(lane_id),
+        *[str(item) for item in lane.get("reason_codes") or []],
+    })
+    return {
+        "lane": lane_id,
+        "count": int(lane.get("count") or 0),
+        "action": action,
+        "source_class": _source_class(lane_id),
+        "issue_type": _issue_type(lane_id),
+        "allowed_next_action": _allowed_next_action(lane_id, action),
+        "forbidden_actions": forbidden_actions,
+        "reason_codes": reason_codes,
+        "approval_class": approval_class,
+        "confidence_policy": _confidence_policy(lane_id),
+        "sensitive_surface_flags": _sensitive_surface_flags(lane_id),
+        "live_mutation_authorized": False,
+    }
+
+
+def _lane_key(lane_id: str) -> str:
+    return lane_id.replace("-", "_")
+
+
+def _source_class(lane_id: str) -> str:
+    lane_key = _lane_key(lane_id)
+    if lane_key.startswith("active_memory"):
+        return "active_memory_source"
+    if lane_key.startswith("active_soul"):
+        return "active_soul_source"
+    if lane_key.startswith("archive_or_backup"):
+        return "archive_or_backup_source"
+    return "unknown_source"
+
+
+def _issue_type(lane_id: str) -> str:
+    lane_key = _lane_key(lane_id)
+    if "ambiguous" in lane_key:
+        return "ambiguous"
+    if "broken" in lane_key:
+        return "broken"
+    if "noise" in lane_key:
+        return "archive_or_backup_noise"
+    return "policy_sensitive"
+
+
+def _allowed_next_action(lane_id: str, action: str) -> str:
+    lane_key = _lane_key(lane_id)
+    if lane_key == "active_memory_ambiguous_memory_plus_archive":
+        return "auto-propose"
+    if lane_key in {"active_memory_broken", "active_memory_broken_links"}:
+        return "suggest"
+    if lane_key in {"archive_or_backup_noise", "active_soul_source"}:
+        return "blocked/refuse"
+    return action or "needs-human-review"
+
+
+def _default_approval_class(lane_id: str) -> str:
+    lane_key = _lane_key(lane_id)
+    if lane_key in {"archive_or_backup_noise", "active_soul_source"}:
+        return "report_only_human_gated"
+    return "proposal_only"
+
+
+def _confidence_policy(lane_id: str) -> str:
+    lane_key = _lane_key(lane_id)
+    if lane_key == "active_memory_ambiguous_memory_plus_archive":
+        return "deterministic-high may auto-propose; never live-apply without explicit approval"
+    if lane_key in {"active_memory_broken", "active_memory_broken_links"}:
+        return "target discovery only; no auto-create"
+    return "report-only; human-gated"
+
+
+def _sensitive_surface_flags(lane_id: str) -> list[str]:
+    lane_key = _lane_key(lane_id)
+    flags: set[str] = set()
+    if "archive" in lane_key or "backup" in lane_key:
+        flags.add("archive_or_backup_surface")
+    if "soul" in lane_key:
+        flags.add("soul_policy_sensitive")
+    return sorted(flags)
+
+
+def _default_lane_reason_codes(lane_id: str) -> set[str]:
+    lane_key = _lane_key(lane_id)
+    codes = {"lane_schema_v1", "operator_review_required"}
+    if "archive" in lane_key or "backup" in lane_key:
+        codes.add("archive_shadow_evidence_only")
+    if "soul" in lane_key:
+        codes.add("soul_policy_sensitive")
+    if "broken" in lane_key:
+        codes.add("target_discovery_only")
+    return codes
+
+
 def build_lane_schema_packet(
     *,
     actionable_lanes_json: str | Path,
@@ -86,14 +191,16 @@ def build_lane_schema_packet(
     wikilinks = _read_jsonl(wikilinks_jsonl)
     notes_by_path = {str(note.get("path", "")): note for note in notes}
 
+    lane_summaries = [
+        _lane_summary(lane)
+        for lane in lanes.get("next_lanes") or []
+        if isinstance(lane, dict)
+    ]
     approval_classes = {"shadow_index_evidence_only"}
     forbidden_actions = {"live_vault_mutation", "approval_manifest_creation"}
     reason_codes = {"archive_shadow_evidence_only"}
-    for lane in lanes.get("next_lanes") or []:
-        if not isinstance(lane, dict):
-            continue
-        if lane.get("approval_class"):
-            approval_classes.add(str(lane["approval_class"]))
+    for lane in lane_summaries:
+        approval_classes.add(str(lane["approval_class"]))
         forbidden_actions.update(str(item) for item in lane.get("forbidden_actions") or [])
         reason_codes.update(str(item) for item in lane.get("reason_codes") or [])
 
@@ -118,6 +225,7 @@ def build_lane_schema_packet(
         live_mutation_authorized=False,
         approval_manifest_created=False,
         targets=[],
+        lane_summaries=lane_summaries,
         approval_classes=sorted(approval_classes),
         forbidden_actions=sorted(forbidden_actions),
         reason_codes=sorted(reason_codes),
@@ -142,6 +250,14 @@ def lane_schema_packet_to_markdown(packet: LaneSchemaPacket) -> str:
         f"- live_mutation_authorized: `{packet.live_mutation_authorized}`",
         f"- approval_manifest_created: `{packet.approval_manifest_created}`",
         f"- targets: `{len(packet.targets)}`",
+        f"- lane_summaries: `{len(packet.lane_summaries)}`",
+        "",
+        "## Lane summaries",
+        "",
+        *[
+            f"- `{lane['lane']}` count `{lane['count']}` → `{lane['allowed_next_action']}` / `{lane['approval_class']}`"
+            for lane in packet.lane_summaries
+        ],
         "",
         "## Evidence",
         "",

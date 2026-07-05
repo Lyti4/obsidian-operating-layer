@@ -111,6 +111,114 @@ def test_lane_schema_packet_is_safe_and_evidence_only(tmp_path: Path) -> None:
     assert data["archive_shadow_index"]["entries"][0]["active_path"] == "Memory-Vault/A.md"
     assert data["candidate_scorer"]["candidates"][0]["feature_breakdown"]["status"] == "ambiguous"
     assert data["candidate_scorer"]["top_two_gap"] >= 0
+    assert data["lane_summaries"] == [
+        {
+            "lane": "active-memory-broken-links",
+            "count": 0,
+            "action": "",
+            "source_class": "active_memory_source",
+            "issue_type": "broken",
+            "allowed_next_action": "suggest",
+            "forbidden_actions": ["approval_manifest_creation", "live_vault_mutation"],
+            "reason_codes": [
+                "active_memory_broken_link",
+                "lane_schema_v1",
+                "operator_review_required",
+                "target_discovery_only",
+            ],
+            "approval_class": "proposal_only",
+            "confidence_policy": "target discovery only; no auto-create",
+            "sensitive_surface_flags": [],
+            "live_mutation_authorized": False,
+        }
+    ]
+
+
+def test_lane_schema_summarizes_current_roadmap_lanes_as_safe_routes(tmp_path: Path) -> None:
+    lanes_path = tmp_path / "actionable-lanes.json"
+    lanes_path.write_text(
+        json.dumps(
+            {
+                "status": "ok",
+                "mode": "actionable_full_vault_analysis_lanes",
+                "live_mutation_authorized": False,
+                "next_lanes": [
+                    {
+                        "lane": "active_memory_ambiguous_memory_plus_archive",
+                        "count": 505,
+                        "action": "prepare narrow disambiguation proposals",
+                    },
+                    {
+                        "lane": "active_memory_broken",
+                        "count": 593,
+                        "action": "resolve by target discovery; no auto-create",
+                    },
+                    {
+                        "lane": "archive_or_backup_noise",
+                        "count": 4831,
+                        "action": "index/report only; do not mutate backups/archive",
+                    },
+                    {
+                        "lane": "active_soul_source",
+                        "count": 173,
+                        "action": "policy-sensitive; report only unless explicitly approved",
+                    },
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    notes_path = tmp_path / "notes-index.jsonl"
+    notes_path.write_text("", encoding="utf-8")
+    wikilinks_path = tmp_path / "wikilinks.jsonl"
+    wikilinks_path.write_text("", encoding="utf-8")
+
+    packet = build_lane_schema_packet(
+        actionable_lanes_json=lanes_path,
+        notes_index_jsonl=notes_path,
+        wikilinks_jsonl=wikilinks_path,
+        packet_id="lane-roadmap",
+        created_at="2026-07-05T00:00:00Z",
+    ).to_dict()
+
+    by_lane = {lane["lane"]: lane for lane in packet["lane_summaries"]}
+    assert packet["live_mutation_authorized"] is False
+    assert packet["approval_manifest_created"] is False
+    assert packet["targets"] == []
+    assert set(by_lane) == {
+        "active_memory_ambiguous_memory_plus_archive",
+        "active_memory_broken",
+        "archive_or_backup_noise",
+        "active_soul_source",
+    }
+
+    ambiguous = by_lane["active_memory_ambiguous_memory_plus_archive"]
+    assert ambiguous["source_class"] == "active_memory_source"
+    assert ambiguous["issue_type"] == "ambiguous"
+    assert ambiguous["allowed_next_action"] == "auto-propose"
+    assert ambiguous["approval_class"] == "proposal_only"
+    assert ambiguous["sensitive_surface_flags"] == ["archive_or_backup_surface"]
+    assert ambiguous["live_mutation_authorized"] is False
+
+    broken = by_lane["active_memory_broken"]
+    assert broken["allowed_next_action"] == "suggest"
+    assert broken["confidence_policy"] == "target discovery only; no auto-create"
+
+    archive_noise = by_lane["archive_or_backup_noise"]
+    assert archive_noise["allowed_next_action"] == "blocked/refuse"
+    assert archive_noise["approval_class"] == "report_only_human_gated"
+    assert archive_noise["sensitive_surface_flags"] == ["archive_or_backup_surface"]
+
+    soul = by_lane["active_soul_source"]
+    assert soul["allowed_next_action"] == "blocked/refuse"
+    assert soul["approval_class"] == "report_only_human_gated"
+    assert soul["sensitive_surface_flags"] == ["soul_policy_sensitive"]
+
+    for lane in by_lane.values():
+        assert "live_vault_mutation" in lane["forbidden_actions"]
+        assert "approval_manifest_creation" in lane["forbidden_actions"]
+        assert "lane_schema_v1" in lane["reason_codes"]
+        assert lane["live_mutation_authorized"] is False
 
 
 def test_score_candidate_reports_feature_breakdown_and_top_two_gap() -> None:
