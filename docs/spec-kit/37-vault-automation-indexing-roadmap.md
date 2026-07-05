@@ -129,19 +129,27 @@ Accepted boundary:
 
 ### R2 — `archive-shadow-index`
 
-Goal: prevent archive/backup/duplicate/redirect notes from being treated as equal targets for active notes.
+Status: accepted repo-only/evidence-only slice after `tests/test_archive_shadow_index.py` passes.
+
+Acceptance evidence: `src/obslayer/archive_shadow_index.py`, `tools/obsidian_archive_shadow_index.py`, `tests/test_archive_shadow_index.py`, and `out/reports/archive-shadow-index/20260705T173124Z/REPORT.md`.
+
+Accepted boundary: emits `archive-shadow-index.json` and `REPORT.md`; keeps `live_mutation_authorized: false`, `approval_manifest_created: false`, `targets: []`, and no apply authority; treats archive, backup, duplicate, and redirect shadows as evidence-only, never as active replacement targets.
+
+Goal: prevent archive/backup/duplicate/redirect notes from being treated as equal targets to active notes.
 
 Deliverables:
 
 - shadow index of `_Archive`, `_Backups`, `Duplicates`, `Redirects`, retired/canonical collisions;
 - reason codes: `active_target_available`, `archive_shadow_only`, `memory_plus_archive_collision`, `redirect_collision`, `duplicate_title_group`;
-- resolver rule: archives are evidence-only by default.
+- resolver rule: archives, backups, duplicates, and redirects are evidence-only by default;
+- generated artifacts: `archive-shadow-index.json` and `REPORT.md`.
 
 Acceptance:
 
-- covers the 181 archive collision title groups;
-- explains the 505 active Memory `memory+archive` ambiguous cases;
-- does not propose archive targets as default active replacements.
+- covers 181 archive collision title groups;
+- explains 505 active Memory `memory+archive` ambiguous cases;
+- does not propose archive targets as default active replacements;
+- keeps `live_mutation_authorized: false`, `approval_manifest_created: false`, `targets: []`, and no apply authority.
 
 ### R3 — `candidate-scorer-v1`
 
