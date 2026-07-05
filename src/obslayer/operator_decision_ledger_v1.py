@@ -20,6 +20,10 @@ class OperatorDecisionRecord:
     decision_type: str
     actor: str
     reason: str
+    source_pattern: str
+    proposed_target: str
+    scorer_version: str
+    verification_outcome: str
     evidence_refs: list[Any]
     proposal_refs: list[Any]
     target_refs: list[Any]
@@ -101,6 +105,10 @@ def normalize_decision_record(
         decision_type=normalized_type,
         actor=_non_empty(actor, source.get("actor"), default="operator"),
         reason=_non_empty(reason, source.get("reason"), default=""),
+        source_pattern=_non_empty(source.get("source_pattern"), source.get("source"), source.get("source_path"), default=""),
+        proposed_target=_non_empty(source.get("proposed_target"), source.get("target"), source.get("candidate_path"), default=""),
+        scorer_version=_non_empty(source.get("scorer_version"), source.get("scorer"), default=""),
+        verification_outcome=_non_empty(source.get("verification_outcome"), source.get("verification"), default="not-verified"),
         evidence_refs=_normalize_refs(evidence_refs if evidence_refs is not None else source.get("evidence_refs") or []),
         proposal_refs=_normalize_refs(proposal_refs if proposal_refs is not None else source.get("proposal_refs") or []),
         target_refs=_normalize_refs(target_refs if target_refs is not None else source.get("target_refs") or []),
@@ -155,6 +163,101 @@ def build_operator_decision_ledger(
 def serialize_operator_decision_ledger(ledger: OperatorDecisionLedger | Mapping[str, Any]) -> str:
     data = ledger.to_dict() if isinstance(ledger, OperatorDecisionLedger) else _normalize_mapping(ledger)
     return json.dumps(data, indent=2, sort_keys=True) + "\n"
+
+
+def serialize_operator_decision_records_jsonl(records: Iterable[Mapping[str, Any]]) -> str:
+    normalized_records = _sort_records(normalize_decision_record(record) for record in records)
+    return "".join(json.dumps(record, sort_keys=True) + "\n" for record in normalized_records)
+
+
+def read_operator_decision_records(path: str | Path) -> list[dict[str, Any]]:
+    path = Path(path)
+    text = path.read_text(encoding="utf-8")
+    if path.suffix == ".jsonl":
+        records: list[dict[str, Any]] = []
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            if not line.strip():
+                continue
+            payload = json.loads(line)
+            if not isinstance(payload, Mapping):
+                raise ValueError(f"Expected JSON object at {path}:{line_number}")
+            records.append(normalize_decision_record(payload))
+        return _sort_records(records)
+
+    payload = json.loads(text)
+    if isinstance(payload, Mapping):
+        source_records = payload.get("records") if isinstance(payload.get("records"), list) else [payload]
+    elif isinstance(payload, list):
+        source_records = payload
+    else:
+        raise ValueError(f"Expected decision object, records array, or JSONL in {path}")
+    return _sort_records(normalize_decision_record(record) for record in source_records if isinstance(record, Mapping))
+
+
+def operator_decision_ledger_to_markdown(ledger: OperatorDecisionLedger | Mapping[str, Any]) -> str:
+    data = ledger.to_dict() if isinstance(ledger, OperatorDecisionLedger) else _normalize_mapping(ledger)
+    records = data.get("records", [])
+    decision_counts: dict[str, int] = {}
+    verification_counts: dict[str, int] = {}
+    for record in records:
+        if not isinstance(record, Mapping):
+            continue
+        decision = str(record.get("decision_type") or "unknown")
+        verification = str(record.get("verification_outcome") or "unknown")
+        decision_counts[decision] = decision_counts.get(decision, 0) + 1
+        verification_counts[verification] = verification_counts.get(verification, 0) + 1
+    lines = [
+        "# Operator Decision Ledger v1",
+        "",
+        "Status: evidence-only append-only operator decision ledger",
+        f"Ledger id: `{data['ledger_id']}`",
+        f"Created at: `{data['created_at']}`",
+        "",
+        "## Safety",
+        "",
+        f"- behavior: `{data['behavior']}`",
+        f"- live_mutation_authorized: `{str(data['live_mutation_authorized']).lower()}`",
+        f"- approval_manifest_created: `{str(data['approval_manifest_created']).lower()}`",
+        "- targets: `[]`",
+        "",
+        "## Summary",
+        "",
+        f"- records: `{len(records)}`",
+        "",
+        "## Decision types",
+        "",
+    ]
+    lines.extend(f"- `{key}`: `{decision_counts[key]}`" for key in sorted(decision_counts))
+    lines.extend(["", "## Verification outcomes", ""])
+    lines.extend(f"- `{key}`: `{verification_counts[key]}`" for key in sorted(verification_counts))
+    lines.extend([
+        "",
+        "## Boundary",
+        "",
+        "Records may cite scorer packets, proposal bundles, target paths, and approval manifests as inert evidence references.",
+        "The ledger does not create approval authority, live apply authority, or live vault targets.",
+        "",
+    ])
+    return "\n".join(lines)
+
+
+def write_operator_decision_ledger_bundle(
+    records: Iterable[Mapping[str, Any]],
+    *,
+    out_dir: str | Path,
+    ledger_id: str | None = None,
+    created_at: str | None = None,
+) -> dict[str, str]:
+    ledger = build_operator_decision_ledger(records, ledger_id=ledger_id, created_at=created_at)
+    path = Path(out_dir)
+    path.mkdir(parents=True, exist_ok=True)
+    json_path = path / "operator-decision-ledger-v1.json"
+    jsonl_path = path / "operator-decisions.jsonl"
+    report_path = path / "REPORT.md"
+    json_path.write_text(serialize_operator_decision_ledger(ledger), encoding="utf-8")
+    jsonl_path.write_text(serialize_operator_decision_records_jsonl(ledger.records), encoding="utf-8")
+    report_path.write_text(operator_decision_ledger_to_markdown(ledger), encoding="utf-8")
+    return {"status": "ok", "ledger": str(json_path), "records_jsonl": str(jsonl_path), "report": str(report_path)}
 
 
 def write_operator_decision_ledger(

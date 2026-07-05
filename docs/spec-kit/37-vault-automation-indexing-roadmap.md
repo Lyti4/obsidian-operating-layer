@@ -181,19 +181,28 @@ The `blocked/refuse` route is reserved for protected surfaces, hard-stop risk co
 
 ### R4 — `operator-decision-ledger-v1`
 
+Status: accepted as a repo-only/evidence-only append-only decision ledger bundle and CLI writer.
+
+Acceptance evidence: `src/obslayer/operator_decision_ledger_v1.py`, `tools/obsidian_operator_decision_ledger.py`, `tests/test_operator_decision_ledger_v1.py`, and `out/reports/operator-decision-ledger-v1/20260705T180705Z/REPORT.md`.
+
+Accepted boundary: emits `operator-decision-ledger-v1.json`, `operator-decisions.jsonl`, and `REPORT.md`; keeps `behavior: evidence-only`, `live_mutation_authorized: false`, `approval_manifest_created: false`, and `targets: []`. Approval manifests and target paths may be cited only as inert evidence references.
+
 Goal: turn approve/reject/held decisions into reusable scoring evidence.
 
 Deliverables:
 
 - append-only ledger schema;
 - entries for source pattern, proposed target, decision, reason, scorer version, verification outcome;
+- JSONL/JSON loader plus CLI/report writer;
 - loader that influences future scoring without storing secrets or raw note bodies.
 
 Acceptance:
 
 - prior decisions can be replayed into scorer features;
 - ledger is repo-local and reviewable;
-- reject/held decisions lower confidence on matching future candidates.
+- JSONL records remain normalized, sorted, and append-friendly;
+- reject/held decisions lower confidence on matching future candidates;
+- records never create approval authority, live apply authority, or live vault targets.
 
 ### R5 — `safe-auto-proposal-thresholds`
 

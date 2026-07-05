@@ -118,8 +118,12 @@ from .operator_decision_ledger_v1 import (
     append_decision_record,
     build_operator_decision_ledger,
     normalize_decision_record,
+    operator_decision_ledger_to_markdown,
+    read_operator_decision_records,
     serialize_operator_decision_ledger,
+    serialize_operator_decision_records_jsonl,
     write_operator_decision_ledger,
+    write_operator_decision_ledger_bundle,
 )
 from .proposal_normalization import (
     load_findings_bundle,
@@ -285,6 +289,9 @@ __all__ = [
     "redact_live_vault_paths",
     "run_controlled_job",
     "sanitize_indexing_mcp_transcript",
+    "operator_decision_ledger_to_markdown",
+    "read_operator_decision_records",
+    "serialize_operator_decision_records_jsonl",
     "serialize_operator_decision_ledger",
     "validate_approval_manifest",
     "validate_targets",
@@ -301,5 +308,6 @@ __all__ = [
     "write_mcp_adapter_evaluation",
     "write_normalized_proposal",
     "write_operator_decision_ledger",
+    "write_operator_decision_ledger_bundle",
     "write_rag_graph_adapter_evaluation",
 ]
