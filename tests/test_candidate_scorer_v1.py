@@ -234,3 +234,121 @@ def test_candidate_scorer_cli_outputs_artifact_paths(tmp_path: Path) -> None:
     assert payload["packet_id"] == "candidate-cli-test"
     assert payload["live_mutation_authorized"] is False
     assert payload["approval_manifest_created"] is False
+
+
+def test_candidate_scorer_suppression_gate_hides_remaining_triage_items(tmp_path: Path) -> None:
+    notes = [
+        {"path": "Hermes/HERMES_HOME.md", "top": "Hermes"},
+        {"path": "Hermes/Reports/graphify-spark-corpus-c10-2026-06-27/README.md", "top": "Hermes"},
+        {"path": "Hermes/Reports/graphify-other/README.md", "top": "Hermes"},
+    ]
+    wikilinks = [
+        {
+            "source": "Hermes/HERMES_HOME.md",
+            "status": "ambiguous",
+            "raw": "Hermes/Reports/graphify-spark-corpus-c10-2026-06-27/README|Latest full corpus Graphify report",
+            "target": "Hermes/Reports/graphify-spark-corpus-c10-2026-06-27/README",
+            "candidates": [
+                "Hermes/Reports/graphify-spark-corpus-c10-2026-06-27/README.md",
+                "Hermes/Reports/graphify-other/README.md",
+            ],
+        }
+    ]
+    triage = {
+        "items": [
+            {
+                "source": "Hermes/HERMES_HOME.md",
+                "raw": "Hermes/Reports/graphify-spark-corpus-c10-2026-06-27/README|Latest full corpus Graphify report",
+                "target": "Hermes/Reports/graphify-spark-corpus-c10-2026-06-27/README",
+                "classification": "graphify_exact_path_preferred_no_apply",
+                "reason": "Graphify exact path; no apply",
+                "apply_authority": "none",
+                "live_mutation_authorized": False,
+                "source_policy": {"policy_id": "external-autograph-policy-adapter.v1"},
+            }
+        ]
+    }
+    notes_path = tmp_path / "notes-index.jsonl"
+    notes_path.write_text("\n".join(json.dumps(note) for note in notes) + "\n", encoding="utf-8")
+    wikilinks_path = tmp_path / "wikilinks.jsonl"
+    wikilinks_path.write_text("\n".join(json.dumps(link) for link in wikilinks) + "\n", encoding="utf-8")
+    triage_path = tmp_path / "remaining-link-triage-v1.json"
+    triage_path.write_text(json.dumps(triage) + "\n", encoding="utf-8")
+
+    result = write_candidate_scorer_packet(
+        notes_index_jsonl=notes_path,
+        wikilinks_jsonl=wikilinks_path,
+        out_dir=tmp_path / "scorer",
+        packet_id="candidate-suppression-test",
+        suppression_triage_json=triage_path,
+    )
+
+    payload = json.loads(Path(result["candidate_scorer"]).read_text(encoding="utf-8"))
+    assert payload["summary"]["candidate_packets"] == 0
+    assert payload["summary"]["suppressed_links"] == 1
+    assert payload["suppression_gate"]["enabled"] is True
+    assert payload["suppression_gate"]["by_classification"] == {"graphify_exact_path_preferred_no_apply": 1}
+    assert payload["suppressed_links"][0]["apply_authority"] == "none"
+    assert payload["live_mutation_authorized"] is False
+
+
+def test_candidate_scorer_suppression_gate_rejects_apply_authorized_items(tmp_path: Path) -> None:
+    notes_path, wikilinks_path = write_inputs(tmp_path)
+    triage = {
+        "items": [
+            {
+                "source": "Memory-Vault/A.md",
+                "raw": "B",
+                "target": "B",
+                "classification": "unsafe",
+                "reason": "must not suppress apply-authorized rows",
+                "apply_authority": "proposal",
+                "live_mutation_authorized": False,
+            }
+        ]
+    }
+    triage_path = tmp_path / "remaining-link-triage-v1.json"
+    triage_path.write_text(json.dumps(triage) + "\n", encoding="utf-8")
+
+    result = write_candidate_scorer_packet(
+        notes_index_jsonl=notes_path,
+        wikilinks_jsonl=wikilinks_path,
+        out_dir=tmp_path / "scorer",
+        packet_id="candidate-suppression-apply-authorized-test",
+        suppression_triage_json=triage_path,
+    )
+
+    payload = json.loads(Path(result["candidate_scorer"]).read_text(encoding="utf-8"))
+    assert payload["suppression_gate"]["suppressed_total"] == 0
+    assert payload["summary"]["candidate_packets"] == 2
+
+
+def test_candidate_scorer_suppression_gate_rejects_live_authorized_items(tmp_path: Path) -> None:
+    notes_path, wikilinks_path = write_inputs(tmp_path)
+    triage = {
+        "items": [
+            {
+                "source": "Memory-Vault/A.md",
+                "raw": "B",
+                "target": "B",
+                "classification": "unsafe",
+                "reason": "must not suppress live-authorized rows",
+                "apply_authority": "none",
+                "live_mutation_authorized": "true",
+            }
+        ]
+    }
+    triage_path = tmp_path / "remaining-link-triage-v1.json"
+    triage_path.write_text(json.dumps(triage) + "\n", encoding="utf-8")
+
+    result = write_candidate_scorer_packet(
+        notes_index_jsonl=notes_path,
+        wikilinks_jsonl=wikilinks_path,
+        out_dir=tmp_path / "scorer",
+        packet_id="candidate-suppression-live-authorized-test",
+        suppression_triage_json=triage_path,
+    )
+
+    payload = json.loads(Path(result["candidate_scorer"]).read_text(encoding="utf-8"))
+    assert payload["suppression_gate"]["suppressed_total"] == 0
+    assert payload["summary"]["candidate_packets"] == 2

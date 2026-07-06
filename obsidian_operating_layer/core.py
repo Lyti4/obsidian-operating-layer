@@ -10,8 +10,20 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
-LINK_PATTERN = re.compile(r"\[\[([^\]\|#]+)(?:#[^\]]+)?(?:\|[^\]]+)?\]\]")
-IGNORED_DIR_NAMES = {".git", ".obsidian", ".trash", "node_modules", "__pycache__"}
+LINK_PATTERN = re.compile(r"(?<!\\)\[\[([^\]\|#]+)(?:#[^\]]+)?(?:\|[^\]]+)?\]\]")
+IGNORED_DIR_NAMES = {
+    ".git",
+    ".obsidian",
+    ".trash",
+    "_Archive",
+    "_Backups",
+    "node_modules",
+    "__pycache__",
+}
+
+
+def _is_ignored_path(path: Path) -> bool:
+    return any(part in IGNORED_DIR_NAMES or part.startswith(".") for part in path.parts)
 
 
 class ApplyError(RuntimeError):
@@ -37,13 +49,50 @@ def _norm_path(path: Path) -> Path:
 def _iter_markdown_files(vault_root: Path) -> Iterable[Path]:
     vault_root = _norm_path(vault_root)
     for path in sorted(vault_root.rglob("*.md")):
-        if any(part in IGNORED_DIR_NAMES for part in path.parts):
+        if _is_ignored_path(path.relative_to(vault_root)):
             continue
         if path.is_file():
             yield path
 
 
+def _mask_code_spans_and_fences(text: str) -> str:
+    """Replace Markdown code spans/fences with spaces so examples are not active links."""
+
+    masked_lines: list[str] = []
+    in_fence = False
+    fence_marker = ""
+    for line in text.splitlines(keepends=True):
+        stripped = line.lstrip()
+        if stripped.startswith(("```", "~~~")):
+            marker = stripped[:3]
+            if not in_fence:
+                in_fence = True
+                fence_marker = marker
+            elif marker == fence_marker:
+                in_fence = False
+                fence_marker = ""
+            masked_lines.append(" " * len(line))
+            continue
+        if in_fence:
+            masked_lines.append(" " * len(line))
+            continue
+
+        chars = list(line)
+        in_code = False
+        i = 0
+        while i < len(chars):
+            if chars[i] == "`":
+                in_code = not in_code
+                chars[i] = " "
+            elif in_code:
+                chars[i] = " "
+            i += 1
+        masked_lines.append("".join(chars))
+    return "".join(masked_lines)
+
+
 def _extract_links(text: str) -> list[str]:
+    text = _mask_code_spans_and_fences(text)
     links: list[str] = []
     for match in LINK_PATTERN.finditer(text):
         target = match.group(1).strip()
@@ -82,7 +131,7 @@ def _candidate_targets(link: str, current_file: Path, vault_root: Path) -> list[
         add_candidate(vault_root / raw_path.with_suffix(".md"))
 
     stem = raw_path.stem if raw_path.suffix else raw_path.name
-    for file_path in sorted(vault_root.rglob("*.md")):
+    for file_path in _iter_markdown_files(vault_root):
         if file_path.stem == stem:
             add_candidate(file_path)
     return candidates

@@ -147,6 +147,7 @@ def build_candidate_scorer_packet(
     created_at: str | None = None,
     limit: int | None = None,
     operator_decision_records: Iterable[Mapping[str, Any]] | None = None,
+    suppression_triage_json: str | Path | None = None,
 ) -> dict[str, Any]:
     lanes = _read_json(actionable_lanes_json) if actionable_lanes_json is not None else {}
     notes = read_jsonl(notes_index_jsonl)
@@ -160,6 +161,9 @@ def build_candidate_scorer_packet(
         for link in wikilinks
         if (link.get("candidates") or []) and _link_matches_lane(link, notes_by_path=notes_by_path, lane=effective_lane)
     ]
+    suppression_index = _suppression_index(suppression_triage_json)
+    unsuppressed_links, suppressed_links = _apply_suppression_gate(selected_links, suppression_index)
+    selected_links = unsuppressed_links
     selected_links.sort(key=lambda item: (str(item.get("source") or ""), str(item.get("raw") or item.get("target") or "")))
     if limit is not None:
         selected_links = selected_links[:limit]
@@ -188,6 +192,7 @@ def build_candidate_scorer_packet(
         "source_actionable_lanes": str(Path(actionable_lanes_json)) if actionable_lanes_json is not None else None,
         "source_notes_index": str(Path(notes_index_jsonl)),
         "source_wikilinks": str(Path(wikilinks_jsonl)),
+        "source_suppression_triage": str(Path(suppression_triage_json)) if suppression_triage_json is not None else None,
         "lane": effective_lane,
         "source_lane_count": _source_lane_count(lanes, lane),
         "behavior": "evidence-only",
@@ -198,11 +203,88 @@ def build_candidate_scorer_packet(
         "apply_authority": "none",
         "reason_codes": _ordered_reason_codes(reason_codes),
         "safety_flags": sorted(safety_flags),
-        "summary": _packet_summary(scored_links),
+        "summary": _packet_summary(scored_links, suppressed_links=suppressed_links),
+        "suppression_gate": _suppression_gate_summary(suppressed_links, suppression_triage_json),
+        "suppressed_links": suppressed_links,
         "candidate_packets": scored_links,
         "scored_links": scored_links,
     }
 
+
+
+def _suppression_index(suppression_triage_json: str | Path | None) -> dict[tuple[str, str], dict[str, Any]]:
+    if suppression_triage_json is None:
+        return {}
+    packet = json.loads(Path(suppression_triage_json).read_text(encoding="utf-8"))
+    index: dict[tuple[str, str], dict[str, Any]] = {}
+    for item in packet.get("items") or []:
+        if not isinstance(item, Mapping):
+            continue
+        if str(item.get("apply_authority") or "none") != "none":
+            continue
+        if _is_true_like(item.get("live_mutation_authorized")):
+            continue
+        source = str(item.get("source") or "")
+        raw = str(item.get("raw") or item.get("target") or "")
+        target = str(item.get("target") or raw.split("|", 1)[0])
+        for key in {(source, raw), (source, target)}:
+            if key[0] and key[1]:
+                index[key] = dict(item)
+    return index
+
+
+def _is_true_like(value: Any) -> bool:
+    if value is True:
+        return True
+    if isinstance(value, str):
+        return value.strip().lower() == "true"
+    return False
+
+
+def _apply_suppression_gate(
+    links: Iterable[Mapping[str, Any]], suppression_index: Mapping[tuple[str, str], Mapping[str, Any]]
+) -> tuple[list[Mapping[str, Any]], list[dict[str, Any]]]:
+    if not suppression_index:
+        return list(links), []
+    kept: list[Mapping[str, Any]] = []
+    suppressed: list[dict[str, Any]] = []
+    for link in links:
+        source = str(link.get("source") or "")
+        raw = str(link.get("raw") or link.get("old_link") or link.get("target") or "")
+        target = str(link.get("target") or raw.split("|", 1)[0])
+        suppression = suppression_index.get((source, raw)) or suppression_index.get((source, target))
+        if suppression:
+            suppressed.append(
+                {
+                    "source": source,
+                    "raw": raw,
+                    "target": target,
+                    "status": link.get("status"),
+                    "classification": suppression.get("classification"),
+                    "reason": suppression.get("reason"),
+                    "source_policy": suppression.get("source_policy"),
+                    "apply_authority": "none",
+                    "live_mutation_authorized": False,
+                }
+            )
+        else:
+            kept.append(link)
+    return kept, suppressed
+
+
+def _suppression_gate_summary(
+    suppressed_links: Iterable[Mapping[str, Any]], suppression_triage_json: str | Path | None
+) -> dict[str, Any]:
+    suppressed = list(suppressed_links)
+    by_classification = Counter(str(item.get("classification") or "unknown") for item in suppressed)
+    return {
+        "enabled": suppression_triage_json is not None,
+        "source_suppression_triage": str(Path(suppression_triage_json)) if suppression_triage_json is not None else None,
+        "suppressed_total": len(suppressed),
+        "by_classification": dict(by_classification),
+        "live_mutation_authorized": False,
+        "apply_authority": "none",
+    }
 
 def write_candidate_scorer_packet(
     *,
@@ -214,6 +296,7 @@ def write_candidate_scorer_packet(
     packet_id: str | None = None,
     limit: int | None = None,
     operator_decision_records: Iterable[Mapping[str, Any]] | None = None,
+    suppression_triage_json: str | Path | None = None,
 ) -> dict[str, Any]:
     packet = build_candidate_scorer_packet(
         actionable_lanes_json=actionable_lanes_json,
@@ -223,6 +306,7 @@ def write_candidate_scorer_packet(
         packet_id=packet_id,
         limit=limit,
         operator_decision_records=operator_decision_records,
+        suppression_triage_json=suppression_triage_json,
     )
     packet_dir = Path(out_dir)
     packet_dir.mkdir(parents=True, exist_ok=True)
@@ -269,12 +353,19 @@ def candidate_scorer_packet_to_markdown(packet: Mapping[str, Any]) -> str:
         f"- review_required_links: `{summary['review_required_links']}`",
         f"- hard_stop_packets: `{summary['hard_stop_packets']}`",
         f"- hard_stop_links: `{summary['hard_stop_links']}`",
+        f"- suppressed_links: `{summary.get('suppressed_links', 0)}`",
         f"- max_top_two_gap: `{summary['max_top_two_gap']}`",
         "",
         "## Route hints",
         "",
     ]
     lines.extend(f"- `{route}`: `{count}`" for route, count in summary["route_hints"].items())
+    lines.extend(["", "## Suppression gate", ""])
+    gate = packet.get("suppression_gate") or {}
+    lines.append(f"- enabled: `{str(bool(gate.get('enabled'))).lower()}`")
+    lines.append(f"- suppressed_total: `{gate.get('suppressed_total', 0)}`")
+    for classification, count in (gate.get("by_classification") or {}).items():
+        lines.append(f"- `{classification}`: `{count}`")
     lines.extend(["", "## Reason codes", ""])
     lines.extend(f"- `{code}`" for code in packet["reason_codes"])
     lines.extend(
@@ -674,7 +765,11 @@ def _source_lane_count(lanes: Mapping[str, Any], lane: str) -> int:
     return 0
 
 
-def _packet_summary(scored_links: list[dict[str, Any]]) -> dict[str, Any]:
+def _packet_summary(
+    scored_links: list[dict[str, Any]],
+    *,
+    suppressed_links: list[Mapping[str, Any]] | None = None,
+) -> dict[str, Any]:
     route_counts: Counter[str] = Counter(str(link.get("route_hint") or "unknown") for link in scored_links)
     return {
         "candidate_packets": len(scored_links),
@@ -684,6 +779,7 @@ def _packet_summary(scored_links: list[dict[str, Any]]) -> dict[str, Any]:
         "review_required_links": sum(1 for link in scored_links if link.get("review_required")),
         "hard_stop_packets": sum(1 for link in scored_links if link.get("hard_stop")),
         "hard_stop_links": sum(1 for link in scored_links if link.get("hard_stop")),
+        "suppressed_links": len(suppressed_links or []),
         "max_top_two_gap": max((int(link.get("top_two_gap") or 0) for link in scored_links), default=0),
         "route_hints": dict(sorted(route_counts.items())),
     }

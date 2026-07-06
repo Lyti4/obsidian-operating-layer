@@ -13,7 +13,8 @@ This board is the operator-facing control surface for advancing Obsidian Operati
 
 | Lane | Owner role | Current state | Acceptance gate |
 | --- | --- | --- | --- |
-| P3 read-only/proposal-only | Worker + Hermes acceptance | Green repeatable `make live-proposal-only` target | Live vault modified files = 0; verification JSON `ok: true` |
+| P3 read-only/proposal-only | Worker + Hermes acceptance | Green repeatable `make live-proposal-only` target; candidate-volume operator packet added for the 20260706T182612Z evidence bundle | Live vault modified files = 0; verification JSON `ok: true`; candidate volume/risk packet reviewed before any live pilot |
+| P3 manifest-candidate selector | Worker + Hermes acceptance | Repo-only selector smoke generated for grouped-next5; selected 5 inert candidates from existing JSON evidence | Separate explicit approval manifest still required before any live pilot; selector must not authorize targets |
 | P4 narrow approved apply | Worker + independent review + Hermes acceptance | Sandbox apply-contract green; live apply not started | Exact manifest, explicit operator approval, backup, apply, post-verify |
 | GitHub automation | GitHub-native checks + Hermes acceptance | Open PRs: 0; Renovate dashboard open; main checks green | Required checks stay minimal and green; advisory scans reviewed |
 | Safety/release review | Independent reviewer + Hermes acceptance | Ongoing per slice | No stale runbook flags; fail-closed tests cover critical gates |
@@ -57,4 +58,18 @@ Nanobot recommendation decisions are now fixed in `docs/spec-kit/36-current-evid
 
 ## Next active Kanban slice
 
-Kanban card `t_423691d1` (`generated-artifacts-registry-drift / docs_update`) is the next active repo-only slice. It should close the remaining generated-artifacts registry drift by adding only concise, source-controlled pointers for accepted current slices; generated `out/` artifacts remain evidence only, and live apply stays blocked until an explicit approval manifest is provided.
+Kanban card `t_423691d1` (`generated-artifacts-registry-drift / docs_update`) is done: compact pointers are in `docs/spec-kit/36-current-evidence-index.md`, with evidence at `out/reports/kanban-triage-continuation/20260706T173514Z-generated-artifacts-registry-drift/REPORT.md`. Generated `out/` artifacts remain evidence only.
+
+Next active slice `remaining-link-same-vault-rule-next5` was approved and applied: post-verify `passed` with 5 logical replacements, evidence at `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/POST_VERIFY.next5.grouped.md`. No standing authorization remains for further live apply.
+
+Current repo-only continuation slice `operator-review-packet-grouped-proposal-support` is accepted after independent read-only review. It extends the operator review packet to read grouped same-vault proposal evidence and generated `out/reports/operator-review-packet/grouped-next5-smoke/REPORT.md` with 5 review items while preserving `apply_authority: none` and `target_paths: []`.
+
+Repo-only slice `unified-operator-review-index-v1` is accepted after independent read-only review. It adds a pre-full-vault-indexing control panel over repo-local `out/` and docs evidence, with latest Hermes smoke at `out/reports/unified-operator-review-index/hermes-smoke/REPORT.md`: status `ready_for_operator_review`, 12 artifacts, 11 present, 1 missing, 0 blocked, fixed `apply_authority: none`, and `target_paths: []`.
+
+Full-vault proposal-only indexing gate is accepted after independent read-only review. It was run read-only against `/home/hermesadmin/Obsidian` and fed into the unified index. Evidence: `out/live-proposal-only-20260706T182612Z/` plus `out/reports/unified-operator-review-index/full-vault-proposal-only-20260706T182612Z/REPORT.md`. Current regenerated result includes the candidate-volume packet and removes the stale missing JSON pointer: `ready_for_operator_review`, 14 artifacts, 14 present, 0 missing, 0 blocked, 11 proposal-only pointers, 2 ready/review JSON packets, fixed `apply_authority: none`, and `target_paths: []`. No approval manifest or live apply was created.
+
+Candidate-volume/operator-review packet gate is implemented and generated at `out/reports/candidate-volume-operator-packet/full-vault-proposal-only-20260706T182612Z/REPORT.md`. It reports 447 protected hits, proposal targets `0`, empty `first_manifest_candidate_queue`, and fixed inert safety. It is review evidence only and does not select or authorize live targets.
+
+Manifest-candidate selector gate has Hermes acceptance: `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` records inert safety, `selected_count: 5`, `missing_artifacts: 0`, focused 20-test pass, `git diff --check`, and full `make verify`.
+
+Current active reconcile slice: align `docs/acceptance/index.md`, `docs/spec-kit/36-current-evidence-index.md`, and `docs/spec-kit/37-vault-automation-indexing-roadmap.md` around the packet/index/doctor taxonomy. Independent read-only review of the manifest-candidate selector remains the next gate before any new live pilot discussion. Any real live pilot remains behind a separate explicit approval manifest.

@@ -20,6 +20,7 @@ def main() -> int:
     parser.add_argument("--lane", default="active_memory_ambiguous_memory_plus_archive")
     parser.add_argument("--packet-id", default=None)
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--suppression-triage-json", default=None)
     args = parser.parse_args()
 
     result = write_candidate_scorer_packet(
@@ -30,6 +31,7 @@ def main() -> int:
         lane=args.lane,
         packet_id=args.packet_id,
         limit=args.limit,
+        suppression_triage_json=Path(args.suppression_triage_json) if args.suppression_triage_json else None,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0

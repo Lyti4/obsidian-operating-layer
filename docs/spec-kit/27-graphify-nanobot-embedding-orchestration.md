@@ -105,10 +105,12 @@ The manifest is an allowlist. It must keep `embedding_policy.auto_execute=false`
 The runner entrypoint is:
 
 ```bash
-python3 tools/obsidian_graphify_embedding_run.py   --manifest out/reports/graphify-embedding-handoff/<run>/embedding-manifest.json   --out-dir out/reports/graphify-embedding-runs/<run>   --derived-root out/external-indexing-spike/graphify-derived/<run>   --provider ollama   --ollama-base-url http://127.0.0.1:11434   --ollama-model bge-m3   --ollama-timeout-seconds 240   --max-chars-per-chunk 2000   --chunk-overlap 200   --max-files 25
+python3 tools/obsidian_graphify_embedding_run.py   --manifest out/reports/graphify-embedding-handoff/<run>/embedding-manifest.json   --out-dir out/reports/graphify-embedding-runs/<run>   --derived-root out/external-indexing-spike/graphify-derived/<run>   --provider ollama   --ollama-base-url http://127.0.0.1:11434   --ollama-model bge-m3   --ollama-timeout-seconds 240   --max-chars-per-chunk 2000   --chunk-overlap 200   --max-files 50
 ```
 
 Hard requirements:
+
+- Before `graphify-embedding-run`, run `make embedding-resource-preflight`, which drains used swap via `tools/obsidian_swap_drain.py`, restores zram/swap, and then runs resource preflight.
 
 - manifest-only input; no raw vault walk;
 - sandbox under `out/sandbox-vaults/<name>` only;
@@ -229,7 +231,7 @@ Semantic query smoke was run against the derived cache and returned plausible to
 Runtime decision for this 4 GB VPS:
 
 - Hot-mode (`--keep-ollama-loaded-after-run`) was tested and rejected for long series because zram filled too aggressively.
-- Accepted mode on this host is safe batching: bounded `max_files`, `OLLAMA_NUM_PARALLEL=1`, automatic Ollama unload after each run, zram cleanup between large batches, and strict resource preflight before the next batch.
+- Accepted mode on this host is safe batching: default `--max-files 50`, hard cap `--max-files 75` per embedding run, `OLLAMA_NUM_PARALLEL=1`, automatic Ollama unload after each run, zram cleanup between large batches, and swap drain plus strict resource/disk preflight before the next batch.
 - `bge-m3` remains local-only through Ollama loopback; no external embedding provider is accepted by default.
 
 Reusable query smoke entrypoint:

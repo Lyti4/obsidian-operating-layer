@@ -74,7 +74,7 @@ Protected paths are not writable by adapters or workers:
 - Graphify semantic work runs on sandbox copies first, not the live vault.
 - Use Graphify's native workflow before proposal generation: build/extract to `graphify-out/`, read `GRAPH_REPORT.md`, then use `graphify query`, `graphify path`, or `graphify explain` for decisions. RAG counts are only a preflight/noise guardrail, not the main Graphify deliverable.
 - External LLM traffic is governed by `docs/spec-kit/28-global-headroom-only-llm-channel.md`: Graphify uses `graphify-headroom` + `codex-cli` through Headroom; Nanobot external review uses `/home/hermesadmin/.nanobot-hermes/bin/nanobot-headroom-agent` with the Codex backend-shaped Headroom bridge and per-run Codex CLI auth inheritance.
-- Embeddings are optional and later-stage only: small batches, single worker, `nice`/`ionice` where applicable, checkpoint/resume, and stop-on-load guardrails.
+- Embeddings are optional and later-stage only: small batches, default 50, hard cap `--max-files <= 75` per run, drain used swap before launch, single worker, `nice`/`ionice` where applicable, checkpoint/resume, and stop-on-load guardrails.
 - No Graphify, MCP, RAG, or embedding component may directly write/delete/move notes in the live vault.
 
 ## Working conventions

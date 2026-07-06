@@ -29,7 +29,8 @@ DEFAULT_HASHING_DIMENSIONS = 128
 DEFAULT_OLLAMA_BASE_URL = "http://localhost:11434"
 DEFAULT_OLLAMA_MODEL = "bge-m3"
 ALLOWED_OLLAMA_MODELS = {"bge-m3", "bge-m3:latest"}
-DEFAULT_MAX_FILES_PER_RUN = 25
+DEFAULT_MAX_FILES_PER_RUN = 50
+MAX_FILES_PER_RUN_HARD_CAP = 75
 DEFAULT_MAX_CHARS_PER_FILE = 80_000
 DEFAULT_MAX_CHARS_PER_CHUNK = 2_000
 DEFAULT_CHUNK_OVERLAP = 200
@@ -486,8 +487,8 @@ def run_graphify_embedding_manifest(
     unload_ollama_after_run: bool = True,
 ) -> GraphifyEmbeddingRunReport:
     """Run bounded local embeddings from a Graphify-derived manifest only."""
-    if max_files < 1 or max_files > 500:
-        raise GuardrailError("max_files must be between 1 and 500")
+    if max_files < 1 or max_files > MAX_FILES_PER_RUN_HARD_CAP:
+        raise GuardrailError(f"max_files must be between 1 and {MAX_FILES_PER_RUN_HARD_CAP}")
     if max_chars_per_file < 100 or max_chars_per_file > 1_000_000:
         raise GuardrailError("max_chars_per_file must be between 100 and 1000000")
     if max_chars_per_chunk < 200 or max_chars_per_chunk > 20_000:

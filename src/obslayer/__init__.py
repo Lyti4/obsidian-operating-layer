@@ -1,3 +1,12 @@
+from .acceptance_bundle_doctor import (
+    AcceptanceBundleArtifact,
+    AcceptanceBundleCheck,
+    AcceptanceBundleDoctorReport,
+    acceptance_bundle_doctor_to_markdown,
+    doctor_acceptance_bundle,
+    load_and_doctor_acceptance_bundle,
+    write_acceptance_bundle_doctor_report,
+)
 from .approved_apply_readiness_v1 import (
     ApplyReadinessReport,
     ApplyReadinessTarget,
@@ -79,6 +88,16 @@ from .guardrails import (
     validate_targets,
     write_json,
 )
+from .indexing_manifest_doctor import (
+    DoctorCheck,
+    IndexingDoctorReport,
+    IndexingManifest,
+    IndexingManifestPolicy,
+    build_indexing_doctor_report,
+    build_indexing_manifest,
+    manifest_from_dict,
+    validate_indexing_manifest,
+)
 from .indexing_spike import (
     IndexingSpikeEvaluation,
     build_indexing_spike_evaluation,
@@ -133,6 +152,13 @@ from .operator_decision_ledger_v1 import (
     write_operator_decision_ledger,
     write_operator_decision_ledger_bundle,
 )
+from .operator_review_packet import (
+    OperatorReviewItem,
+    OperatorReviewPacket,
+    build_operator_review_packet,
+    operator_review_packet_to_markdown,
+    write_operator_review_packet,
+)
 from .proposal_normalization import (
     load_findings_bundle,
     normalize_findings_to_proposal,
@@ -176,6 +202,14 @@ from .semantic_candidate_decision_packet import (
     candidate_decision_packet_to_markdown,
     write_candidate_decision_packet,
 )
+from .semantic_manifest import (
+    SemanticManifest,
+    SemanticManifestArtifact,
+    build_semantic_manifest,
+    doctor_semantic_manifest,
+    semantic_manifest_to_markdown,
+    write_semantic_manifest,
+)
 from .semantic_proposal_report import (
     SemanticProposalCandidate,
     SemanticProposalReport,
@@ -185,12 +219,25 @@ from .semantic_proposal_report import (
 )
 
 __all__ = [
+    "write_acceptance_bundle_doctor_report",
+    "load_and_doctor_acceptance_bundle",
+    "doctor_acceptance_bundle",
+    "acceptance_bundle_doctor_to_markdown",
+    "AcceptanceBundleDoctorReport",
+    "AcceptanceBundleCheck",
+    "AcceptanceBundleArtifact",
     "ApplyReadinessReport",
     "ApplyReadinessTarget",
     "approved_apply_readiness_to_markdown",
     "evaluate_approved_apply_readiness",
     "load_and_evaluate_approved_apply_readiness",
     "write_approved_apply_readiness_bundle",
+    "SemanticManifest",
+    "SemanticManifestArtifact",
+    "build_semantic_manifest",
+    "doctor_semantic_manifest",
+    "semantic_manifest_to_markdown",
+    "write_semantic_manifest",
     "write_candidate_decision_packet",
     "candidate_decision_packet_to_markdown",
     "build_candidate_decision_packet",
@@ -214,7 +261,11 @@ __all__ = [
     "GraphifyEmbeddingQueryReport",
     "GraphifyEmbeddingQueryResult",
     "GraphifyEmbeddingRunReport",
+    "DoctorCheck",
     "INDEXING_WRAPPER_TOOL_ALLOWLIST",
+    "IndexingDoctorReport",
+    "IndexingManifest",
+    "IndexingManifestPolicy",
     "IndexingMcpProcessSpec",
     "IndexingMcpReportBundle",
     "IndexingSpikeEvaluation",
@@ -223,6 +274,11 @@ __all__ = [
     "NormalizedMcpResult",
     "OperatorDecisionLedger",
     "OperatorDecisionRecord",
+    "write_operator_review_packet",
+    "operator_review_packet_to_markdown",
+    "build_operator_review_packet",
+    "OperatorReviewPacket",
+    "OperatorReviewItem",
     "ProposalRoutingDecision",
     "REDACTED_LIVE_VAULT",
     "RagGraphAdapterEvaluation",
@@ -258,6 +314,8 @@ __all__ = [
     "build_read_only_index",
     "build_diagram_pdf_report_evaluation",
     "build_external_tool_benchmark_report",
+    "build_indexing_doctor_report",
+    "build_indexing_manifest",
     "build_mcp_adapter_evaluation",
     "build_operator_decision_ledger",
     "build_rag_graph_adapter_evaluation",
@@ -290,6 +348,7 @@ __all__ = [
     "load_mcp_adapter_record",
     "load_rag_graph_adapter_record",
     "manifest_backup_plan",
+    "manifest_from_dict",
     "move_controlled_job",
     "list_indexing_runtime_tools",
     "append_decision_record",
@@ -318,6 +377,7 @@ __all__ = [
     "serialize_operator_decision_records_jsonl",
     "serialize_operator_decision_ledger",
     "validate_approval_manifest",
+    "validate_indexing_manifest",
     "validate_targets",
     "verify_indexing_runtime_tools",
     "write_graphify_embedding_handoff",

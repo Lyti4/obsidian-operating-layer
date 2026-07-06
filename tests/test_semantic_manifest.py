@@ -8,7 +8,11 @@ from pathlib import Path
 import pytest
 
 from obslayer.guardrails import GuardrailError
-from obslayer.semantic_manifest import build_semantic_manifest, semantic_manifest_to_markdown
+from obslayer.semantic_manifest import (
+    build_semantic_manifest,
+    doctor_semantic_manifest,
+    semantic_manifest_to_markdown,
+)
 
 
 def _write_json(repo: Path, rel: str, payload: dict) -> Path:
@@ -112,6 +116,10 @@ def _artifact_paths(repo: Path) -> dict[str, Path]:
     }
 
 
+def _manifest_path(repo: Path, payload: dict) -> Path:
+    return _write_json(repo, "out/reports/semantic-manifests/test/semantic-manifest.json", payload)
+
+
 def test_build_semantic_manifest_accepts_safe_artifact_chain(tmp_path: Path) -> None:
     paths = _artifact_paths(tmp_path)
 
@@ -125,6 +133,118 @@ def test_build_semantic_manifest_accepts_safe_artifact_chain(tmp_path: Path) -> 
     assert manifest.approval_manifest_created is False
     assert "Semantic Indexing Manifest" in text
     assert "- none" in text
+
+
+def test_semantic_manifest_doctor_reports_ready_for_valid_generated_manifest(tmp_path: Path) -> None:
+    paths = _artifact_paths(tmp_path)
+    manifest = build_semantic_manifest(repo=tmp_path, created_at="2026-07-05T00:00:00Z", **paths)
+    manifest_path = _manifest_path(tmp_path, manifest.to_dict())
+
+    result = doctor_semantic_manifest(repo=tmp_path, manifest=manifest_path)
+
+    assert result == {
+        "status": "ready",
+        "manifest": str(manifest_path),
+        "repo": str(tmp_path),
+        "findings": [],
+    }
+
+
+def test_semantic_manifest_doctor_blocks_manifest_findings(tmp_path: Path) -> None:
+    paths = _artifact_paths(tmp_path)
+    manifest = build_semantic_manifest(repo=tmp_path, created_at="2026-07-05T00:00:00Z", **paths).to_dict()
+    manifest["findings"] = ["operator review required"]
+    manifest_path = _manifest_path(tmp_path, manifest)
+
+    result = doctor_semantic_manifest(repo=tmp_path, manifest=manifest_path)
+
+    assert result["status"] == "blocked"
+    assert result["findings"] == ["manifest findings must be empty"]
+
+
+def test_semantic_manifest_doctor_blocks_live_mutation_authority(tmp_path: Path) -> None:
+    paths = _artifact_paths(tmp_path)
+    manifest = build_semantic_manifest(repo=tmp_path, created_at="2026-07-05T00:00:00Z", **paths).to_dict()
+    manifest["live_mutation_authorized"] = True
+    manifest["approval_manifest_created"] = True
+    manifest["artifacts"][0]["safety_ok"] = False
+    manifest["artifacts"][0]["summary"]["targets"] = 1
+    manifest_path = _manifest_path(tmp_path, manifest)
+
+    result = doctor_semantic_manifest(repo=tmp_path, manifest=manifest_path)
+
+    assert result["status"] == "blocked"
+    assert "live_mutation_authorized must be false" in result["findings"]
+    assert "approval_manifest_created must be false" in result["findings"]
+    assert "artifacts[0].safety_ok must be true" in result["findings"]
+    assert "artifacts[0].summary.targets must be empty" in result["findings"]
+
+
+def test_semantic_manifest_doctor_blocks_artifact_outside_repo_out(tmp_path: Path) -> None:
+    paths = _artifact_paths(tmp_path)
+    manifest = build_semantic_manifest(repo=tmp_path, created_at="2026-07-05T00:00:00Z", **paths).to_dict()
+    manifest["artifacts"][0]["path"] = str(tmp_path / "elsewhere" / "artifact.json")
+    manifest_path = _manifest_path(tmp_path, manifest)
+
+    result = doctor_semantic_manifest(repo=tmp_path, manifest=manifest_path)
+
+    assert result["status"] == "blocked"
+    assert result["findings"] == ["artifacts[0].path must be under repo out/"]
+
+
+def test_semantic_manifest_doctor_cli_returns_zero_for_ready(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[1]
+    paths = _artifact_paths(tmp_path)
+    manifest = build_semantic_manifest(repo=tmp_path, created_at="2026-07-05T00:00:00Z", **paths)
+    manifest_path = _manifest_path(tmp_path, manifest.to_dict())
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_semantic_manifest_doctor.py"),
+            "--repo",
+            str(tmp_path),
+            "--manifest",
+            str(manifest_path),
+        ],
+        cwd=repo,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 0, completed.stderr + completed.stdout
+    result = json.loads(completed.stdout)
+    assert result["status"] == "ready"
+    assert result["findings"] == []
+
+
+def test_semantic_manifest_doctor_cli_returns_one_for_blocked(tmp_path: Path) -> None:
+    repo = Path(__file__).resolve().parents[1]
+    paths = _artifact_paths(tmp_path)
+    manifest = build_semantic_manifest(repo=tmp_path, created_at="2026-07-05T00:00:00Z", **paths).to_dict()
+    manifest["findings"] = ["blocked"]
+    manifest_path = _manifest_path(tmp_path, manifest)
+
+    completed = subprocess.run(
+        [
+            sys.executable,
+            str(repo / "tools" / "obsidian_semantic_manifest_doctor.py"),
+            "--repo",
+            str(tmp_path),
+            "--manifest",
+            str(manifest_path),
+        ],
+        cwd=repo,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode == 1, completed.stderr + completed.stdout
+    result = json.loads(completed.stdout)
+    assert result["status"] == "blocked"
+    assert result["findings"] == ["manifest findings must be empty"]
 
 
 def test_build_semantic_manifest_accepts_repo_relative_chain_pointers_from_other_cwd(tmp_path: Path) -> None:

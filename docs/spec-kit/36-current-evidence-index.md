@@ -26,6 +26,8 @@ This document is an index only. It does not promote generated artifacts to sourc
 
 These paths are generated artifacts and stay ignored by git unless a future review explicitly promotes a distilled source document.
 
+- Broader Obsidian index / remaining-link triage / target discovery: `out/reports/per-vault-index/broader-20260706T151108Z/REPORT.md`, `out/reports/remaining-broader-triage-20260706T151405Z-source-protected/REPORT.md`, `out/reports/remaining-broader-target-discovery-20260706T151405Z-source-protected/REPORT.md`
+
 - Semantic query report: `out/proposals/semantic-query-reports/final468-operator-review-20260704T093433Z/REPORT.md`
 - Candidate decision packet: `out/proposals/semantic-candidate-decisions/final468-operator-review-20260704T105830Z/REPORT.md`
 - Targeted semantic proposal: `out/proposals/semantic-targeted-proposals/link-hygiene-20260704T112830Z/REPORT.md`
@@ -46,6 +48,10 @@ These paths are generated artifacts and stay ignored by git unless a future revi
 - Current link hygiene read-only scan: `out/reports/link-hygiene-current-scan/20260704T-current-brief/REPORT.md`
 - Latest accepted Nanobot scout sample: `out/reports/nanobot-cron-scout/20260704T152408Z/REPORT.md`
 - Nanobot all-reports aggregate: `out/reports/nanobot-all-reports-aggregate-20260705.md`
+
+- Remaining link target discovery: `out/reports/remaining-link-target-discovery-20260706T1500Z/REPORT.md` — repo-only target-discovery packet over 92 triaged leftovers; `proposal_candidates: 0`, `apply_authority: none`, no live mutation.
+- Candidate-volume operator packet: `out/reports/candidate-volume-operator-packet/full-vault-proposal-only-20260706T182612Z/REPORT.md` — repo-only summary of full-vault proposal-only candidate volume, protected buckets, verify state, and unified-index readiness; `apply_authority: none`, no approval manifest.
+- Manifest-candidate selector smoke: `out/reports/manifest-candidate-selector/grouped-next5-smoke/REPORT.md` and `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` — repo-only selector over existing operator-review evidence; `selected_count: 5`; inert authority preserved; full `make verify` passed; independent read-only review pending.
 
 ## Safety boundary
 
@@ -124,3 +130,180 @@ Commands run for this docs update:
 - `git status --short`
 
 Final fan-in report: `out/reports/latest-artifacts-delta/final-board-report.md`.
+
+## 2026-07-06 remaining-link suppression gate acceptance
+
+This section closes the docs/index lag flagged by Nanobot scout `out/reports/nanobot-cron-scout/20260706T142630Z/REPORT.md`. It records the accepted source pointers for the current remaining-link triage/suppression surface without promoting generated `out/` artifacts to source-of-truth status.
+
+| Slice | Canonical source pointer | Evidence pointer | Boundary |
+|---|---|---|---|
+| Generated report noise policy | `docs/spec-kit/38-generated-report-noise-policy.md` | selector/policy tests and current policy artifact | generated/audit/report links are historical evidence unless separately approved |
+| Protected cross-vault link policy | `docs/spec-kit/39-protected-cross-vault-link-policy.md` | `tests/test_remaining_link_triage.py` | Soul/cross-vault links stay manual/protected |
+| Indexing manifest / doctor contract | `docs/spec-kit/40-indexing-manifest-and-doctor-contract.md` | `tests/test_indexing_manifest_doctor.py` | repo-only validation; no live mutation |
+| Acceptance bundle doctor | `docs/spec-kit/41-acceptance-bundle-doctor.md` | `tests/test_acceptance_bundle_doctor.py` | bundle completeness audit only |
+| Operator review packet | `docs/spec-kit/42-operator-review-packet.md` | `tests/test_operator_review_packet.py` | proposal-only packet, no apply authority |
+| Manual review selector pipeline | `docs/spec-kit/43-manual-review-selector-pipeline.md` | `out/reports/manual-review-selector-suppression-gate-smoke-20260706T1420Z/` | selector/review only; `live_mutation_authorized: false` |
+| External autograph policy adapter | `docs/spec-kit/44-external-autograph-policy-adapter.md`, `src/obslayer/policies/external_autograph_policy.v1.json` | schema validation and selector tests | repo-derived filters only; no live vault mutation |
+| Remaining link suppression gate | `docs/spec-kit/45-remaining-link-suppression-gate.md` | `out/reports/remaining-link-suppression-gate-20260706T1420Z/HERMES_ACCEPTANCE_REPORT.md`, `out/reports/remaining-link-suppression-gate-20260706T1420Z/CODEX_FORCE_REVIEW.md` | suppresses only already-triaged `apply_authority: none` links; no approval manifest, no apply |
+
+Safety invariant for this accepted slice:
+
+```text
+live_mutation_authorized: false
+approval_manifest_created: false
+apply_authority: none
+```
+
+Codex force review found and fixed one fail-closed hardening issue: string `"true"` in `live_mutation_authorized` is now treated as true-like and refused by the suppression index.
+
+
+## 2026-07-06 same-source vault target-discovery rule
+
+The broader remaining-link discovery layer now promotes non-protected same-source-vault exact path matches to proposal-only candidates when the competing ambiguity is a protected mirror candidate. This converts 98 previously manual `Memory-Vault` ambiguity items into proposal candidates while preserving fail-closed behavior for protected roots and generated/report surfaces.
+
+| Artifact | Path | Result |
+|---|---|---|
+| Target discovery report | `out/reports/remaining-broader-target-discovery-20260706T152315Z-same-vault-rule/REPORT.md` | `proposal_candidates: 98`, `manual_review_required: 2`, `suppressed_by_policy: 5788` |
+| First pilot proposal | `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/proposal-first25.grouped.json` | 25 logical replacements grouped into 1 file-level target |
+| Dry-run | `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/dry-run-first25.grouped.json` | passed; no live write |
+| Readiness | `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/readiness-first25-grouped/REPORT.md` | ready for human-approved apply; still `apply_authority: none` |
+
+Safety boundary: no live vault mutation was performed in this slice.
+
+## Live apply — same-source vault first25 pilot — 2026-07-06
+
+After explicit operator confirmation, the first grouped same-source-vault pilot was applied to one live Memory-Vault file.
+
+```text
+status: applied + post-verify passed
+target: /home/hermesadmin/Obsidian/Memory-Vault/00 Memory Graph Index.md
+logical_replacements: 25
+old_links_remaining_total: 0
+new_links_present_total: 25
+backup: /home/hermesadmin/Obsidian/_Backups/obsidian-operating-layer/20260706T153858Z-same-vault-rule-first25/00 Memory Graph Index.md
+```
+
+Evidence:
+
+- `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/LIVE_APPLY_REPORT.first25.grouped.json`
+- `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/POST_VERIFY.first25.grouped.json`
+- `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/POST_VERIFY.first25.grouped.md`
+- `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/LIVE_APPLY_DIFF.first25.grouped.patch`
+
+Boundary: this was a single approved pilot batch, not standing authorization for unattended live apply.
+
+## 2026-07-06 same-vault live pilot and board registry refresh
+
+- Same-vault remaining-link rule pilot: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/HERMES_ACCEPTANCE_REPORT.md` — proposal/readiness evidence for the first grouped 25-change pilot.
+- Same-vault first live apply post-verify: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/POST_VERIFY.first25.grouped.json` — `status: passed`, `logical_replacements: 25`, `old_links_remaining_total: 0`, `new_links_present_total: 25`.
+- Same-vault first live apply diff: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/LIVE_APPLY_DIFF.first25.grouped.patch` — generated evidence only; not source truth.
+- Latest Nanobot audit scout: `out/reports/nanobot-cron-scout/20260706T172004Z/REPORT.md` — advisory verdict `lagging`; no mutation authority.
+- Generated-artifacts registry drift handoff: `out/reports/kanban-triage-continuation/20260706T173514Z-generated-artifacts-registry-drift/REPORT.md` — docs-update slice evidence for board card `t_423691d1`.
+
+Safety: these are evidence pointers only. They do not authorize unattended live apply, do not create an approval manifest, and do not promote generated artifacts into git-tracked source truth.
+
+## 2026-07-06 same-vault next5 proposal-readiness
+
+- Same-vault next5 proposal report: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/NEXT5_PROPOSAL_REPORT.md` — proposal-only/readiness-only batch after the first live pilot; 5 logical replacements remain present in `Memory-Vault/00 Memory Graph Index.md`.
+- Same-vault next5 grouped proposal: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/proposal-next5.grouped.json`.
+- Same-vault next5 dry-run/readiness evidence: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/dry-run-next5.grouped.json`, `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/readiness-next5-grouped/approved-apply-readiness-v1.json`.
+
+Safety: no live apply was run for this next5 batch. The readiness manifest is not standing authorization; explicit chat approval, backup, apply, and post-verify are still required.
+
+## 2026-07-06 same-vault next5 live apply
+
+```text
+status: passed
+target: /home/hermesadmin/Obsidian/Memory-Vault/00 Memory Graph Index.md
+logical_replacements: 5
+old_links_remaining_total: 0
+new_links_present_total: 5
+backup: /home/hermesadmin/Obsidian/_Backups/obsidian-operating-layer/20260706-174737Z/00 Memory Graph Index.md
+```
+
+Evidence:
+
+- `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/LIVE_APPLY_REPORT.next5.grouped.json`
+- `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/POST_VERIFY.next5.grouped.json`
+- `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/POST_VERIFY.next5.grouped.md`
+- `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/LIVE_APPLY_DIFF.next5.grouped.patch`
+
+Boundary: this was Dmitry-approved exact `next5` batch, not standing authorization for unattended live apply.
+
+## 2026-07-06 operator review packet grouped-proposal support
+
+The operator review packet can now consume grouped same-vault proposal evidence (`targets[].evidence.grouped_replacements[]`) and render a repo-only human review packet before any approval manifest exists. Grouped target paths and `vault_root` remain context only; output safety keeps `target_paths: []`, `apply_authority: none`, `approval_manifest_created: false`, and `live_mutation_authorized: false`.
+
+Evidence:
+
+- Spec: `docs/spec-kit/42-operator-review-packet.md`
+- Implementation: `src/obslayer/operator_review_packet.py`
+- Tests: `tests/test_operator_review_packet.py`
+- Smoke packet: `out/reports/operator-review-packet/grouped-next5-smoke/operator-review-packet.json`
+- Smoke report: `out/reports/operator-review-packet/grouped-next5-smoke/REPORT.md`
+
+Verification:
+
+```text
+python3 -m pytest -q tests/test_operator_review_packet.py tests/test_remaining_link_target_discovery.py -> 15 passed
+python3 tools/obsidian_operator_review_packet.py --repo . --proposal-packet out/proposals/remaining-link-same-vault-rule/20260706T152315Z/proposal-next5.grouped.json --out-dir out/reports/operator-review-packet/grouped-next5-smoke -> ready_for_human_review, 5 items
+git diff --check -> passed
+```
+
+Safety: this is review-only/proposal-only evidence. It does not authorize live apply and does not create an approval manifest.
+
+## 2026-07-06 unified operator review index
+
+- Slice: `unified-operator-review-index-v1`
+- Spec: `docs/spec-kit/47-unified-operator-review-index.md`
+- Implementation: `src/obslayer/unified_operator_review_index.py`
+- CLI: `tools/obsidian_unified_operator_review_index.py`
+- Tests: `tests/test_unified_operator_review_index.py`
+- Smoke evidence: `out/reports/unified-operator-review-index/hermes-smoke/REPORT.md`
+
+Boundary: repo-only pre-full-vault-indexing control panel. It aggregates pointers/status from `out/` and docs only, keeps fixed inert safety, and does not create approval manifests or grant apply authority.
+## 2026-07-06 full-vault proposal-only unified gate
+
+- Run: `out/live-proposal-only-20260706T182612Z/`
+- Unified index: `out/reports/unified-operator-review-index/full-vault-proposal-only-20260706T182612Z/REPORT.md`
+- Boundary: read-only observe of `/home/hermesadmin/Obsidian`, proposal-only output under repo `out/`, no approval manifest, no live apply.
+- Result: `ready_for_operator_review`; regenerated unified index now includes the candidate-volume packet and removes the stale missing JSON pointer: 14 artifacts, 14 present, 0 missing, 0 blocked, 11 proposal-only pointers, 2 ready/review JSON packets.
+- Safety: fixed `apply_authority: none`, `target_paths: []`, `live_mutation_authorized: false`, `approval_manifest_created: false`, `approval_manifest_authority: false`.
+
+## 2026-07-06 candidate-volume operator packet
+
+- Spec: `docs/spec-kit/48-candidate-volume-operator-packet.md`
+- Implementation: `src/obslayer/candidate_volume_operator_packet.py`
+- CLI: `tools/obsidian_candidate_volume_operator_packet.py`
+- Tests: `tests/test_candidate_volume_operator_packet.py`
+- Evidence: `out/reports/candidate-volume-operator-packet/full-vault-proposal-only-20260706T182612Z/REPORT.md`
+- Unified pointer: `out/reports/unified-operator-review-index/full-vault-proposal-only-20260706T182612Z/REPORT.md`
+
+Result: `ready_for_operator_review`; protected hits `447`; proposal targets `0`; `first_manifest_candidate_queue: []`; fixed inert safety at nested and root levels. Boundary: repo-local evidence only; no approval manifest, no target authorization, no live apply.
+## 2026-07-06 Manifest-Candidate Selector
+
+- Spec: `docs/spec-kit/49-manifest-candidate-selector.md`
+- Implementation: `src/obslayer/manifest_candidate_selector.py`
+- CLI: `tools/obsidian_manifest_candidate_selector.py`
+- Tests: `tests/test_manifest_candidate_selector.py`
+- Smoke evidence: `out/reports/manifest-candidate-selector/grouped-next5-smoke/REPORT.md`
+
+The selector uses only existing repo-local JSON artifacts, selected 5 grouped-next5 candidates, and remains evidence-only/proposal-only. It does not create an approval manifest and keeps `apply_authority: none`.
+
+## 2026-07-06 control-plane reconciliation
+
+Current packet/index/doctor family is consolidated as repo-only control-plane evidence:
+
+- doctor gates: semantic manifest doctor, indexing manifest doctor, acceptance bundle doctor;
+- policy/suppression gates: generated report noise, protected cross-vault policy, external autograph policy adapter, remaining-link suppression;
+- discovery/scoring gates: remaining-link target discovery, archive shadow index, candidate scorer, safe auto-proposal thresholds;
+- operator packet gates: operator review packet, unified operator review index, candidate-volume operator packet;
+- selector gates: manual review selector and manifest-candidate selector.
+
+Current boundary: all current gates preserve `live_mutation_authorized: false`, `approval_manifest_created: false`, `apply_authority: none`, and empty `target_paths` unless a separate Dmitry-approved live manifest is created for an exact proposal.
+
+Pending before any next live pilot:
+
+1. independent read-only review of `manifest-candidate-selector-v1` against the current grouped-next5 smoke evidence;
+2. refreshed unified review index after any artifact pointer changes;
+3. exact approval manifest, backup, apply, and post-verify only if Dmitry explicitly approves a narrow proposal.

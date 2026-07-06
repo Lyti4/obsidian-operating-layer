@@ -1,0 +1,163 @@
+{
+  "$schema": "../../docs/spec-kit/schemas/external-autograph-policy.schema.json",
+  "policy_id": "external-autograph-policy-adapter.v1",
+  "policy_ref": "docs/spec-kit/44-external-autograph-policy-adapter.md",
+  "source_repos": [
+    "smixs/autograph",
+    "smixs/agent-second-brain"
+  ],
+  "authority": {
+    "default_apply_authority": "none",
+    "live_mutation_authorized": false,
+    "approval_manifest_created": false,
+    "approved_default": false,
+    "approved_false_means_no_apply": true,
+    "approved_true_requires_operator_manifest": true
+  },
+  "protected_path_denylist": [
+    "_Archive/",
+    "_Backups/",
+    ".trash/",
+    "Soul/",
+    "Soul-",
+    "Soul_Vault/",
+    "Soul-Vault/",
+    "Canonical/",
+    "canonical/"
+  ],
+  "protected_link_parts": [
+    "/soul/",
+    "soul-vault/",
+    "soul_vault/",
+    "canonical/",
+    "_archive/",
+    "_backups/",
+    ".trash/"
+  ],
+  "generated_report_noise": {
+    "path_parts": [
+      "/reports/",
+      "graphify-out/",
+      "out/reports/"
+    ],
+    "noise_words": [
+      "todo",
+      "fix",
+      "new",
+      "updated",
+      "phase",
+      "score",
+      "vault",
+      "health",
+      "pricing",
+      "graph_report"
+    ]
+  },
+  "forbidden_reason_codes": [
+    "source_archive_surface",
+    "source_soul_surface",
+    "target_soul_surface",
+    "canonical_or_global_surface",
+    "protected_or_archive_target",
+    "backup_shadow_target",
+    "archive_shadow_target",
+    "trash_shadow_target",
+    "duplicate_shadow_target",
+    "redirect_shadow_target",
+    "canonical_shadow_target",
+    "candidate_missing_from_index"
+  ],
+  "forbidden_safety_flags": [
+    "archive_or_shadow_target_hard_stop",
+    "soul_policy_sensitive",
+    "hard_stop_candidate_present",
+    "ambiguous_link_requires_review"
+  ],
+  "link_resolution_classes": {
+    "exact_or_unique": {
+      "classification": "link_resolution_safe_candidate",
+      "risk": "low",
+      "apply_authority": "none"
+    },
+    "ambiguous_or_missing": {
+      "classification": "link_resolution_manual_only",
+      "risk": "medium",
+      "apply_authority": "none"
+    },
+    "protected_or_generated": {
+      "classification": "link_resolution_denied",
+      "risk": "high",
+      "apply_authority": "none"
+    }
+  },
+  "dedup_action_taxonomy": {
+    "manual_hold": {
+      "risk": "high",
+      "apply_authority": "none",
+      "approved_default": false
+    },
+    "keep_linked_layers": {
+      "risk": "medium",
+      "apply_authority": "none",
+      "approved_default": false
+    },
+    "merge_duplicate": {
+      "risk": "low",
+      "apply_authority": "manifest-approved",
+      "approved_default": false
+    },
+    "thin_crm_overlay": {
+      "risk": "medium",
+      "apply_authority": "manifest-approved",
+      "approved_default": false
+    }
+  },
+  "alias_policy_refs": {
+    "external_autograph_policy": "docs/spec-kit/44-external-autograph-policy-adapter.md",
+    "generated_report_alias_keep": "docs/spec-kit/38-generated-report-noise-policy.md",
+    "heading_anchor_alias_keep": "docs/spec-kit/38-generated-report-noise-policy.md",
+    "protected_or_cross_vault_manual": "docs/spec-kit/39-protected-cross-vault-link-policy.md",
+    "operator_review_keep_alias_no_apply": "docs/spec-kit/42-operator-review-packet.md",
+    "manual_review_only": "docs/spec-kit/42-operator-review-packet.md",
+    "selector_review_only": "docs/spec-kit/43-manual-review-selector-pipeline.md"
+  },
+  "salvage": {
+    "review_only_route_hints": [
+      "blocked/refuse"
+    ],
+    "required_reason_codes": [
+      "active_target_available",
+      "exact_title_match"
+    ],
+    "min_top_two_gap": 40,
+    "min_score": 80,
+    "batch_size": 100,
+    "initial_sample_size": 50
+  },
+  "remaining_link_triage": {
+    "generated_or_report_auto_keep": {
+      "classification": "generated_report_auto_keep",
+      "risk": "low",
+      "apply_authority": "none",
+      "description": "Generated/audit/evidence/report links are kept as historical evidence unless a separate manifest approves a narrow rewrite."
+    },
+    "protected_cross_vault_manual": {
+      "classification": "protected_cross_vault_manual",
+      "risk": "high",
+      "apply_authority": "none",
+      "description": "Soul/cross-vault/protected links stay manual-only and are never target-created or retargeted automatically."
+    },
+    "graphify_exact_path_preferred": {
+      "classification": "graphify_exact_path_preferred_no_apply",
+      "risk": "low",
+      "apply_authority": "none",
+      "description": "If a Graphify report link already contains an exact report path, prefer the exact path for resolver interpretation but do not rewrite the note."
+    },
+    "real_broken_target_discovery": {
+      "classification": "real_broken_needs_target_discovery",
+      "risk": "medium",
+      "apply_authority": "none",
+      "description": "Non-generated broken links require target discovery before any proposal can be made."
+    }
+  }
+}

@@ -36,6 +36,44 @@ def test_observe_vault_detects_links_broken_links_and_orphans(tmp_path: Path) ->
     assert observation["orphans"] == [str(vault / "orphan.md")]
 
 
+def test_observe_vault_ignores_report_examples_code_and_archives(tmp_path: Path) -> None:
+    vault = tmp_path / "vault"
+    _write_note(
+        vault / "Reports" / "Generated.md",
+        "# Report\n"
+        "Active [[Real Target]] link.\n"
+        "Inline example `[[Not A Real Link]]` must stay literal.\n"
+        "Escaped \\[\\[Also Literal\\]\\] must stay literal.\n"
+        "```\n[[Fence Literal]]\n```\n",
+    )
+    _write_note(vault / "Real Target.md", "exists")
+    _write_note(vault / "_Backups" / "old.md", "backup [[Backup Missing]]")
+    _write_note(vault / "_Archive" / "old.md", "archive [[Archive Missing]]")
+    _write_note(vault / ".hidden" / "hidden.md", "hidden [[Hidden Missing]]")
+
+    observation = observe_vault(vault)
+
+    assert observation["counts"]["broken_links"] == 0
+    note_paths = {Path(note["path"]).relative_to(vault).as_posix() for note in observation["notes"]}
+    assert note_paths == {"Real Target.md", "Reports/Generated.md"}
+
+
+def test_observe_vault_resolves_protected_symlink_without_scanning_it(tmp_path: Path) -> None:
+    vault = tmp_path / "vault"
+    soul = tmp_path / "Soul-Vault" / "Soul"
+    _write_note(vault / "Report.md", "Report references [[Hermes/Soul/Policy Note]].")
+    _write_note(soul / "Policy Note.md", "protected policy")
+    (vault / "Hermes").mkdir(parents=True)
+    (vault / "Hermes" / "Soul").symlink_to(soul, target_is_directory=True)
+
+    observation = observe_vault(vault)
+
+    assert observation["counts"]["broken_links"] == 0
+    note_paths = {Path(note["path"]).relative_to(vault).as_posix() for note in observation["notes"]}
+    assert note_paths == {"Report.md"}
+    assert observation["notes"][0]["resolved_links"] == [str((soul / "Policy Note.md").resolve())]
+
+
 def test_build_proposal_is_dry_run_by_default(tmp_path: Path) -> None:
     vault = tmp_path / "vault"
     observation = {

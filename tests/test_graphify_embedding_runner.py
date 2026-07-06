@@ -234,6 +234,18 @@ def test_ollama_runner_requests_unload_after_run(monkeypatch: pytest.MonkeyPatch
     assert any(keep_alive is None for _text, keep_alive in calls[:-1])
 
 
+def test_runner_rejects_more_than_user_hard_cap(tmp_path: Path) -> None:
+    manifest, _derived = make_manifest(tmp_path)
+    with pytest.raises(GuardrailError, match="between 1 and 75"):
+        run_graphify_embedding_manifest(
+            manifest_path=manifest,
+            max_files=76,
+            provider="local-hashing-v1",
+            allow_smoke_provider=True,
+            resource_preflight=False,
+        )
+
+
 def test_rejects_smoke_provider_without_explicit_gate(tmp_path: Path) -> None:
     manifest, _sandbox = make_manifest(tmp_path)
     with pytest.raises(GuardrailError, match="smoke/test provider"):

@@ -127,6 +127,67 @@ def _read_payload(path: Path) -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {}
 
 
+def _doctor_finding(findings: list[str], message: str) -> None:
+    findings.append(message)
+
+
+def _doctor_require_empty_list(findings: list[str], value: Any, message: str) -> None:
+    if value not in (None, []):
+        _doctor_finding(findings, message)
+
+
+def doctor_semantic_manifest(*, repo: str | Path | None = None, manifest: str | Path) -> dict[str, Any]:
+    """Validate an existing semantic indexing manifest without rebuilding evidence."""
+
+    repo_path = _repo_root(repo)
+    manifest_path = _require_under_repo_out(manifest, repo_path)
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise GuardrailError("semantic manifest must be a JSON object")
+
+    findings: list[str] = []
+    if payload.get("mode") != "semantic-indexing-manifest":
+        _doctor_finding(findings, "mode must be semantic-indexing-manifest")
+    if payload.get("live_mutation_authorized") is not False:
+        _doctor_finding(findings, "live_mutation_authorized must be false")
+    if payload.get("approval_manifest_created") is not False:
+        _doctor_finding(findings, "approval_manifest_created must be false")
+
+    _doctor_require_empty_list(findings, payload.get("findings"), "manifest findings must be empty")
+
+    artifacts = payload.get("artifacts")
+    if not isinstance(artifacts, list) or not artifacts:
+        _doctor_finding(findings, "artifacts must be a non-empty list")
+    else:
+        for index, artifact in enumerate(artifacts):
+            if not isinstance(artifact, dict):
+                _doctor_finding(findings, f"artifacts[{index}] must be an object")
+                continue
+            artifact_path = artifact.get("path")
+            if not isinstance(artifact_path, str) or not artifact_path.strip():
+                _doctor_finding(findings, f"artifacts[{index}].path must be a non-empty string")
+                continue
+            try:
+                _require_under_repo_out(artifact_path, repo_path)
+            except GuardrailError:
+                _doctor_finding(findings, f"artifacts[{index}].path must be under repo out/")
+            if artifact.get("exists") is not True:
+                _doctor_finding(findings, f"artifacts[{index}].exists must be true")
+            if artifact.get("safety_ok") is not True:
+                _doctor_finding(findings, f"artifacts[{index}].safety_ok must be true")
+            _doctor_require_empty_list(findings, artifact.get("findings"), f"artifacts[{index}].findings must be empty")
+            summary = artifact.get("summary")
+            if isinstance(summary, dict) and summary.get("targets") not in (None, 0, []):
+                _doctor_finding(findings, f"artifacts[{index}].summary.targets must be empty")
+
+    return {
+        "status": "blocked" if findings else "ready",
+        "manifest": str(manifest_path),
+        "repo": str(repo_path),
+        "findings": findings,
+    }
+
+
 def _candidate_pointer_paths(pointer: str, *, repo: Path, source_artifact: Path) -> tuple[Path, ...]:
     raw = Path(pointer).expanduser()
     if raw.is_absolute():

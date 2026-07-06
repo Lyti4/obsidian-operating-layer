@@ -139,4 +139,38 @@ Acceptance:
 - findings are empty before the chain is considered ready for operator review
 
 CLI: `tools/obsidian_semantic_manifest.py`
+Doctor CLI: `tools/obsidian_semantic_manifest_doctor.py`
 Library: `src/obslayer/semantic_manifest.py`
+
+## Semantic manifest doctor
+
+The semantic manifest doctor validates an existing `semantic-manifest.json` only. It is deterministic and read-only: it does not rebuild evidence, scan the live vault, create approval manifests, or read note contents.
+
+Command:
+
+```bash
+python3 tools/obsidian_semantic_manifest_doctor.py \
+  --repo . \
+  --manifest out/reports/semantic-manifests/manual/semantic-manifest.json
+```
+
+Acceptance:
+
+- `status: ready` only when manifest findings are empty;
+- `live_mutation_authorized: false`;
+- `approval_manifest_created: false`;
+- every manifest artifact path remains under repo `out/`;
+- artifact entries are existing, `safety_ok: true`, and target-free.
+
+## Acceptance bundle doctor step
+
+After semantic/indexing manifests are checked, a repo-only acceptance bundle can be validated with:
+
+```bash
+python tools/obsidian_acceptance_bundle_doctor.py \
+  --bundle out/reports/<slice>/acceptance-bundle.json \
+  --repo . \
+  --out-dir out/reports/<slice>/acceptance-bundle-doctor
+```
+
+The doctor must keep `live_mutation_authorized: false`, `approval_manifest_created: false`, `apply_authority: none`, and `targets: []`. It is an evidence gate only, not an apply gate.

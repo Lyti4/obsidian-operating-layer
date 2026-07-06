@@ -1,0 +1,172 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://obsidian-operating-layer.local/schemas/external-autograph-policy.schema.json",
+  "title": "External Autograph Policy Adapter",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "policy_ref",
+    "source_repos",
+    "authority",
+    "protected_path_denylist",
+    "generated_report_noise",
+    "dedup_action_taxonomy",
+    "alias_policy_refs",
+    "salvage",
+    "remaining_link_triage"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "policy_id": {
+      "type": "string"
+    },
+    "policy_ref": {
+      "type": "string"
+    },
+    "source_repos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "default_apply_authority",
+        "live_mutation_authorized",
+        "approved_default"
+      ],
+      "properties": {
+        "default_apply_authority": {
+          "const": "none"
+        },
+        "live_mutation_authorized": {
+          "const": false
+        },
+        "approval_manifest_created": {
+          "const": false
+        },
+        "approved_default": {
+          "const": false
+        },
+        "approved_false_means_no_apply": {
+          "const": true
+        },
+        "approved_true_requires_operator_manifest": {
+          "const": true
+        }
+      },
+      "additionalProperties": true
+    },
+    "protected_path_denylist": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "protected_link_parts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "generated_report_noise": {
+      "type": "object",
+      "required": [
+        "path_parts",
+        "noise_words"
+      ],
+      "properties": {
+        "path_parts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "noise_words": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "forbidden_reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "forbidden_safety_flags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "link_resolution_classes": {
+      "type": "object"
+    },
+    "dedup_action_taxonomy": {
+      "type": "object"
+    },
+    "alias_policy_refs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "salvage": {
+      "type": "object",
+      "required": [
+        "review_only_route_hints",
+        "required_reason_codes",
+        "min_top_two_gap",
+        "min_score",
+        "batch_size",
+        "initial_sample_size"
+      ],
+      "properties": {
+        "review_only_route_hints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_reason_codes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "min_top_two_gap": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "min_score": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "batch_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "initial_sample_size": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "remaining_link_triage": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object"
+      }
+    }
+  },
+  "additionalProperties": false
+}

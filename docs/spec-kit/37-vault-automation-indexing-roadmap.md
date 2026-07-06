@@ -179,6 +179,14 @@ Confidence bands:
 
 The `blocked/refuse` route is reserved for protected surfaces, hard-stop risk codes, or any attempted authority over live apply / approval-manifest creation.
 
+### R3b `semantic-manifest-doctor`
+
+Status: accepted repo-only/read-only doctor for existing semantic indexing manifests.
+
+Acceptance evidence: `src/obslayer/semantic_manifest.py`, `tools/obsidian_semantic_manifest_doctor.py`, `tests/test_semantic_manifest.py`, `out/reports/semantic-manifest-doctor/codex-implementation/REPORT.md`.
+
+Accepted boundary: reads one supplied semantic manifest JSON under repo `out/`, verifies `mode: semantic-indexing-manifest`, mutation and approval flags false, non-empty artifact list, artifact paths under repo `out/`, and empty manifest findings; returns `ready` or `blocked` only and never rebuilds evidence, scans the live vault, creates approval manifests, or applies changes.
+
 ### R4 — `operator-decision-ledger-v1`
 
 Status: accepted as a repo-only/evidence-only append-only decision ledger bundle and CLI writer.
@@ -278,6 +286,60 @@ Acceptance for actual live apply, only after separate explicit approval:
 - rollback evidence exists;
 - metrics diff is recorded.
 
+### R8 — acceptance bundle doctor
+
+Status: accepted as a repo-only evidence/readiness safety gate.
+
+Acceptance evidence: `src/obslayer/acceptance_bundle_doctor.py`, `tools/obsidian_acceptance_bundle_doctor.py`, `tests/test_acceptance_bundle_doctor.py`, and `docs/spec-kit/41-acceptance-bundle-doctor.md`.
+
+Accepted boundary: validates a repo-local acceptance bundle and required checks before any future apply-readiness step; keeps `live_mutation_authorized: false`, `approval_manifest_created: false`, `apply_authority: none`, and `targets: []`; refuses live target paths and artifacts outside allowed repo roots.
+
+### R9 — operator review packet
+
+Status: accepted as a repo-only post-readiness human-review checkpoint.
+
+Acceptance evidence: `src/obslayer/operator_review_packet.py`, `tools/obsidian_operator_review_packet.py`, `tests/test_operator_review_packet.py`, and `docs/spec-kit/42-operator-review-packet.md`.
+
+Accepted boundary: consumes dry-run proposal evidence under repo `out/` and emits `operator-review-packet.json` plus `REPORT.md`; keeps `live_mutation_authorized: false`, `approval_manifest_created: false`, `approval_manifest_authority: false`, `target_paths: []`, and `apply_authority: none`. Empty dry-run proposal evidence becomes `no_candidate` and must not be turned into an approval request.
+
+### R10 — unified operator review index
+
+Status: accepted as a repo-only control panel.
+
+Acceptance evidence: `src/obslayer/unified_operator_review_index.py`, `tools/obsidian_unified_operator_review_index.py`, `tests/test_unified_operator_review_index.py`, `docs/spec-kit/47-unified-operator-review-index.md`, and `out/reports/unified-operator-review-index/full-vault-proposal-only-20260706T182612Z/REPORT.md`.
+
+Accepted boundary: aggregates only repo-local `out/` and docs pointers; missing pointers are visible, unsafe authority flags block; it never creates approval manifests, never writes the vault, and keeps `target_paths: []`.
+
+### R11 — candidate-volume operator packet
+
+Status: accepted as a repo-only operator gate over the latest proposal-only evidence.
+
+Acceptance evidence: `src/obslayer/candidate_volume_operator_packet.py`, `tools/obsidian_candidate_volume_operator_packet.py`, `tests/test_candidate_volume_operator_packet.py`, `docs/spec-kit/48-candidate-volume-operator-packet.md`, and `out/reports/candidate-volume-operator-packet/full-vault-proposal-only-20260706T182612Z/REPORT.md`.
+
+Accepted boundary: summarizes observation/proposal/verify/unified-index evidence, protected buckets, and route buckets; it reports candidate volume but deliberately leaves `first_manifest_candidate_queue: []` and grants no apply authority.
+
+### R12 — manifest-candidate selector
+
+Status: Hermes-accepted repo-only selector smoke; independent read-only review remains the next hardening gate.
+
+Acceptance evidence: `src/obslayer/manifest_candidate_selector.py`, `tools/obsidian_manifest_candidate_selector.py`, `tests/test_manifest_candidate_selector.py`, `docs/spec-kit/49-manifest-candidate-selector.md`, and `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md`.
+
+Accepted boundary: consumes existing repo-local JSON evidence, selects at most five review candidates, refuses missing/blocked/authority-bearing inputs, and emits no approval manifest, target paths, or apply authority.
+
+### R13 — reconciliation gate
+
+Status: active docs/acceptance consolidation gate.
+
+Goal: keep the acceptance index, roadmap, evidence index, and orchestration board aligned with the packet/index/doctor taxonomy before opening another implementation slice.
+
+Acceptance:
+
+- current packet/index/doctor taxonomy is present in `docs/acceptance/index.md`;
+- R10-R12 are represented in this roadmap;
+- current evidence index has a reconciliation note with pending gates;
+- `git diff --check` and `make verify` pass.
+
+
 ## Lane priority
 
 1. `active_memory_ambiguous_memory_plus_archive` — first scorer target because it is the main blocker and should be solvable by archive-shadow rules.
@@ -307,6 +369,8 @@ Acceptance for actual live apply, only after separate explicit approval:
 
 ## Next command-level target
 
-R1–R7 readiness gates are now repo-only accepted. The next safe continuation point is **post-readiness operator review**, not live apply: select one generated proposal candidate, run readiness evidence, ask for explicit human approval if and only if the bundle remains narrow, hash-bound, backed up, and non-protected.
+R1–R12 are now represented as repo-only/proposal-only control-plane gates. The immediate safe continuation point is **R13 reconciliation**, not a new feature sprint and not live apply: keep docs, acceptance, and evidence pointers aligned before opening another implementation card.
+
+After reconciliation, the next technical gate is an independent read-only review of `manifest-candidate-selector-v1` and the current unified/candidate-volume/operator packet chain. Only after that review may Hermes propose a tiny explicit approval manifest for Dmitry to approve or reject.
 
 Live vault mutation remains blocked until Dmitry approves a fresh manifest for a specific proposal.
