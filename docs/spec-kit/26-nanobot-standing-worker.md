@@ -124,13 +124,20 @@ Dmitry approved a bounded standing Nanobot review loop:
    - Schedule: every 1 minute.
    - Delivery: local.
    - Output: ACK/reaction messages in `~/.nanobot-hermes/comm/nanobot-inbox/`.
-3. `d2a5fd33b29f` — **Hermes review Nanobot scout reports**.
+3. `d2a5fd33b29f` — **Hermes lightweight review Nanobot scout reports**.
    - Script: `/home/hermesadmin/.hermes/scripts/nanobot_report_reviewer.py`.
    - Schedule: every 15 minutes.
    - Delivery: origin chat, but silent when there are no newly reviewed reports.
    - Output: `out/reports/nanobot-hermes-reviewer/` plus local reviewed-hash state in `~/.nanobot-hermes/comm/state/hermes_report_reviewer.json`.
+4. `835d51562f73` — **Companion deep-review Nanobot scout backlog**.
+   - Script: `/home/hermesadmin/.hermes/scripts/nanobot_deep_review_companion.py`.
+   - Schedule: every 4 hours.
+   - Delivery: origin chat.
+   - Worker profile: `companion` (chosen because it has no current Kanban assignments; not `ops`).
+   - Batch: bounded old/new scout report review, oldest-first, default 12 reports per run.
+   - Output: `out/reports/nanobot-companion-deep-review/` plus local reviewed-hash state in `~/.nanobot-hermes/comm/state/companion_deep_reviewer.json`.
 
-This loop closes the previous gap where Nanobot reports were ACKed but not reviewed. The reviewer is still review-only: it may summarize, flag action candidates, and point to evidence, but it must not mutate repo/vault/auth/services, close cards, or apply docs without Hermes/Dmitry acceptance.
+This loop closes the previous gap where Nanobot reports were ACKed but not reviewed. The lightweight reviewer is still script-only triage. The companion deep reviewer does separate-profile proposal-only classification (`duplicate`, `no-action`, `stale`, `actionable`, `blocker`) and synthesis. Both may summarize, flag action candidates, and point to evidence, but must not mutate repo/vault/auth/services, close cards, or apply docs without Hermes/Dmitry acceptance.
 
 ## Task packet contract
 
