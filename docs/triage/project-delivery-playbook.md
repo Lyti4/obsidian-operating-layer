@@ -185,3 +185,15 @@ Every user update should include:
 - `docs/triage/project-delivery-playbook.md`
 - `/home/hermesadmin/work/hermes-multi-agent-workflow-sandbox/OBSIDIAN_OPERATING_LAYER_TRIAGE_BRIEF.md`
 - `/home/hermesadmin/.hermes/kanban/boards/obsidian-infra-triage/kanban.db`
+## Kanban state hygiene
+
+For active multi-agent project work, keep exactly one lifecycle-state source of truth:
+
+- **Kanban DB** holds card status, owner role, dependencies, comments, and events.
+- **Markdown board mirrors** are generated/read-only views for GitHub and review; do not manually maintain a second backlog there.
+- **Docs** hold policy, acceptance rules, and process contracts.
+- **`out/` reports** hold evidence and worker/subagent outputs.
+- Worker/subagent self-reports must be attached to card comments/events and verified by Hermes before a card advances.
+- Roles belong in `assignee`/owner fields, not lifecycle columns; columns/statuses represent state (`todo`, `ready`, `running`, `blocked`, `done`, `cancelled`).
+
+This prevents drift between DB status, markdown mirrors, report summaries, and final acceptance notes.
