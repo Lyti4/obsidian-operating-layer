@@ -44,6 +44,8 @@ Generated reports remain suppressed from routine auto-apply even when exact cand
 
 This standing approval does not cover creates, deletes, renames, moves, archive rewrites, Soul/cross-vault retargeting, semantic/global replacements, external-tool writes, scheduled jobs, or other destructive/high-risk operations.
 
+Repo codification follow-up: the standing policy is now backed by a reusable read-only baseline tool, `tools/obsidian_standing_safe_link_prefix_baseline.py`, and package helper `obslayer.standing_safe_link_prefix_baseline`. The tool scans a vault or scan root without writing, emits JSON/Markdown evidence, and always reports `live_mutation_authorized: false`, `approval_manifest_created: false`, and `apply_authority: none`. Current live read-only baseline evidence is under `out/reports/standing-safe-link-prefix-baseline/live-current/`; it reports zero allowed/actionable candidates and only excluded generated/protected surfaces.
+
 ## Current indexing stop point
 
 Authoritative generated evidence:
