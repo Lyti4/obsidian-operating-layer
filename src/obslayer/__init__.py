@@ -217,6 +217,13 @@ from .semantic_proposal_report import (
     semantic_proposal_report_to_markdown,
     write_semantic_proposal_report,
 )
+from .standing_safe_link_prefix_baseline import (
+    StandingSafeLinkPrefixBaseline,
+    build_standing_safe_link_prefix_baseline,
+    collect_existing_markdown_targets,
+    standing_safe_link_prefix_baseline_to_markdown,
+    write_standing_safe_link_prefix_baseline,
+)
 from .standing_safe_link_prefix_policy import (
     ClassificationResult,
     PolicyValidation,
@@ -398,6 +405,11 @@ __all__ = [
     "classify_source_relpath",
     "classify_link_prefix_candidate",
     "PolicyValidation",
+    "StandingSafeLinkPrefixBaseline",
+    "build_standing_safe_link_prefix_baseline",
+    "collect_existing_markdown_targets",
+    "standing_safe_link_prefix_baseline_to_markdown",
+    "write_standing_safe_link_prefix_baseline",
     "ClassificationResult",
     "write_acceptance_report",
     "write_diagram_pdf_report_evaluation",

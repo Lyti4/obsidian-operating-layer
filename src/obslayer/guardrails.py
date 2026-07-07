@@ -157,6 +157,9 @@ def canonical_workspace_layout() -> list[str]:
         "tests/test_standing_safe_link_prefix_policy.py",
         "tools/obsidian_standing_safe_link_prefix_policy.py",
         "src/obslayer/standing_safe_link_prefix_policy.py",
+        "tests/test_standing_safe_link_prefix_baseline.py",
+        "tools/obsidian_standing_safe_link_prefix_baseline.py",
+        "src/obslayer/standing_safe_link_prefix_baseline.py",
         "src/obslayer/policies/standing-safe-link-prefix-hygiene.policy.json",
         "policies/standing-safe-link-prefix-hygiene.policy.json",
     ]
