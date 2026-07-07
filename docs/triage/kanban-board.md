@@ -1,6 +1,6 @@
 # Obsidian Operating Layer — real Hermes Kanban/Triage board
 
-Updated: 2026-07-07T06:20:26Z
+Updated: 2026-07-07T06:21:19Z
 
 This is the GitHub-visible mirror of the real local Hermes Kanban board shown at `127.0.0.1:19119/kanban`.
 
@@ -16,37 +16,35 @@ This is the GitHub-visible mirror of the real local Hermes Kanban board shown at
 
 ## Current active multi-agent triage slice
 
-Triggered by Dmitry: continue through Obsidian Kanban triage with multi-agent cards and tracking. Implementation/review cards are closed; final status cards are ready.
+Triggered by Dmitry: continue through Obsidian Kanban triage with multi-agent cards and tracking. This continuation slice is closed; no live vault mutation was authorized or performed.
 
 | Card | Status | Assignee | Stable key |
 |---|---:|---|---|
-| `t_bf9860ca` — [obsidian-operating-layer] kanban-multiagent-tracking-hygiene final_report | `ready` | `boardagent` | `obsidian-layer.kanban-multiagent-tracking-hygiene.final_report` |
-| `t_5799cdb4` — [obsidian-operating-layer] remaining-link-operator-nextgate final_report | `ready` | `boardagent` | `obsidian-layer.remaining-link-operator-nextgate.final_report` |
-| `t_892cf4a6` — [obsidian-operating-layer] standing-link-prefix-operator-workflow code_slice | `ready` | `codex` | `obsidian-layer.standing-link-prefix-operator-workflow.code_slice` |
-| `t_d6d55abd` — [obsidian-operating-layer] standing-link-prefix-operator-workflow final_report | `ready` | `boardagent` | `obsidian-layer.standing-link-prefix-operator-workflow.final_report` |
-| `t_9f5bc2c4` — [obsidian-operating-layer] standing-link-prefix-operator-workflow docs_update | `todo` | `docs` | `obsidian-layer.standing-link-prefix-operator-workflow.docs_update` |
-| `t_bccbc84d` — [obsidian-operating-layer] standing-link-prefix-operator-workflow ops_verification | `todo` | `ops` | `obsidian-layer.standing-link-prefix-operator-workflow.ops_verification` |
 | `t_8c94d537` — [obsidian-operating-layer] R13 docs reconciliation after standing baseline | `done` | `docs` | `obsidian-layer.r13-doc-reconciliation.docs_update` |
 | `t_63727abe` — [obsidian-operating-layer] kanban-multiagent-tracking-hygiene docs_update | `done` | `docs` | `obsidian-layer.kanban-multiagent-tracking-hygiene.docs_update` |
+| `t_bf9860ca` — [obsidian-operating-layer] kanban-multiagent-tracking-hygiene final_report | `done` | `boardagent` | `obsidian-layer.kanban-multiagent-tracking-hygiene.final_report` |
 | `t_895339da` — [obsidian-operating-layer] kanban-multiagent-tracking-hygiene research_or_spec | `done` | `ops` | `obsidian-layer.kanban-multiagent-tracking-hygiene.research_or_spec` |
+| `t_5799cdb4` — [obsidian-operating-layer] remaining-link-operator-nextgate final_report | `done` | `boardagent` | `obsidian-layer.remaining-link-operator-nextgate.final_report` |
 | `t_537a2d63` — [obsidian-operating-layer] remaining-link-operator-nextgate operator_review | `done` | `default` | `obsidian-layer.remaining-link-operator-nextgate.operator_review` |
 | `t_dedcf14b` — [obsidian-operating-layer] remaining-link-operator-nextgate research_or_spec | `done` | `nanobot` | `obsidian-layer.remaining-link-operator-nextgate.research_or_spec` |
+| `t_d6d55abd` — [obsidian-operating-layer] standing-link-prefix-operator-workflow final_report | `done` | `boardagent` | `obsidian-layer.standing-link-prefix-operator-workflow.final_report` |
 | `t_db369d57` — [obsidian-operating-layer] standing-link-prefix-operator-workflow research_or_spec | `done` | `dev` | `obsidian-layer.standing-link-prefix-operator-workflow.research_or_spec` |
 | `t_fdbc1ebe` — [obsidian-operating-layer] remaining-link-operator-nextgate code_slice | `cancelled` | `codex` | `obsidian-layer.remaining-link-operator-nextgate.code_slice` |
+| `t_892cf4a6` — [obsidian-operating-layer] standing-link-prefix-operator-workflow code_slice | `cancelled` | `codex` | `obsidian-layer.standing-link-prefix-operator-workflow.code_slice` |
+| `t_9f5bc2c4` — [obsidian-operating-layer] standing-link-prefix-operator-workflow docs_update | `cancelled` | `docs` | `obsidian-layer.standing-link-prefix-operator-workflow.docs_update` |
+| `t_bccbc84d` — [obsidian-operating-layer] standing-link-prefix-operator-workflow ops_verification | `cancelled` | `ops` | `obsidian-layer.standing-link-prefix-operator-workflow.ops_verification` |
 
-### Active workstreams
+### Closed workstreams
 
-1. `standing-link-prefix-operator-workflow` — R13 docs reconciliation done; final report ready.
-2. `remaining-link-operator-nextgate` — operator review done; no apply/code slice; final report ready.
-3. `kanban-multiagent-tracking-hygiene` — playbook rule done; final report ready.
+1. `standing-link-prefix-operator-workflow` — R13 docs reconciliation done; superseded extra code/ops stages cancelled.
+2. `remaining-link-operator-nextgate` — operator review done; no apply/code slice; final report done.
+3. `kanban-multiagent-tracking-hygiene` — playbook rule done; final report done.
 
 ## Board counts
 
 - `archived`: `12`
-- `cancelled`: `1`
-- `done`: `126`
-- `ready`: `4`
-- `todo`: `2`
+- `cancelled`: `4`
+- `done`: `129`
 
 ## Historical sequential activation chain
 
