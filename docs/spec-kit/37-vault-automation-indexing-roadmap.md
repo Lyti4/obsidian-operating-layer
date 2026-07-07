@@ -364,6 +364,8 @@ Acceptance:
 - current packet/index/doctor taxonomy is present in `docs/acceptance/index.md`;
 - R10-R12 are represented in this roadmap;
 - current evidence index has a reconciliation note with pending gates;
+- fresh selector v2 and operator nextgate evidence are recorded as manual-only/no-apply current-state pointers;
+- remaining-link fresh selector validation stays proposal-only and does not create apply authority;
 - `git diff --check` and `make verify` pass.
 
 
