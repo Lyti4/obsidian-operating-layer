@@ -10,6 +10,13 @@ Keep `docs/acceptance/index.md` and `docs/spec-kit/24-orchestration-backlog.md` 
 
 This document is an index only. It does not promote generated artifacts to source-of-truth status and does not authorize live mutation.
 
+
+## Nanobot review access pattern
+
+Current accepted pattern for Nanobot reviews is **read-only gateway plus compact evidence packet**. The gateway already exposes safe repo/report roots (`/project-docs/`, `/spec-kit/`, `/reports/`, `/proposals/`, `/server-work/obsidian-operating-layer/`) without granting raw access to live vault, secrets, auth stores, or browser profiles. For review slices, Hermes should generate a packet with `tools/nanobot_review_packet.py` and pass that packet text plus gateway URLs to Nanobot.
+
+This prevents the observed failure mode where Nanobot loops while trying to discover inaccessible files. If the gateway or packet path is unavailable, Nanobot output is advisory-only and cannot be used as acceptance evidence.
+
 ## Control-plane source surfaces
 
 - First-read orchestrator spec: `docs/spec-kit/30-orchestrator-operating-spec.md`
@@ -204,11 +211,11 @@ Safety: these are evidence pointers only. They do not authorize unattended live 
 
 ## 2026-07-06 same-vault next5 proposal-readiness
 
-- Same-vault next5 proposal report: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/NEXT5_PROPOSAL_REPORT.md` — proposal-only/readiness-only batch after the first live pilot; 5 logical replacements remain present in `Memory-Vault/00 Memory Graph Index.md`.
+- Same-vault next5 proposal report: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/NEXT5_PROPOSAL_REPORT.md` — proposal/readiness evidence for the exact grouped `next5` batch.
 - Same-vault next5 grouped proposal: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/proposal-next5.grouped.json`.
 - Same-vault next5 dry-run/readiness evidence: `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/dry-run-next5.grouped.json`, `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/readiness-next5-grouped/approved-apply-readiness-v1.json`.
 
-Safety: no live apply was run for this next5 batch. The readiness manifest is not standing authorization; explicit chat approval, backup, apply, and post-verify are still required.
+Status: superseded by the live-apply/post-verify evidence below. The readiness manifest was single-batch evidence only and is not standing authorization for any future live apply.
 
 ## 2026-07-06 same-vault next5 live apply
 
@@ -302,8 +309,17 @@ Current packet/index/doctor family is consolidated as repo-only control-plane ev
 
 Current boundary: all current gates preserve `live_mutation_authorized: false`, `approval_manifest_created: false`, `apply_authority: none`, and empty `target_paths` unless a separate Dmitry-approved live manifest is created for an exact proposal.
 
+## 2026-07-07 Nanobot recommendation follow-up / index freshness
+
+Nanobot's latest recommendations are tracked as repo-only documentation/index hygiene, not as apply authority:
+
+- freshness source: `tools/obsidian_project_docs_lag_audit.py` and generated reports under `out/reports/nanobot-recommendations-index-freshness/`;
+- current source pointers: this file plus `docs/acceptance/index.md` and `docs/orchestration-board.md`;
+- accepted labels: generated `out/` artifacts are evidence only, proposal/operator packets remain proposal-only, and live apply requires a fresh explicit approval manifest;
+- latest reconciliation: `out/reports/kanban-triage-continuation/20260707T034602Z-next5-manifest-reconciliation/HERMES_RECONCILIATION.md` accepted the already-applied grouped `next5` batch as applied+verified and did not reapply it.
+
 Pending before any next live pilot:
 
-1. independent read-only review of `manifest-candidate-selector-v1` against the current grouped-next5 smoke evidence;
-2. refreshed unified review index after any artifact pointer changes;
+1. refresh unified/operator review evidence after any pointer changes;
+2. independent read-only review of the fresh baseline/proposal chain;
 3. exact approval manifest, backup, apply, and post-verify only if Dmitry explicitly approves a narrow proposal.

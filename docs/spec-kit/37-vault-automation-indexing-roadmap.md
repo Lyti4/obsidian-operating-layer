@@ -369,8 +369,8 @@ Acceptance:
 
 ## Next command-level target
 
-R1–R12 are now represented as repo-only/proposal-only control-plane gates. The immediate safe continuation point is **R13 reconciliation**, not a new feature sprint and not live apply: keep docs, acceptance, and evidence pointers aligned before opening another implementation card.
+R1–R12 are now represented as repo-only/proposal-only control-plane gates. **R13 reconciliation** is the current safe continuation point: keep docs, acceptance, and evidence pointers aligned after Nanobot/Codex review signals and after any already-applied pilot is reconciled.
 
-After reconciliation, the next technical gate is an independent read-only review of `manifest-candidate-selector-v1` and the current unified/candidate-volume/operator packet chain. Only after that review may Hermes propose a tiny explicit approval manifest for Dmitry to approve or reject.
+After R13, the next technical gate is a fresh unified/operator review baseline and independent read-only review of the current proposal chain. Only after that review may Hermes propose a tiny explicit approval manifest for Dmitry to approve or reject.
 
 Live vault mutation remains blocked until Dmitry approves a fresh manifest for a specific proposal.

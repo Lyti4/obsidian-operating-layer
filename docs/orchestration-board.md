@@ -9,6 +9,16 @@ This board is the operator-facing control surface for advancing Obsidian Operati
 - Protected paths stay blocked: `.obsidian`, `_Backups`, `_Archive`, `.trash`, and Soul-protected paths.
 - Third-party GitHub Apps stay blocked until explicitly approved.
 
+
+## Nanobot read-only review handoff
+
+Standard mode for Nanobot review is **gateway + evidence packet**:
+
+1. Hermes keeps Nanobot read-only/proposal-only and does not grant raw home/vault/secrets access.
+2. Nanobot may read repo docs through the read-only evidence gateway at `http://127.0.0.1:18791/` (`/project-docs/`, `/spec-kit/`, `/reports/`, `/proposals/`, `/server-work/obsidian-operating-layer/`).
+3. For important reviews Hermes also generates a compact packet with `tools/nanobot_review_packet.py`, including scope, forbidden actions, safe URLs, git status, and a bounded diff.
+4. If Nanobot cannot access gateway URLs or loops on file access, Hermes records `Nanobot unavailable/no verdict` and falls back to local verification + Codex/Ops review; it must not broaden access to live vault/secrets.
+
 ## Active lanes
 
 | Lane | Owner role | Current state | Acceptance gate |
@@ -72,4 +82,4 @@ Candidate-volume/operator-review packet gate is implemented and generated at `ou
 
 Manifest-candidate selector gate has Hermes acceptance: `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` records inert safety, `selected_count: 5`, `missing_artifacts: 0`, focused 20-test pass, `git diff --check`, and full `make verify`.
 
-Current active reconcile slice: align `docs/acceptance/index.md`, `docs/spec-kit/36-current-evidence-index.md`, and `docs/spec-kit/37-vault-automation-indexing-roadmap.md` around the packet/index/doctor taxonomy. Independent read-only review of the manifest-candidate selector remains the next gate before any new live pilot discussion. Any real live pilot remains behind a separate explicit approval manifest.
+Current active repo-only slice: Nanobot recommendation follow-up for index freshness and proposal-only labels. Scope is docs/source-index hygiene only: align `docs/acceptance/index.md`, `docs/spec-kit/36-current-evidence-index.md`, `docs/spec-kit/37-vault-automation-indexing-roadmap.md`, and this board so generated `out/` evidence remains discoverable without becoming source truth. Next gate before any new live pilot is a fresh unified/operator review baseline plus independent read-only review; any real live pilot remains behind a separate explicit approval manifest.
