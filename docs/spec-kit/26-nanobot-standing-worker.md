@@ -55,7 +55,7 @@ Nanobot must not:
 - move/delete/rename project files unless Hermes explicitly dispatches a reviewed repository task;
 - start local embeddings automatically;
 - start long-running/high-load jobs without a bounded task packet;
-- change auth, credentials, tokens, provider state, profiles, cron jobs beyond the approved scout job, or server services;
+- change auth, credentials, tokens, provider state, profiles, cron jobs beyond the approved scout/reviewer loop, or server services;
 - install GitHub Apps, enable paid services, publish, deploy, restart production, or expose network ports;
 - read or print secrets.
 
@@ -108,6 +108,29 @@ Use the dedicated Graphify contract in `25-nanobot-graphify-worker.md`:
 - sandbox/read-only;
 - graph-first;
 - embeddings later only by separate approved slice.
+
+
+## Approved scheduled review loop
+
+Dmitry approved a bounded standing Nanobot review loop:
+
+1. `212b7e8f3c21` — **Nanobot Obsidian Layer 15m audit scout**.
+   - Script: `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`.
+   - Schedule: every 15 minutes.
+   - Delivery: local.
+   - Output: `out/reports/nanobot-cron-scout/` and Nanobot→Hermes offers in `~/.nanobot-hermes/comm/hermes-inbox/`.
+2. `f553d3d40ec9` — **Hermes Nanobot internal comm watcher**.
+   - Script: `/home/hermesadmin/.hermes/scripts/nanobot_hermes_comm_watcher.py`.
+   - Schedule: every 1 minute.
+   - Delivery: local.
+   - Output: ACK/reaction messages in `~/.nanobot-hermes/comm/nanobot-inbox/`.
+3. `d2a5fd33b29f` — **Hermes review Nanobot scout reports**.
+   - Script: `/home/hermesadmin/.hermes/scripts/nanobot_report_reviewer.py`.
+   - Schedule: every 15 minutes.
+   - Delivery: origin chat, but silent when there are no newly reviewed reports.
+   - Output: `out/reports/nanobot-hermes-reviewer/` plus local reviewed-hash state in `~/.nanobot-hermes/comm/state/hermes_report_reviewer.json`.
+
+This loop closes the previous gap where Nanobot reports were ACKed but not reviewed. The reviewer is still review-only: it may summarize, flag action candidates, and point to evidence, but it must not mutate repo/vault/auth/services, close cards, or apply docs without Hermes/Dmitry acceptance.
 
 ## Task packet contract
 

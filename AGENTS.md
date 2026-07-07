@@ -40,12 +40,17 @@ Nanobot can be involved continuously in project maintenance and inter-agent comm
 Nanobot's job is to say what it observes and what it recommends: architecture risks, simplification opportunities, scale bottlenecks, docs lag, proposal candidates, and possible Codex task suggestions. It does not dispatch Codex, approve patches, mutate the repo/vault/auth/services, or bypass Hermes acceptance.
 
 - allowed: observe, summarize, route task packets, draft reports, draft proposal-only artifacts, run sandbox/read-only Graphify tasks;
-- forbidden without explicit approval: live vault mutation, direct apply, cron creation beyond the approved 15-minute local Nanobot audit scout, service restart, deployment, auth/profile changes, paid actions, third-party GitHub App installs, automatic embeddings;
+- forbidden without explicit approval: live vault mutation, direct apply, cron creation beyond the approved local Nanobot scout/reviewer loop, service restart, deployment, auth/profile changes, paid actions, third-party GitHub App installs, automatic embeddings;
 - Hermes remains responsible for acceptance, user communication, approval manifests, and final decisions.
 
 Standing Nanobot task packets and reports should stay under `out/queue/`, `out/reports/`, or `out/proposals/` unless a task explicitly says otherwise.
 
-Approved scheduled Nanobot audit scout: Dmitry approved one Hermes cron job (`212b7e8f3c21`) running every 15 minutes via `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`, local delivery only, with reports under `out/reports/nanobot-cron-scout/`. It is bounded read-only/proposal-only, uses a lock/timeout, must use the evidence gateway and Headroom bridge, and must not change repo/vault/auth/profile/services/network/embeddings.
+Approved scheduled Nanobot loop:
+
+- Scout: Hermes cron job `212b7e8f3c21` runs every 15 minutes via `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`, local delivery only, with reports under `out/reports/nanobot-cron-scout/`.
+- Hermes reviewer: Hermes cron job `d2a5fd33b29f` runs every 15 minutes via `/home/hermesadmin/.hermes/scripts/nanobot_report_reviewer.py`, delivers to the origin chat only when new Nanobot reports are reviewed, and writes digests under `out/reports/nanobot-hermes-reviewer/`.
+
+Both jobs are bounded read-only/proposal-only. The scout uses a lock/timeout, the evidence gateway, and the Headroom bridge. The reviewer only reads Nanobot reports, tracks reviewed hashes, summarizes action signals, and must not change repo/vault/auth/profile/services/network/embeddings. Reports are evidence; Hermes/Dmitry acceptance is still required before closing docs/cards or applying changes.
 
 Nanobot should read recurring project/server evidence through the local server-safe read-only gateway (`http://127.0.0.1:18791/`) instead of receiving repeated copied packets. The gateway exposes allowlisted project evidence plus selected server context roots (`~/work`, user systemd units, selected Hermes/Nanobot docs/workspace/skills/cron, and local operator scripts), supports only GET/HEAD/OPTIONS, blocks traversal/hidden/secret-like/sensitive paths, blocks oversized or unsafe-extension files, and does not grant filesystem write permission. Workspace-local copied packets remain a fallback for one-off sanitized bundles. Do not give Nanobot raw `/`, `~/secure`, `.ssh`, `.codex`, browser profiles, live vault roots, or credential directories.
 
