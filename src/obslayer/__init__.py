@@ -217,6 +217,14 @@ from .semantic_proposal_report import (
     semantic_proposal_report_to_markdown,
     write_semantic_proposal_report,
 )
+from .standing_safe_link_prefix_policy import (
+    ClassificationResult,
+    PolicyValidation,
+    classify_link_prefix_candidate,
+    classify_source_relpath,
+    load_standing_safe_link_prefix_policy,
+    validate_standing_safe_link_prefix_policy,
+)
 
 __all__ = [
     "write_acceptance_bundle_doctor_report",
@@ -385,6 +393,12 @@ __all__ = [
     "write_graphify_embedding_query_smoke_report",
     "write_indexing_mcp_report_bundle",
     "write_json",
+    "validate_standing_safe_link_prefix_policy",
+    "load_standing_safe_link_prefix_policy",
+    "classify_source_relpath",
+    "classify_link_prefix_candidate",
+    "PolicyValidation",
+    "ClassificationResult",
     "write_acceptance_report",
     "write_diagram_pdf_report_evaluation",
     "write_external_tool_benchmark_report",

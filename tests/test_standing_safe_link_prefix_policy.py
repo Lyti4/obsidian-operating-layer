@@ -127,3 +127,16 @@ def test_cli_classifies_fixture_without_scanning_vault() -> None:
     payload = json.loads(completed.stdout)
     assert payload["classification"]["allowed"] is True
     assert payload["classification"]["live_mutation_authorized"] is False
+
+
+def test_package_exports_policy_helpers() -> None:
+    import obslayer
+
+    result = obslayer.classify_link_prefix_candidate(
+        source_relpath="Memory-Vault/Notes/source.md",
+        link="[[Hermes/Inbox]]",
+        existing_target_relpaths=EXISTING_TARGETS,
+    )
+
+    assert result.allowed is True
+    assert obslayer.validate_standing_safe_link_prefix_policy is validate_standing_safe_link_prefix_policy

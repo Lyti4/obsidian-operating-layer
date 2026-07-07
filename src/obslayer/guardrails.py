@@ -154,6 +154,11 @@ def canonical_workspace_layout() -> list[str]:
         "tools/obsidian_backfill_report.py",
         "tests/conftest.py",
         "tests/test_guardrails.py",
+        "tests/test_standing_safe_link_prefix_policy.py",
+        "tools/obsidian_standing_safe_link_prefix_policy.py",
+        "src/obslayer/standing_safe_link_prefix_policy.py",
+        "src/obslayer/policies/standing-safe-link-prefix-hygiene.policy.json",
+        "policies/standing-safe-link-prefix-hygiene.policy.json",
     ]
 
 
