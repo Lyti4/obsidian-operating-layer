@@ -138,6 +138,20 @@ Commands run for this docs update:
 
 Final fan-in report: `out/reports/latest-artifacts-delta/final-board-report.md`.
 
+
+## 2026-07-07 R13 standing-baseline reconciliation
+
+R13 records the post-baseline state after the standing link-prefix policy was codified and the read-only live baseline tool was added. The current accepted state is repo-only/read-only: the baseline can classify and report `[[Hermes/...]]` prefix hygiene candidates, but it does not create approval manifests, authorize applies, or mutate the live vault.
+
+| Surface | Current status | Canonical pointer | Evidence pointer |
+|---|---|---|---|
+| Standing link-prefix policy | Accepted deterministic policy helper | `src/obslayer/standing_safe_link_prefix_policy.py` | `tests/test_standing_safe_link_prefix_policy.py` |
+| Standing link-prefix baseline | Accepted read-only reporting helper | `src/obslayer/standing_safe_link_prefix_baseline.py`, `tools/obsidian_standing_safe_link_prefix_baseline.py` | `out/reports/standing-safe-link-prefix-baseline/live-current/REPORT.md` |
+| Manifest-candidate selector grouped-next5 | Historical/stale evidence only for new manifests | `docs/spec-kit/49-manifest-candidate-selector.md` | `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` |
+| Active Kanban triage tracking | DB is source of state; markdown is mirror | `/home/hermesadmin/.hermes/kanban/boards/obsidian-infra-triage/kanban.db` | `docs/triage/kanban-board.md` |
+
+R13 safety boundary: no live vault mutation authority, no approval manifest creation, and no reuse of stale `grouped-next5` evidence for a new apply manifest without regenerating selector evidence against current live-read inputs.
+
 ## 2026-07-06 remaining-link suppression gate acceptance
 
 This section closes the docs/index lag flagged by Nanobot scout `out/reports/nanobot-cron-scout/20260706T142630Z/REPORT.md`. It records the accepted source pointers for the current remaining-link triage/suppression surface without promoting generated `out/` artifacts to source-of-truth status.

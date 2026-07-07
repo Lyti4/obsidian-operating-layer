@@ -23,6 +23,11 @@ Dmitry granted standing approval for recurring Obsidian link-hygiene applies tha
 
 This is not approval for creates, deletes, renames, moves, archive rewrites, Soul/cross-vault retargeting, semantic/global replacements, or any destructive/high-risk operation.
 
+
+## R13 Kanban/evidence tracking rule
+
+For the active Obsidian Operating Layer continuation, Kanban DB is the only lifecycle-state source of truth. Markdown board files are generated mirrors; accepted docs hold policy/acceptance; `out/` holds evidence. Worker or subagent self-reports must be attached to card comments/events and independently verified before a card advances. Historical selector reports such as `grouped-next5` are not reusable approval manifests.
+
 ## Nanobot read-only review handoff
 
 Standard mode for Nanobot review is **gateway + evidence packet**:
