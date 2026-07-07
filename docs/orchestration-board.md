@@ -85,6 +85,7 @@ P4 manifest-review fixture added: `tests/fixtures/p4_manifest_review/` plus `tes
 Nanobot recommendation decisions are now fixed in `docs/spec-kit/36-current-evidence-index.md`: the accepted current-slice pointers stay source-controlled, generated-artifacts evidence remains under `out/` only, unified queue/state/decision surface stays proposal-only, candidate scoring is accepted only as read-only/proposal-only, acceptance-gate synthesis is deferred, and any autonomous/live apply authority is rejected for the current scope.
 
 - Standing link-prefix baseline is now a reusable read-only tool: `tools/obsidian_standing_safe_link_prefix_baseline.py`; latest live baseline evidence under `out/reports/standing-safe-link-prefix-baseline/live-current/` reports `allowed_count: 0`, `actionable_apply_items: 0`, and no live mutation authority.
+- Closure: the standing-policy/baseline integration and R13 reconciliation are accepted and closed. Do not reopen `lane-schema-v1` or other accepted R1–R13 control-plane layers as the next slice. The next useful work is fresh selector/regeneration evidence for remaining broken/ambiguous link discovery, suppression, and operator review.
 
 ## Next active Kanban slice
 

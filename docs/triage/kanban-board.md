@@ -40,9 +40,25 @@ Triggered by Dmitry: continue through Obsidian Kanban triage with multi-agent ca
 2. `remaining-link-operator-nextgate` — operator review done; no apply/code slice; final report done.
 3. `kanban-multiagent-tracking-hygiene` — playbook rule done; final report done.
 
+### Active-next clarification
+
+This continuation closed the standing-policy/baseline and R13 reconciliation work. Already accepted historical lanes, including `lane-schema-v1`, must not be re-opened as the next active slice. The next valid project work is a fresh selector/regeneration pass against current remaining broken/ambiguous link evidence, followed by suppression/operator review; any live apply remains behind a fresh explicit approval manifest.
+
+### Closure protocol for old work
+
+Before creating any new card/swarm, reconcile these sources in order:
+
+1. **Kanban DB** is runtime state: every previous continuation card must be `done`, `cancelled`, or `archived`; nonclosed count must be `0` unless Dmitry explicitly asks to resume that card.
+2. **`docs/acceptance/index.md`** is the accepted-layer ledger: anything listed there is historical/accepted and must not be reopened as a new active slice without a fresh regression.
+3. **`docs/spec-kit/37-vault-automation-indexing-roadmap.md`** is the current closure/next-target ledger.
+4. **`docs/spec-kit/36-current-evidence-index.md`** is the evidence pointer ledger: `out/` reports are evidence, not source truth.
+5. **Nanobot reports** are advisory/read-only evidence. They must be distilled into docs or explicit board comments before the work is considered closed; Nanobot does not advance, accept, or authorize live mutation.
+
+Current board snapshot after cleanup: `done=129`, `cancelled=4`, `archived=18`, `nonclosed=0`.
+
 ## Board counts
 
-- `archived`: `12`
+- `archived`: `18`
 - `cancelled`: `4`
 - `done`: `129`
 

@@ -394,10 +394,34 @@ Acceptance:
 - Human memory/canonical Soul surfaces require conservative gates even when scores are high.
 - Existing docs have a duplicate numeric prefix `29`; avoid adding further numbering ambiguity.
 
+## Current closure state
+
+R1–R13 are closed/accepted for the current repo-only control-plane sequence. Do not reopen historical lanes such as `lane-schema-v1`, archive shadow index, candidate scorer, operator decision ledger, safe thresholds, or R13 standing-baseline reconciliation unless a fresh regression explicitly invalidates their accepted evidence.
+
+Standing link-prefix baseline integration is closed as a read-only/operator evidence surface:
+
+- canonical tool: `tools/obsidian_standing_safe_link_prefix_baseline.py`;
+- current evidence: `out/reports/standing-safe-link-prefix-baseline/live-current/REPORT.md`;
+- current result: `allowed_count: 0`, `actionable_apply_items: 0`;
+- authority: `live_mutation_authorized: false`, `approval_manifest_created: false`, `apply_authority: none`.
+
+Historical selector output such as `grouped-next5` is stale for any new apply manifest because those links were already applied and verified.
+
+### Source-of-truth sequence for continuation
+
+Use this sequence before any new OOL work:
+
+1. Check repo state and Kanban DB nonclosed cards.
+2. Read `docs/acceptance/index.md` and mark accepted layers as closed/historical.
+3. Read this roadmap's current closure and next target.
+4. Read `docs/spec-kit/36-current-evidence-index.md` for current evidence pointers and stale-output warnings.
+5. Read `docs/triage/kanban-board.md` as the human mirror of DB/runtime closure.
+6. Only then create or resume cards. Do not create a swarm for an already accepted layer.
+
+Nanobot/scout reports are useful review inputs, but closure happens only when the accepted decision is mirrored into source-controlled docs and the board card is `done`, `cancelled`, or `archived`.
+
 ## Next command-level target
 
-R1–R12 are now represented as repo-only/proposal-only control-plane gates. **R13 reconciliation** is the current safe continuation point: keep docs, acceptance, and evidence pointers aligned after Nanobot/Codex review signals and after any already-applied pilot is reconciled.
-
-After R13, the next technical gate is a fresh selector/regeneration pass against current evidence. The independently reviewed grouped-next5 selector output is historical/stale because those exact links are already applied+verified; it must not be reused for a new manifest. Only after fresh current candidates and review may Hermes propose a tiny explicit approval manifest for Dmitry to approve or reject.
+The next technical gate is a fresh selector/regeneration pass against current evidence for remaining broken/ambiguous link discovery, suppression, and operator review. That pass must produce new current-input evidence before Hermes proposes any tiny explicit approval manifest for Dmitry to approve or reject.
 
 Live vault mutation remains blocked until Dmitry approves a fresh manifest for a specific proposal, except the recorded standing safe-pattern deterministic link-prefix hygiene policy. That exception is narrow: exact current-file replacement, existing target, protected/report/Soul exclusions, approval manifest, backup, and post-verify.

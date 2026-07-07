@@ -152,6 +152,11 @@ R13 records the post-baseline state after the standing link-prefix policy was co
 
 R13 safety boundary: no live vault mutation authority, no approval manifest creation, and no reuse of stale `grouped-next5` evidence for a new apply manifest without regenerating selector evidence against current live-read inputs.
 
+Closure rule: standing-policy/baseline integration is done for this sequence. `lane-schema-v1` and the other R1–R13 control-plane layers are accepted historical layers, not the next active work item. The next evidence-producing step is fresh selector/regeneration over current remaining broken/ambiguous link inputs.
+
+
+Report closure rule: Nanobot, Codex, Ops, and generated `out/` reports are evidence inputs only. A workstream is closed only after the accepted conclusion is reflected in source-controlled docs and Kanban DB has no active continuation card for that workstream.
+
 ## 2026-07-06 remaining-link suppression gate acceptance
 
 This section closes the docs/index lag flagged by Nanobot scout `out/reports/nanobot-cron-scout/20260706T142630Z/REPORT.md`. It records the accepted source pointers for the current remaining-link triage/suppression surface without promoting generated `out/` artifacts to source-of-truth status.
