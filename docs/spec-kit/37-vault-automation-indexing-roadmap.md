@@ -22,6 +22,28 @@ lane-schema-v1 → candidate-scorer-v1 → archive-shadow-index → decision-led
 
 No component may jump from index/scoring directly to live note mutation.
 
+## Standing safe-pattern approval — deterministic link-prefix hygiene
+
+Operator decision: Dmitry approved automatic continuation for the deterministic link-prefix hygiene pattern proven in the July 2026 live batches. The allowed pattern is narrow:
+
+```text
+[[Hermes/<title>]] -> [[Memory-Vault/Hermes/<title>]]
+```
+
+Only when all gates are true:
+
+1. The source occurrence is read from the current live file immediately before proposal creation.
+2. The exact target note exists at `Memory-Vault/Hermes/<title>.md`.
+3. The source file is a normal Memory note, not generated report/history/noise and not a protected path.
+4. The proposal binds the full-file base SHA256.
+5. The apply uses the approved backup namespace `_Backups/obsidian-operating-layer`.
+6. Post-verify is required and must pass.
+7. Any drift, missing target, duplicate/no-op ambiguity, protected path, or verification issue stops the batch.
+
+Generated reports remain suppressed from routine auto-apply even when exact candidates exist; they can be handled only by a separate explicit decision because they are historical evidence surfaces.
+
+This standing approval does not cover creates, deletes, renames, moves, archive rewrites, Soul/cross-vault retargeting, semantic/global replacements, external-tool writes, scheduled jobs, or other destructive/high-risk operations.
+
 ## Current indexing stop point
 
 Authoritative generated evidence:
@@ -320,9 +342,9 @@ Accepted boundary: summarizes observation/proposal/verify/unified-index evidence
 
 ### R12 — manifest-candidate selector
 
-Status: Hermes-accepted repo-only selector smoke; independent read-only review remains the next hardening gate.
+Status: accepted repo-only selector smoke after independent read-only Codex review.
 
-Acceptance evidence: `src/obslayer/manifest_candidate_selector.py`, `tools/obsidian_manifest_candidate_selector.py`, `tests/test_manifest_candidate_selector.py`, `docs/spec-kit/49-manifest-candidate-selector.md`, and `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md`.
+Acceptance evidence: `src/obslayer/manifest_candidate_selector.py`, `tools/obsidian_manifest_candidate_selector.py`, `tests/test_manifest_candidate_selector.py`, `docs/spec-kit/49-manifest-candidate-selector.md`, and `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md`, and Codex review `manifest-selector-independent-review-20260707T044711Z.codex_report.json`.
 
 Accepted boundary: consumes existing repo-local JSON evidence, selects at most five review candidates, refuses missing/blocked/authority-bearing inputs, and emits no approval manifest, target paths, or apply authority.
 
@@ -371,6 +393,6 @@ Acceptance:
 
 R1–R12 are now represented as repo-only/proposal-only control-plane gates. **R13 reconciliation** is the current safe continuation point: keep docs, acceptance, and evidence pointers aligned after Nanobot/Codex review signals and after any already-applied pilot is reconciled.
 
-After R13, the next technical gate is a fresh unified/operator review baseline and independent read-only review of the current proposal chain. Only after that review may Hermes propose a tiny explicit approval manifest for Dmitry to approve or reject.
+After R13, the next technical gate is a fresh selector/regeneration pass against current evidence. The independently reviewed grouped-next5 selector output is historical/stale because those exact links are already applied+verified; it must not be reused for a new manifest. Only after fresh current candidates and review may Hermes propose a tiny explicit approval manifest for Dmitry to approve or reject.
 
-Live vault mutation remains blocked until Dmitry approves a fresh manifest for a specific proposal.
+Live vault mutation remains blocked until Dmitry approves a fresh manifest for a specific proposal, except the recorded standing safe-pattern deterministic link-prefix hygiene policy. That exception is narrow: exact current-file replacement, existing target, protected/report/Soul exclusions, approval manifest, backup, and post-verify.

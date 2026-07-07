@@ -58,7 +58,7 @@ These paths are generated artifacts and stay ignored by git unless a future revi
 
 - Remaining link target discovery: `out/reports/remaining-link-target-discovery-20260706T1500Z/REPORT.md` — repo-only target-discovery packet over 92 triaged leftovers; `proposal_candidates: 0`, `apply_authority: none`, no live mutation.
 - Candidate-volume operator packet: `out/reports/candidate-volume-operator-packet/full-vault-proposal-only-20260706T182612Z/REPORT.md` — repo-only summary of full-vault proposal-only candidate volume, protected buckets, verify state, and unified-index readiness; `apply_authority: none`, no approval manifest.
-- Manifest-candidate selector smoke: `out/reports/manifest-candidate-selector/grouped-next5-smoke/REPORT.md` and `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` — repo-only selector over existing operator-review evidence; `selected_count: 5`; inert authority preserved; full `make verify` passed; independent read-only review pending.
+- Manifest-candidate selector smoke: `out/reports/manifest-candidate-selector/grouped-next5-smoke/REPORT.md` and `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` — repo-only selector over existing operator-review evidence; `selected_count: 5`; inert authority preserved; full `make verify` passed; independent read-only Codex review passed with blockers `[]` at `/home/hermesadmin/.codex-hermes/comm/hermes-inbox/manifest-selector-independent-review-20260707T044711Z.codex_report.json`. Follow-up staleness check `out/reports/manifest-candidate-selector/20260707T045349Z-grouped-next5-stale-noop/REPORT.md` found these exact candidates already applied/verified, so they must not be reused for a new manifest.
 
 ## Safety boundary
 

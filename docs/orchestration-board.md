@@ -10,6 +10,19 @@ This board is the operator-facing control surface for advancing Obsidian Operati
 - Third-party GitHub Apps stay blocked until explicitly approved.
 
 
+## Standing safe-pattern approval — link-prefix hygiene
+
+Dmitry granted standing approval for recurring Obsidian link-hygiene applies that match the already-verified safe pattern:
+
+- exact replacement against the current live target file;
+- proposed target file exists under the same approved Memory vault namespace;
+- protected paths are excluded (`.obsidian`, `_Backups`, `_Archive`, `.trash`, Soul-protected paths, secrets/auth/browser profiles);
+- generated report/evidence surfaces are treated as noise/suppressed by default, not routine live-edit targets;
+- each file is still applied through an approval manifest, approved backup namespace, and post-verify;
+- batches stay bounded and stop on any readiness, hash, target, backup, or verification issue.
+
+This is not approval for creates, deletes, renames, moves, archive rewrites, Soul/cross-vault retargeting, semantic/global replacements, or any destructive/high-risk operation.
+
 ## Nanobot read-only review handoff
 
 Standard mode for Nanobot review is **gateway + evidence packet**:
@@ -80,6 +93,6 @@ Full-vault proposal-only indexing gate is accepted after independent read-only r
 
 Candidate-volume/operator-review packet gate is implemented and generated at `out/reports/candidate-volume-operator-packet/full-vault-proposal-only-20260706T182612Z/REPORT.md`. It reports 447 protected hits, proposal targets `0`, empty `first_manifest_candidate_queue`, and fixed inert safety. It is review evidence only and does not select or authorize live targets.
 
-Manifest-candidate selector gate has Hermes acceptance: `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` records inert safety, `selected_count: 5`, `missing_artifacts: 0`, focused 20-test pass, `git diff --check`, and full `make verify`.
+Manifest-candidate selector gate is accepted after independent read-only review: `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` records inert safety, `selected_count: 5`, `missing_artifacts: 0`, focused 20-test pass, `git diff --check`, and full `make verify`; Codex review `manifest-selector-independent-review-20260707T044711Z.codex_report.json` passed with blockers `[]`.
 
-Current active repo-only slice: Nanobot recommendation follow-up for index freshness and proposal-only labels. Scope is docs/source-index hygiene only: align `docs/acceptance/index.md`, `docs/spec-kit/36-current-evidence-index.md`, `docs/spec-kit/37-vault-automation-indexing-roadmap.md`, and this board so generated `out/` evidence remains discoverable without becoming source truth. Next gate before any new live pilot is a fresh unified/operator review baseline plus independent read-only review; any real live pilot remains behind a separate explicit approval manifest.
+Current active repo-only slice: Nanobot recommendation follow-up for index freshness and proposal-only labels. Scope is docs/source-index hygiene only: align `docs/acceptance/index.md`, `docs/spec-kit/36-current-evidence-index.md`, `docs/spec-kit/37-vault-automation-indexing-roadmap.md`, and this board so generated `out/` evidence remains discoverable without becoming source truth. Next gate before any new live pilot is a fresh selector/regeneration pass against current evidence; the reviewed grouped-next5 selector candidates are already applied/verified and must not be reused for a new manifest. Any new live pilot remains behind Dmitry's separate explicit approval, except the recorded standing safe-pattern link-prefix hygiene policy, which still requires manifest, backup, and post-verify gates.
