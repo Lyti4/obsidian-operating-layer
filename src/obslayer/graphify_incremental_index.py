@@ -13,7 +13,6 @@ from .graphify_embedding_query import write_graphify_embedding_query_smoke_repor
 from .graphify_embedding_runner import write_graphify_embedding_run_report
 from .guardrails import GuardrailError, write_json
 
-
 DEFAULT_QUERIES = [
     "дубликаты Obsidian",
     "protected paths",
