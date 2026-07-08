@@ -2,6 +2,32 @@
 
 Local, read-only-first tooling for observing an Obsidian vault, drafting proposals, applying approved changes with backups, and verifying results.
 
+## Canonical project entrypoints
+
+Start here before touching code or worker flows:
+
+- `AGENTS.md` — authority, roles, and safety boundaries.
+- `docs/PROJECT_OVERVIEW.md` — goal, status, roles, boundaries.
+- `docs/PROJECT_MAP.md` — where to find code, docs, specs, reports.
+- `docs/ARCHITECTURE.md` — high-level control flow.
+- `docs/DECISIONS.md` — durable decisions and accepted tradeoffs.
+- `docs/TOOLS_POLICY.md` — allowed/proposal-only/approval-required/forbidden actions.
+- `docs/PROJECT_SKILLS.md` — project skill router.
+- `docs/RUNTIME_STATUS.md` — current runtime/job status; verify before relying.
+- `docs/agents/` — Hermes/Codex/Nanobot role contracts.
+- `docs/skills/` — short project skill cards.
+
+## Pre-commit docs integrity check
+
+Before committing documentation integration changes:
+
+- all canonical entrypoint files exist;
+- markdown code fences are closed;
+- referenced `docs/agents/*.md` and `docs/skills/*.md` files exist;
+- no secrets/auth/env/cookie/private-key content is present;
+- Hermes remains acceptance owner and Dmitry approval remains required for risky/live actions;
+- generated/runtime reports are evidence, not canonical policy by themselves.
+
 ## Canonical CLI
 
 The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files are thin compatibility wrappers that execute the matching `tools/obsidian_*.py` command, so old operator muscle memory still works without maintaining a second implementation.
@@ -29,7 +55,7 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `docs/release-readiness.md` — single release go/no-go checklist.
 - `docs/acceptance/index.md` — current accepted / conditional / not accepted capability map.
 - `docs/runbooks/` — short operator runbooks for safe daily use.
-- `manifests/` — checked-in manifest examples only; real manifests belong in task-specific working dirs.
+- `manifests/` — checked-in manifest examples only; real manifests belong in task scoped working dirs.
 - `out/`, `artifacts/`, `obslayer-backups/`, `.hermes-backups/` — local generated artifacts, ignored by git.
 
 ## Adopted design patterns
@@ -163,7 +189,7 @@ python3 tools/obsidian_apply.py \
   --out /tmp/obslayer-apply.json
 ```
 
-Live apply requires an approval manifest and `--apply`:
+Live apply requires an approval manifest and `--apply`; the manifest must bind the proposal file, vault root, exact target set, backup path, and expected hashes where applicable:
 
 ```json
 {

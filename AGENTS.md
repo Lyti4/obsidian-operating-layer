@@ -4,6 +4,23 @@
 
 This workspace builds a safe local operating layer for Obsidian. Treat the Obsidian vault as human memory and the toolchain as a read-only-first control plane.
 
+
+## Canonical project docs
+
+Use the accepted entrypoint structure; do not replace it with ad-hoc “similar docs elsewhere”.
+
+- `docs/PROJECT_OVERVIEW.md` — goal, status, role summary, boundaries.
+- `docs/PROJECT_MAP.md` — repo/doc/evidence map.
+- `docs/ARCHITECTURE.md` — component/control-flow overview.
+- `docs/DECISIONS.md` — durable decisions only.
+- `docs/TOOLS_POLICY.md` — permission boundary.
+- `docs/PROJECT_SKILLS.md` — skill router.
+- `docs/RUNTIME_STATUS.md` — current verify-before-use runtime/job status.
+- `docs/agents/HERMES.md` — Hermes contract.
+- `docs/agents/CODEX.md` — Codex contract.
+- `docs/agents/NANOBOT.md` — Nanobot contract.
+- `docs/skills/` — short project-local skill cards.
+
 ## Authority and roles
 
 - **Hermes** is the orchestrator and acceptance owner: it prepares tasks, checks evidence, enforces safety, and decides whether a proposal can move toward approval.
@@ -45,13 +62,7 @@ Nanobot's job is to say what it observes and what it recommends: architecture ri
 
 Standing Nanobot task packets and reports should stay under `out/queue/`, `out/reports/`, or `out/proposals/` unless a task explicitly says otherwise.
 
-Approved scheduled Nanobot loop:
-
-- Scout: Hermes cron job `212b7e8f3c21` runs every 15 minutes via `/home/hermesadmin/.hermes/scripts/nanobot_obslayer_scout.py`, local delivery only, with reports under `out/reports/nanobot-cron-scout/`.
-- Hermes lightweight reviewer: Hermes cron job `d2a5fd33b29f` runs every 15 minutes via `/home/hermesadmin/.hermes/scripts/nanobot_report_reviewer.py`, delivers to the origin chat only when new Nanobot reports are reviewed, and writes digests under `out/reports/nanobot-hermes-reviewer/`.
-- Companion deep reviewer: Hermes cron job `835d51562f73` runs every 4 hours via `/home/hermesadmin/.hermes/scripts/nanobot_deep_review_companion.py`, invokes the separate low-usage profile `companion` with bounded batches, drains old Nanobot scout reports, delivers to the origin chat, and writes deep-review artifacts under `out/reports/nanobot-companion-deep-review/` with state in `~/.nanobot-hermes/comm/state/companion_deep_reviewer.json`.
-
-All jobs are bounded read-only/proposal-only. The scout uses a lock/timeout, the evidence gateway, and the Headroom bridge. The lightweight reviewer only reads Nanobot reports, tracks reviewed hashes, summarizes action signals, and must not change repo/vault/auth/profile/services/network/embeddings. The companion deep reviewer is for proposal-only classification of old/new reports (`duplicate`, `no-action`, `stale`, `actionable`, `blocker`) and must not mutate repo/vault/auth/profile/services/network/embeddings, close docs/cards, or apply changes. Reports are evidence; Hermes/Dmitry acceptance is still required before closing docs/cards or applying changes.
+Current Nanobot runtime/scheduled-loop state is tracked in `docs/RUNTIME_STATUS.md`. Treat it as verify-before-use status, not canonical acceptance policy.
 
 Nanobot should read recurring project/server evidence through the local server-safe read-only gateway (`http://127.0.0.1:18791/`) instead of receiving repeated copied packets. The gateway exposes allowlisted project evidence plus selected server context roots (`~/work`, user systemd units, selected Hermes/Nanobot docs/workspace/skills/cron, and local operator scripts), supports only GET/HEAD/OPTIONS, blocks traversal/hidden/secret-like/sensitive paths, blocks oversized or unsafe-extension files, and does not grant filesystem write permission. Workspace-local copied packets remain a fallback for one-off sanitized bundles. Do not give Nanobot raw `/`, `~/secure`, `.ssh`, `.codex`, browser profiles, live vault roots, or credential directories.
 
