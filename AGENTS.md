@@ -64,6 +64,8 @@ Standing Nanobot task packets and reports should stay under `out/queue/`, `out/r
 
 Current Nanobot runtime/scheduled-loop state is tracked in `docs/RUNTIME_STATUS.md`. Treat it as verify-before-use status, not canonical acceptance policy.
 
+Current scheduled scout: Nanobot 15-minute audit loop runs every 15 minutes as job `212b7e8f3c21`; it is bounded read-only/proposal-only and writes `project-state.json` plus reports under `out/reports/`.
+
 Nanobot should read recurring project/server evidence through the local server-safe read-only gateway (`http://127.0.0.1:18791/`) instead of receiving repeated copied packets. The gateway exposes allowlisted project evidence plus selected server context roots (`~/work`, user systemd units, selected Hermes/Nanobot docs/workspace/skills/cron, and local operator scripts), supports only GET/HEAD/OPTIONS, blocks traversal/hidden/secret-like/sensitive paths, blocks oversized or unsafe-extension files, and does not grant filesystem write permission. Workspace-local copied packets remain a fallback for one-off sanitized bundles. Do not give Nanobot raw `/`, `~/secure`, `.ssh`, `.codex`, browser profiles, live vault roots, or credential directories.
 
 ## Vault safety contract
