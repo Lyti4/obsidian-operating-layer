@@ -112,6 +112,62 @@ def _is_grouped_proposal_packet(proposal: dict[str, Any]) -> bool:
     )
 
 
+def _is_manual_review_selector_packet(proposal: dict[str, Any]) -> bool:
+    return (
+        proposal.get("schema") == "obslayer.manual-review-selector.v1"
+        or proposal.get("mode") == "obslayer.manual-review-selector.v1"
+        or proposal.get("packet_type") == "manual_review_evidence_only"
+    )
+
+
+def _wiki_link(text: str) -> str:
+    stripped = text.strip()
+    if not stripped:
+        return ""
+    if stripped.startswith("[[") and stripped.endswith("]]"):
+        return stripped
+    if stripped.endswith(".md"):
+        stripped = stripped[:-3]
+    return f"[[{stripped}]]"
+
+
+def _manual_selector_review_items(proposal: dict[str, Any], findings: list[str]) -> list[dict[str, Any]]:
+    raw_items = proposal.get("review_items")
+    if not isinstance(raw_items, list):
+        findings.append("manual selector review_items must be a list")
+        return []
+
+    status = proposal.get("status")
+    if status not in ("ready_for_manual_review", "no_candidate"):
+        findings.append("manual selector status must be ready_for_manual_review or no_candidate")
+
+    converted: list[dict[str, Any]] = []
+    for index, raw in enumerate(raw_items, start=1):
+        if not isinstance(raw, dict):
+            findings.append(f"review_items[{index - 1}] must be an object")
+            continue
+        _check_no_apply_authority(raw, findings, prefix=f"review_items[{index - 1}]")
+        queue = raw.get("review_queue")
+        source_id = ""
+        if isinstance(queue, dict):
+            source_id = str(queue.get("item_id") or "")
+        old_link = _wiki_link(str(raw.get("old_link") or ""))
+        proposed_link = _wiki_link(str(raw.get("proposed_path") or raw.get("top_candidate_path") or ""))
+        converted.append(
+            {
+                "id": source_id or str(raw.get("source") or f"manual-selector-{index}"),
+                "route": str(raw.get("selection_mode") or raw.get("route_hint") or "manual-review-selector"),
+                "confidence": raw.get("confidence"),
+                "reason_codes": raw.get("reason_codes"),
+                "old_link": old_link,
+                "proposed_link": proposed_link,
+                "policy_tag": str(raw.get("policy_tag") or "manual-review-only"),
+                "rollback_key": source_id or f"manual-selector-review-{index}",
+            }
+        )
+    return converted
+
+
 def _check_no_apply_authority(value: Any, findings: list[str], *, prefix: str = "source proposal packet") -> None:
     if not isinstance(value, dict):
         return
@@ -205,9 +261,10 @@ def build_operator_review_packet(
     proposal_path = _require_under_repo_out(proposal_packet, repo_path)
     proposal = _load_object(proposal_path)
     is_grouped_proposal = _is_grouped_proposal_packet(proposal)
+    is_manual_selector = _is_manual_review_selector_packet(proposal)
 
     findings: list[str] = []
-    if is_grouped_proposal:
+    if is_grouped_proposal or is_manual_selector:
         _check_no_apply_authority(proposal, findings, prefix="source proposal packet")
     else:
         if proposal.get("live_mutation_authorized") is not False:
@@ -218,7 +275,7 @@ def build_operator_review_packet(
             findings.append("source proposal packet must not have approval manifest authority")
         if proposal.get("apply_authority") not in (None, "none", False):
             findings.append("source proposal packet must not have apply authority")
-    if proposal.get("targets") not in (None, []) and not is_grouped_proposal:
+    if proposal.get("targets") not in (None, []) and not (is_grouped_proposal or is_manual_selector):
         findings.append("source proposal packet must not expose live targets")
     _check_no_apply_authority(proposal.get("summary"), findings, prefix="source proposal packet summary")
 
@@ -238,6 +295,8 @@ def build_operator_review_packet(
 
     if is_grouped_proposal:
         raw_proposals = _grouped_review_items(proposal, findings)
+    elif is_manual_selector:
+        raw_proposals = _manual_selector_review_items(proposal, findings)
     else:
         raw_proposals = proposal.get("dry_run_proposals")
         if not isinstance(raw_proposals, list):

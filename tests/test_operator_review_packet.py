@@ -135,6 +135,50 @@ def test_builds_review_items_from_grouped_proposal_replacements(tmp_path: Path) 
     assert packet.safety["live_mutation_authorized"] is False
 
 
+def test_builds_review_items_from_manual_selector_packet(tmp_path: Path) -> None:
+    repo = tmp_path
+    source = _write_json(
+        repo / "out" / "manual-review-selector-v1.json",
+        {
+            "schema": "obslayer.manual-review-selector.v1",
+            "mode": "obslayer.manual-review-selector.v1",
+            "packet_type": "manual_review_evidence_only",
+            "status": "ready_for_manual_review",
+            "live_mutation_authorized": False,
+            "approval_manifest_created": False,
+            "approval_manifest_authority": False,
+            "apply_authority": "none",
+            "targets": [],
+            "review_items": [
+                {
+                    "old_link": "Hermes/00 Hermes Index",
+                    "proposed_path": "Hermes/00 Hermes Index.md",
+                    "confidence": 1.0,
+                    "reason_codes": ["exact_path_match"],
+                    "policy_tag": "manual-review-only",
+                    "selection_mode": "direct_manual_review",
+                    "apply_authority": "none",
+                    "live_mutation_authorized": False,
+                    "review_queue": {"item_id": "manual-review-only-abc"},
+                }
+            ],
+        },
+    )
+
+    packet = build_operator_review_packet(repo=repo, proposal_packet=source, max_review_items=10)
+
+    assert packet.status == "ready_for_human_review"
+    assert packet.findings == []
+    assert len(packet.review_items) == 1
+    item = packet.review_items[0]
+    assert item.source_id == "manual-review-only-abc"
+    assert item.old_link == "[[Hermes/00 Hermes Index]]"
+    assert item.proposed_link == "[[Hermes/00 Hermes Index]]"
+    assert item.policy_tag == "manual-review-only"
+    assert packet.safety["live_mutation_authorized"] is False
+    assert packet.safety["apply_authority"] == "none"
+
+
 def test_blocks_grouped_proposal_that_claims_apply_or_live_authority(tmp_path: Path) -> None:
     repo = tmp_path
     source = _write_json(

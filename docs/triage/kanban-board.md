@@ -1,6 +1,6 @@
 # Obsidian Operating Layer — real Hermes Kanban/Triage board
 
-Updated: 2026-07-07T06:21:19Z
+Updated: 2026-07-07T12:30:46Z
 
 This is the GitHub-visible mirror of the real local Hermes Kanban board shown at `127.0.0.1:19119/kanban`.
 
@@ -54,13 +54,20 @@ Before creating any new card/swarm, reconcile these sources in order:
 4. **`docs/spec-kit/36-current-evidence-index.md`** is the evidence pointer ledger: `out/` reports are evidence, not source truth.
 5. **Nanobot reports** are advisory/read-only evidence. They must be distilled into docs or explicit board comments before the work is considered closed; Nanobot does not advance, accept, or authorize live mutation.
 
-Current board snapshot after cleanup: `done=129`, `cancelled=4`, `archived=18`, `nonclosed=0`.
+Current board snapshot after cleanup: `done=160`, `cancelled=4`, `archived=18`, `nonclosed=0`.
+
+2026-07-07 follow-up: two stale blocked cards were closed from the live Kanban DB after verification/reconciliation:
+
+- `t_5b13d2bf` — unified-control-plane evidence index dispatcher blocker closed as implemented+verified; evidence `out/reports/unified-control-plane-index/hermes-verify-20260707T122859Z/REPORT.md`, focused tests 36 passed, `git diff --check` passed.
+- `t_4815a2d6` — Codex council strategy lane closed as superseded by bounded sandbox selector/scorer evidence; no resource-heavy retry.
+
+Live DB nonclosed state after close: `blocked=0`, `ready=0`, `running=0`, `todo=0`, `scheduled=0`.
 
 ## Board counts
 
 - `archived`: `18`
 - `cancelled`: `4`
-- `done`: `129`
+- `done`: `160`
 
 ## Historical sequential activation chain
 
@@ -78,3 +85,30 @@ Previous chain retained for provenance:
 ## Verification
 
 This file is generated from the live Hermes Kanban SQLite board. It is a GitHub-visible mirror, not the source of truth.
+
+## 2026-07-07 fresh selector v3 board note
+
+Current nonclosed DB state remains empty (`blocked=0`, `ready=0`, `running=0`, `todo=0`, `scheduled=0`). Fresh selector v3 was run directly as repo-only evidence, not as a new live-apply card.
+
+Evidence:
+
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/REPORT.md`
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/manual-review-selector/REPORT.md`
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet/REPORT.md`
+
+Next board-worthy slice: manual-selector-to-operator-review adapter/code slice, because operator review currently blocks on `dry_run_proposals must be a list` when fed the manual selector packet.
+
+## 2026-07-07 adapter slice board note
+
+The previously board-worthy manual-selector-to-operator-review adapter slice is complete repo-side. Fresh selector v3 now has operator packet evidence at `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet-adapter-v1/REPORT.md` with `ready_for_human_review`, 25 items, and `findings: []`.
+
+Board remains empty for nonclosed work unless a new human-review/approval-manifest slice is intentionally opened.
+
+- 2026-07-07: `remaining-link-fresh-selector-v3` acceptance ledger added: 25/25 manual-review candidates accepted as evidence-only/no-live-apply normalized Obsidian no-ops. Apply manifest remains not created because there are no concrete replacement targets.
+- 2026-07-07: `full-vault-index-v1` built a read-only Memory-Vault index: 318 notes, 26 folders, 945 wikilinks, 858 resolved, 87 unresolved, 121 orphan notes, 0 duplicate-content groups. Artifacts: `out/reports/full-vault-index-v1/20260707T131041Z/REPORT.md`. Safety: no live mutation, no approval manifest, apply authority none.
+- 2026-07-07: `broken-links-review-packet-v1` classified 87 unresolved links from full-vault index. Classes: {'protected_cross_vault_manual': 9, 'generated_report_auto_keep': 78}. Safety: no live mutation, no approval manifest, apply authority none. Artifacts: `out/reports/broken-links-review-packet-v1/20260707T132131Z/REPORT.md`.
+- 2026-07-07: `protected-links-decision-v1` accepted 9 protected/cross-vault unresolved links as no-apply evidence: 8 concrete targets exist, 1 wildcard report pattern; no retarget/create/manifest/apply. Artifact: `out/reports/broken-links-review-packet-v1/20260707T132131Z/protected-links-decision-v1/REPORT.md`.
+- 2026-07-07: `accepted-noise-bucket-v1` added operator buckets (human buckets): 78 generated/report links are accepted/no-apply noise, 9 Soul/cross-vault links are manual/protected, 0 target-discovery/apply items. Artifact: `out/reports/accepted-noise-bucket-v1/20260707T133300Z/REPORT.md`.
+## 2026-07-08 Graphify incremental index docs-lag note
+
+Nanobot scout lag around `graphify_incremental_index` was distilled into source docs without opening a new board card or live-apply lane. Minimal closure only: acceptance/evidence/roadmap pointers were added for the repo-only dry-run-first wrapper. Nanobot's larger proposals remain preserved for later review, not rejected or deleted.

@@ -65,6 +65,12 @@ from .graphify_embedding_runner import (
     run_graphify_embedding_manifest,
     write_graphify_embedding_run_report,
 )
+from .graphify_incremental_index import (
+    GraphifyIncrementalIndexReport,
+    IncrementalCandidateState,
+    incremental_report_to_markdown,
+    run_graphify_incremental_index,
+)
 from .guardrails import (
     DEFAULT_APPROVAL_PHRASE,
     DEFAULT_BACKUP_ROOT,

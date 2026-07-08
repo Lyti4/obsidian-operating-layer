@@ -36,6 +36,7 @@ def build_remaining_link_triage_packet(
     counts: Counter[str] = Counter(str(item["classification"]) for item in items)
     status_counts: Counter[str] = Counter(str(item["status"]) for item in items)
     apply_counts: Counter[str] = Counter(str(item["apply_authority"]) for item in items)
+    bucket_counts: Counter[str] = Counter(str(item["operator_bucket"]) for item in items)
     return {
         "schema": MODE,
         "mode": "repo-only/evidence-only",
@@ -51,6 +52,10 @@ def build_remaining_link_triage_packet(
             "by_status": dict(status_counts),
             "by_classification": dict(counts),
             "by_apply_authority": dict(apply_counts),
+            "by_operator_bucket": dict(bucket_counts),
+            "accepted_no_apply_items": bucket_counts.get("accepted_no_apply", 0),
+            "manual_protected_items": bucket_counts.get("manual_protected", 0),
+            "target_discovery_items": bucket_counts.get("target_discovery", 0),
             "actionable_apply_items": sum(1 for item in items if item["apply_authority"] != "none"),
         },
         "items": items,
@@ -110,6 +115,8 @@ def classify_remaining_link(row: Mapping[str, Any]) -> dict[str, Any]:
         rule_id = "remaining-target-discovery-required"
         preferred_candidate = None
 
+    operator_bucket = _operator_bucket(classification)
+
     return {
         "source": source,
         "raw": raw,
@@ -118,6 +125,7 @@ def classify_remaining_link(row: Mapping[str, Any]) -> dict[str, Any]:
         "candidate_count": len(candidates),
         "candidates": candidates,
         "classification": classification,
+        "operator_bucket": operator_bucket,
         "risk": risk,
         "reason": reason,
         "preferred_candidate": preferred_candidate,
@@ -140,6 +148,10 @@ def remaining_link_triage_to_markdown(packet: Mapping[str, Any]) -> str:
         f"- items: `{summary['items']}`",
         f"- by_status: `{summary['by_status']}`",
         f"- by_classification: `{summary['by_classification']}`",
+        f"- by_operator_bucket: `{summary['by_operator_bucket']}`",
+        f"- accepted/no-apply noise: `{summary['accepted_no_apply_items']}`",
+        f"- manual/protected: `{summary['manual_protected_items']}`",
+        f"- target discovery needed: `{summary['target_discovery_items']}`",
         f"- actionable_apply_items: `{summary['actionable_apply_items']}`",
         "",
         "## Policy",
@@ -151,6 +163,14 @@ def remaining_link_triage_to_markdown(packet: Mapping[str, Any]) -> str:
         "",
     ]
     return "\n".join(lines) + "\n"
+
+
+def _operator_bucket(classification: str) -> str:
+    if classification in {"generated_report_auto_keep", "graphify_exact_path_preferred_no_apply"}:
+        return "accepted_no_apply"
+    if classification == "protected_cross_vault_manual":
+        return "manual_protected"
+    return "target_discovery"
 
 
 def _target_part(raw: str) -> str:

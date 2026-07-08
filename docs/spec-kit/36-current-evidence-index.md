@@ -63,6 +63,8 @@ These paths are generated artifacts and stay ignored by git unless a future revi
 - Manifest-candidate selector smoke: `out/reports/manifest-candidate-selector/grouped-next5-smoke/REPORT.md` and `out/reports/manifest-candidate-selector/grouped-next5-smoke/HERMES_ACCEPTANCE.md` — repo-only selector over existing operator-review evidence; `selected_count: 5`; inert authority preserved; full `make verify` passed; independent read-only Codex review passed with blockers `[]` at `/home/hermesadmin/.codex-hermes/comm/hermes-inbox/manifest-selector-independent-review-20260707T044711Z.codex_report.json`. Follow-up staleness check `out/reports/manifest-candidate-selector/20260707T045349Z-grouped-next5-stale-noop/REPORT.md` found these exact candidates already applied/verified, so they must not be reused for a new manifest.
 - Unified control-plane evidence index: `out/reports/unified-control-plane-index/hermes-verify/REPORT.md` and `out/reports/unified-control-plane-index/hermes-verify/control-plane-index.json` — canonical generated evidence-to-decision artifact for the accepted control-plane slice; `live_mutation_authorized: false`, `apply_authority: none`.
 
+- Graphify incremental index wrapper: `src/obslayer/graphify_incremental_index.py`, `tools/obsidian_graphify_incremental_index.py`, `tests/test_graphify_incremental_index.py` — repo-only/dry-run-first delta wrapper over existing Graphify handoff and embedding/query reports; writes generated artifacts under `out/reports/graphify-incremental-index/` and preserves `live_vault_mutation: false`, no approval manifest, no targets, and no apply authority. Nanobot follow-up ideas (unified indexing control plane, operator dashboard, freshness contract) are retained as backlog ideas, not implemented by this minimal closure.
+
 ## Safety boundary
 
 - Proposal-only/read-only unless a separate approval manifest says otherwise.
@@ -345,3 +347,43 @@ Pending before any next live pilot:
 1. refresh unified/operator review evidence after any pointer changes;
 2. independent read-only review of the fresh baseline/proposal chain;
 3. exact approval manifest, backup, apply, and post-verify only if Dmitry explicitly approves a narrow proposal.
+
+## 2026-07-07 remaining-link scorer improvement v1
+
+- Slice: `remaining-link-scorer-improvement-v1`
+- Evidence: `out/reports/remaining-link-scorer-improvement-v1/final-report/REPORT.md`
+- Changed files: `src/obslayer/candidate_scorer_v1.py`, `tests/test_candidate_scorer_v1.py`
+- Verification: `pytest -q tests/test_manual_review_selector_v1.py tests/test_candidate_scorer_v1.py tests/test_safe_auto_proposal_thresholds_v1.py` -> 37 passed; `git diff --check` -> passed.
+
+Result: deterministic source-context scoring is stronger for exact path/title/alias and same-vault/top-level affinity while archive/protected/Soul hard stops remain overriding gates. This is repo-only scorer hardening; it does not create an approval manifest, target paths, or live apply authority.
+
+Safety: `live_mutation_authorized: false`, `approval_manifest_created: false`, `apply_authority: none`.
+
+## 2026-07-07 remaining-link fresh selector v3
+
+- Run: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/REPORT.md`
+- Scorer packet: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/candidate-scorer/candidate-scorer-v1.json`
+- Manual selector packet: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/manual-review-selector/manual-review-selector-v1.json`
+- Manual selector report: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/manual-review-selector/REPORT.md`
+- Operator packet diagnostic: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet/REPORT.md`
+
+Result: regenerated current remaining-link scorer/manual-review evidence after `remaining-link-scorer-improvement-v1`. The selector is `ready_for_manual_review` with 25 review items from 855 processed links. Safety remains repo-only/proposal-only: `live_mutation_authorized: false`, `approval_manifest_created: false`, `apply_authority: none`, `targets: []`.
+
+Operator-review regeneration from the manual-selector packet is currently blocked by schema shape: `dry_run_proposals must be a list`. Treat this as the next adapter/code-slice candidate, not as apply readiness and not as approval authority.
+
+## 2026-07-07 manual-selector operator-review adapter v1
+
+- Code: `src/obslayer/operator_review_packet.py`
+- Test: `tests/test_operator_review_packet.py::test_builds_review_items_from_manual_selector_packet`
+- Run: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet-adapter-v1/REPORT.md`
+- Packet: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet-adapter-v1/operator-review-packet.json`
+
+Result: operator review now accepts `obslayer.manual-review-selector.v1` packets directly as a repo-only/proposal-only source shape. The fresh selector v3 manual-review packet now produces `ready_for_human_review` with 25 review items and `findings: []`.
+
+Safety remains unchanged: `live_mutation_authorized: false`, `approval_manifest_created: false`, `approval_manifest_authority: false`, `apply_authority: none`, `target_paths: []`. This is still operator review evidence only, not live apply authority.
+
+- 2026-07-07: Operator manual acceptance for `remaining-link-fresh-selector-v3`: 25/25 accepted after source/target existence and normalized wikilink presence checks. Evidence: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/manual-acceptance-review-v1/manual-inspection.json`; ledger: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-acceptance-ledger-v1/operator-decision-ledger-v1.json`.
+- 2026-07-07: `full-vault-index-v1` built a read-only Memory-Vault index: 318 notes, 26 folders, 945 wikilinks, 858 resolved, 87 unresolved, 121 orphan notes, 0 duplicate-content groups. Artifacts: `out/reports/full-vault-index-v1/20260707T131041Z/REPORT.md`. Safety: no live mutation, no approval manifest, apply authority none.
+- 2026-07-07: `broken-links-review-packet-v1` classified 87 unresolved links from full-vault index. Classes: {'protected_cross_vault_manual': 9, 'generated_report_auto_keep': 78}. Safety: no live mutation, no approval manifest, apply authority none. Artifacts: `out/reports/broken-links-review-packet-v1/20260707T132131Z/REPORT.md`.
+- 2026-07-07: `protected-links-decision-v1` accepted 9 protected/cross-vault unresolved links as no-apply evidence: 8 concrete targets exist, 1 wildcard report pattern; no retarget/create/manifest/apply. Artifact: `out/reports/broken-links-review-packet-v1/20260707T132131Z/protected-links-decision-v1/REPORT.md`.
+- 2026-07-07: `accepted-noise-bucket-v1` added operator buckets (human buckets): 78 generated/report links are accepted/no-apply noise, 9 Soul/cross-vault links are manual/protected, 0 target-discovery/apply items. Artifact: `out/reports/accepted-noise-bucket-v1/20260707T133300Z/REPORT.md`.

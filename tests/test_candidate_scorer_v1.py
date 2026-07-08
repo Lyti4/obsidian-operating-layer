@@ -96,6 +96,41 @@ def test_score_candidate_prefers_active_target_and_records_safety_fields() -> No
     assert backup["feature_breakdown"]["candidate_archive_penalty"] < 0
 
 
+
+def test_source_context_ranking_prefers_same_vault_without_overriding_hard_stops() -> None:
+    scored = score_candidate(
+        link={
+            "source": "Memory-Vault/Projects/A.md",
+            "status": "ambiguous",
+            "target": "Shared Name",
+            "candidates": [
+                "Other-Vault/Shared Name.md",
+                "Memory-Vault/Projects/Shared Name.md",
+                "_Archive/Shared Name.md",
+            ],
+        },
+        notes_by_path={
+            "Memory-Vault/Projects/A.md": {"path": "Memory-Vault/Projects/A.md", "top": "Memory-Vault"},
+            "Other-Vault/Shared Name.md": {"path": "Other-Vault/Shared Name.md", "top": "Other-Vault"},
+            "Memory-Vault/Projects/Shared Name.md": {
+                "path": "Memory-Vault/Projects/Shared Name.md",
+                "top": "Memory-Vault",
+            },
+            "_Archive/Shared Name.md": {
+                "path": "_Archive/Shared Name.md",
+                "top": "_Archive",
+                "protected_or_archive_surface": True,
+            },
+        },
+    )
+
+    assert scored["candidates"][0]["path"] == "Memory-Vault/Projects/Shared Name.md"
+    assert scored["route_hint"] == "blocked/refuse"
+    archive = next(item for item in scored["candidates"] if item["path"] == "_Archive/Shared Name.md")
+    assert archive["hard_stop"] is True
+    assert "archive_shadow_target" in archive["reason_codes"]
+    assert scored["hard_stop"] is True
+
 def test_score_candidate_hard_stops_redirect_duplicate_and_missing_candidates() -> None:
     scored = score_candidate(
         link={

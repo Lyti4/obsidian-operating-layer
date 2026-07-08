@@ -44,6 +44,7 @@ Scope: source-of-truth summary for accepted, limited, and not-yet-accepted proje
 | Remaining link target discovery v1 | Accepted as repo-only/evidence-only discovery layer for triaged `broken`/`ambiguous` leftovers; current packet found zero proposal candidates and grants no apply authority | `src/obslayer/remaining_link_target_discovery.py`, `tools/obsidian_remaining_link_target_discovery.py`, `tests/test_remaining_link_target_discovery.py`, `docs/spec-kit/46-remaining-link-target-discovery.md`, `out/reports/remaining-link-target-discovery-20260706T1500Z/REPORT.md` |
 | Unified operator review index v1 | Accepted as repo-only pre-full-vault-indexing control panel; aggregates `out/` and docs pointers only; fixed inert safety, no approval/apply authority | `src/obslayer/unified_operator_review_index.py`, `tools/obsidian_unified_operator_review_index.py`, `tests/test_unified_operator_review_index.py`, `docs/spec-kit/47-unified-operator-review-index.md`, `out/reports/unified-operator-review-index/hermes-smoke/REPORT.md` |
 | Unified control-plane evidence index v1 | Accepted as repo-only evidence-to-decision landing page; canonical generated artifact is inert and points to current docs/evidence without granting apply authority | `docs/spec-kit/50-unified-control-plane-evidence-index.md`, `out/reports/unified-control-plane-index/hermes-verify/REPORT.md`, `out/reports/unified-control-plane-index/hermes-verify/control-plane-index.json` |
+| Graphify incremental index wrapper | Accepted as repo-only/dry-run-first wrapper over existing Graphify handoff, delta embedding manifest selection, optional bounded embedding run, and optional query smoke; writes only under repo `out/`, creates no approval manifest, no targets, and no live mutation authority | `src/obslayer/graphify_incremental_index.py`, `tools/obsidian_graphify_incremental_index.py`, `tests/test_graphify_incremental_index.py` |
 | Candidate-volume operator packet v1 | Accepted as repo-local operator gate over observe/propose/verify/unified evidence; reports candidate/protected volume and route buckets without selecting or authorizing targets | `docs/spec-kit/48-candidate-volume-operator-packet.md`, `src/obslayer/candidate_volume_operator_packet.py`, `tools/obsidian_candidate_volume_operator_packet.py`, `tests/test_candidate_volume_operator_packet.py`, `out/reports/candidate-volume-operator-packet/full-vault-proposal-only-20260706T182612Z/REPORT.md` |
 | R13 standing-baseline reconciliation | Accepted docs/evidence alignment after standing baseline codification; records DB-as-state, docs-as-policy/mirror, out-as-evidence, and stale grouped-next5 boundary | `docs/spec-kit/36-current-evidence-index.md`, `docs/spec-kit/37-vault-automation-indexing-roadmap.md`, `docs/orchestration-board.md`, `docs/triage/kanban-board.md` |
 | Standing link-prefix baseline v1 | Accepted as repo-only/read-only baseline for the standing deterministic `[[Hermes/...]]` → `[[Memory-Vault/Hermes/...]]` policy; reports current candidate counts and authority flags without creating manifests or mutating the live vault | `src/obslayer/standing_safe_link_prefix_policy.py`, `src/obslayer/standing_safe_link_prefix_baseline.py`, `tools/obsidian_standing_safe_link_prefix_baseline.py`, `tests/test_standing_safe_link_prefix_baseline.py`, `out/reports/standing-safe-link-prefix-baseline/live-current/REPORT.md` |
@@ -113,3 +114,44 @@ Codex is made repo-native through `docs/spec-kit/33-codex-native-runtime.md`, `/
 - Same-source-vault first25 live apply: Applied after explicit operator confirmation to `/home/hermesadmin/Obsidian/Memory-Vault/00 Memory Graph Index.md`; 25 logical replacements, post-verify passed, old links remaining 0; backup `/home/hermesadmin/Obsidian/_Backups/obsidian-operating-layer/20260706T153858Z-same-vault-rule-first25/00 Memory Graph Index.md`; evidence `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/POST_VERIFY.first25.grouped.md`. This is a single approved pilot, not standing authorization.
 - Same-source-vault grouped next5 live apply: Reconciled as already applied+verified for the exact grouped `next5` batch; 5 logical replacements, post-verify passed, old links remaining 0, new links present 5; backup `/home/hermesadmin/Obsidian/_Backups/obsidian-operating-layer/20260706-174737Z/00 Memory Graph Index.md`; evidence `out/proposals/remaining-link-same-vault-rule/20260706T152315Z/POST_VERIFY.next5.grouped.md` and `out/reports/kanban-triage-continuation/20260707T034602Z-next5-manifest-reconciliation/HERMES_RECONCILIATION.md`. This is a single approved/reconciled batch, not standing authorization.
 - Nanobot recommendation follow-up: Accepted as repo-only docs/index freshness work. Current labels remain: generated `out/` artifacts are evidence only, operator/proposal packets are proposal-only unless a fresh approval manifest exists, and live vault mutation remains opt-in per exact proposal.
+
+## 2026-07-07 candidate scorer follow-up acceptance
+
+The `remaining-link-scorer-improvement-v1` follow-up is accepted as repo-only hardening of the already accepted Candidate scorer v1 layer. It adjusts deterministic source-context weights and adds same-vault/archive-collision regression coverage.
+
+Evidence:
+
+- `src/obslayer/candidate_scorer_v1.py`
+- `tests/test_candidate_scorer_v1.py`
+- `out/reports/remaining-link-scorer-improvement-v1/final-report/REPORT.md`
+
+Boundary: scorer/proposal evidence only; no approval manifest, no target paths, no live mutation authority.
+
+## 2026-07-07 fresh selector v3 acceptance note
+
+`remaining-link-fresh-selector-v3` is accepted as fresh repo-only selector evidence after scorer hardening.
+
+Evidence:
+
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/REPORT.md`
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/manual-review-selector/REPORT.md`
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet/REPORT.md`
+
+Accepted boundary: current selector evidence is ready for manual review only. The operator-review packet remains blocked by packet-shape mismatch (`dry_run_proposals must be a list`), so no approval manifest or live apply may be derived from this run without a follow-up adapter/code slice and verification.
+
+## 2026-07-07 operator-review adapter acceptance note
+
+Accepted: `operator_review_packet` can now consume `obslayer.manual-review-selector.v1` packets as a safe proposal-only evidence source.
+
+Verification evidence:
+
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet-adapter-v1/REPORT.md`
+- focused test: `tests/test_operator_review_packet.py`
+- full gate: `make verify`
+
+Boundary: the adapter emits human-review evidence only. It does not create approval manifests, does not expose target paths, and does not authorize live vault mutation or apply.
+
+- 2026-07-07: `remaining-link-fresh-selector-v3` operator acceptance recorded 25/25 manual-review candidates as evidence-only normalized Obsidian no-op link resolutions. Artifacts: `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/manual-acceptance-review-v1/REPORT.md` and `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-acceptance-ledger-v1/REPORT.md`. No live apply authority or approval manifest was created.
+- 2026-07-07: `full-vault-index-v1` built a read-only Memory-Vault index: 318 notes, 26 folders, 945 wikilinks, 858 resolved, 87 unresolved, 121 orphan notes, 0 duplicate-content groups. Artifacts: `out/reports/full-vault-index-v1/20260707T131041Z/REPORT.md`. Safety: no live mutation, no approval manifest, apply authority none.
+- 2026-07-07: `broken-links-review-packet-v1` classified 87 unresolved links from full-vault index. Classes: {'protected_cross_vault_manual': 9, 'generated_report_auto_keep': 78}. Safety: no live mutation, no approval manifest, apply authority none. Artifacts: `out/reports/broken-links-review-packet-v1/20260707T132131Z/REPORT.md`.
+- 2026-07-07: `protected-links-decision-v1` accepted 9 protected/cross-vault unresolved links as no-apply evidence: 8 concrete targets exist, 1 wildcard report pattern; no retarget/create/manifest/apply. Artifact: `out/reports/broken-links-review-packet-v1/20260707T132131Z/protected-links-decision-v1/REPORT.md`.

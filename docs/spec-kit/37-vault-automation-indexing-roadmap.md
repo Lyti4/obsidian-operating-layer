@@ -427,3 +427,59 @@ Nanobot/scout reports are useful review inputs, but closure happens only when th
 The next technical gate is a fresh selector/regeneration pass against current evidence for remaining broken/ambiguous link discovery, suppression, and operator review. That pass must produce new current-input evidence before Hermes proposes any tiny explicit approval manifest for Dmitry to approve or reject.
 
 Live vault mutation remains blocked until Dmitry approves a fresh manifest for a specific proposal, except the recorded standing safe-pattern deterministic link-prefix hygiene policy. That exception is narrow: exact current-file replacement, existing target, protected/report/Soul exclusions, approval manifest, backup, and post-verify.
+
+## 2026-07-07 scorer follow-up closure
+
+`remaining-link-scorer-improvement-v1` is accepted as a small repo-only scorer hardening slice following the bounded sandbox selector result. It strengthens deterministic source-context weighting and adds regression coverage for same-vault ranking against archive hard-stop competitors.
+
+Evidence:
+
+- `out/reports/remaining-link-scorer-improvement-v1/final-report/REPORT.md`
+- `src/obslayer/candidate_scorer_v1.py`
+- `tests/test_candidate_scorer_v1.py`
+
+Boundary: proposal/scoring only; no approval manifest, no target authorization, no live vault mutation.
+
+Next real work remains fresh selector/regeneration/operator-review over current remaining-link evidence; any live apply still requires a fresh exact manifest and approval unless it falls within the already-approved bounded link-hygiene pattern.
+
+## 2026-07-07 fresh selector v3 current state
+
+Fresh selector/regeneration over current remaining-link evidence has been rerun after scorer hardening.
+
+Evidence:
+
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/REPORT.md`
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/candidate-scorer/candidate-scorer-v1.json`
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/manual-review-selector/manual-review-selector-v1.json`
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet/REPORT.md`
+
+Current result: manual selector is `ready_for_manual_review` with 25 review items, all repo-only/proposal-only. Operator packet generation is blocked on an evidence-shape adapter gap (`dry_run_proposals must be a list`) because the current operator review CLI expects dry-run proposal packets, not manual-selector packets.
+
+Next technical gate: implement or route through a small adapter that converts manual-selector review items into an operator-review-compatible evidence packet, preserving `live_mutation_authorized: false`, `approval_manifest_created: false`, `apply_authority: none`, and empty target authorization.
+
+## 2026-07-07 operator-review adapter gate closed
+
+The manual-selector-to-operator-review adapter gap from fresh selector v3 has been closed in the existing operator review packet builder rather than by adding a new architecture layer.
+
+Evidence:
+
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet-adapter-v1/REPORT.md`
+- `out/reports/remaining-link-fresh-selector-v3/20260707T123534Z/operator-review-packet-adapter-v1/operator-review-packet.json`
+
+Current state: fresh remaining-link selector evidence can now advance to operator-review packet form (`ready_for_human_review`, 25 items, no findings) while preserving no-apply/no-live-mutation guardrails. Next gate remains human review / explicit approval manifest design; no live vault mutation is authorized by this adapter.
+
+- 2026-07-07: Fresh selector v3 manual-review batch now has operator acceptance evidence for 25 normalized no-op link resolutions; next automation work should avoid generating live apply manifests for normalized Obsidian no-op cases and reserve approval manifests for concrete replacement targets.
+- 2026-07-07: `full-vault-index-v1` built a read-only Memory-Vault index: 318 notes, 26 folders, 945 wikilinks, 858 resolved, 87 unresolved, 121 orphan notes, 0 duplicate-content groups. Artifacts: `out/reports/full-vault-index-v1/20260707T131041Z/REPORT.md`. Safety: no live mutation, no approval manifest, apply authority none.
+- 2026-07-07: `broken-links-review-packet-v1` classified 87 unresolved links from full-vault index. Classes: {'protected_cross_vault_manual': 9, 'generated_report_auto_keep': 78}. Safety: no live mutation, no approval manifest, apply authority none. Artifacts: `out/reports/broken-links-review-packet-v1/20260707T132131Z/REPORT.md`.
+- 2026-07-07: `protected-links-decision-v1` accepted 9 protected/cross-vault unresolved links as no-apply evidence: 8 concrete targets exist, 1 wildcard report pattern; no retarget/create/manifest/apply. Artifact: `out/reports/broken-links-review-packet-v1/20260707T132131Z/protected-links-decision-v1/REPORT.md`.
+## 2026-07-08 Graphify incremental index docs-lag closure
+
+`graphify_incremental_index` is recorded as a minimal repo-only indexing wrapper: it reuses existing Graphify handoff, embedding-run, and query-smoke components, selects delta candidates, and defaults to dry-run. It is not an indexing control-plane rewrite and does not authorize live vault mutation, approval manifests, targets, cron/service changes, or embedding runs without the existing resource gates.
+
+Evidence:
+
+- `src/obslayer/graphify_incremental_index.py`
+- `tools/obsidian_graphify_incremental_index.py`
+- `tests/test_graphify_incremental_index.py`
+
+Nanobot proposals deliberately retained for later review, not implemented here: unified indexing control plane, operator dashboard / "what changed since last scout", and index freshness contract.

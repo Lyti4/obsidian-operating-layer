@@ -14,6 +14,7 @@ def test_remaining_triage_auto_keeps_generated_report_broken_link() -> None:
         }
     )
     assert item["classification"] == "generated_report_auto_keep"
+    assert item["operator_bucket"] == "accepted_no_apply"
     assert item["apply_authority"] == "none"
 
 
@@ -28,6 +29,7 @@ def test_remaining_triage_marks_soul_links_protected_manual() -> None:
         }
     )
     assert item["classification"] == "protected_cross_vault_manual"
+    assert item["operator_bucket"] == "manual_protected"
     assert item["risk"] == "high"
 
 
@@ -73,4 +75,6 @@ def test_remaining_triage_packet_counts_only_broken_and_ambiguous() -> None:
     )
     assert packet["summary"]["items"] == 1
     assert packet["summary"]["by_classification"] == {"real_broken_needs_target_discovery": 1}
+    assert packet["summary"]["by_operator_bucket"] == {"target_discovery": 1}
+    assert packet["summary"]["target_discovery_items"] == 1
     assert packet["summary"]["actionable_apply_items"] == 0

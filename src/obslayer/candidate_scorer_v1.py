@@ -507,13 +507,13 @@ def _feature_points(
     path_key = _strip_md(path).lower()
     title_key = _title(note, path).lower()
     if normalized_target and normalized_target in {path_key, path.lower()}:
-        points["exact_path_match"] = 20
+        points["exact_path_match"] = 24
     if normalized_target and normalized_target.split("/")[-1] == title_key:
-        points["exact_title_match"] = 18
+        points["exact_title_match"] = 20
     if normalized_target and normalized_target in {_normalize_text(alias) for alias in _aliases(note)}:
-        points["alias_match"] = 18
+        points["alias_match"] = 16
     if source_note and str(source_note.get("top") or source.split("/", 1)[0]) == str(note.get("top") or path.split("/", 1)[0]):
-        points["same_top_level"] = 8
+        points["same_top_level"] = 12
     if _folder(path) and _folder(path) == _folder(source):
         points["folder_locality_match"] = 6
     source_tags = _string_set(source_note.get("tags") if source_note else [])
