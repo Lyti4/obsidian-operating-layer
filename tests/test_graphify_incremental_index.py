@@ -18,6 +18,12 @@ def run_id(tmp_path: Path) -> str:
     return f"{tmp_path.parent.name}-{tmp_path.name}"
 
 
+def clean_test_dir(path: Path) -> Path:
+    if path.exists():
+        shutil.rmtree(path)
+    return path
+
+
 def make_sandbox(tmp_path: Path) -> tuple[Path, Path]:
     repo = repo_root()
     slug = run_id(tmp_path)
@@ -51,7 +57,13 @@ def test_incremental_wrapper_dry_run_writes_delta_manifest_only(tmp_path: Path) 
         graph_json=graph,
         sandbox_vault=sandbox,
         out_dir=repo_root() / "out" / "reports" / "graphify-incremental-index" / f"dry-{run_id(tmp_path)}",
-        derived_root=repo_root() / "out" / "external-indexing-spike" / "graphify-derived" / f"dry-derived-{run_id(tmp_path)}",
+        derived_root=clean_test_dir(
+            repo_root()
+            / "out"
+            / "external-indexing-spike"
+            / "graphify-derived"
+            / f"dry-derived-{run_id(tmp_path)}"
+        ),
         provider="local-hashing-v1",
         allow_smoke_provider=True,
         max_candidates=2,
@@ -74,7 +86,13 @@ def test_incremental_wrapper_runs_bounded_smoke_and_query(tmp_path: Path) -> Non
         graph_json=graph,
         sandbox_vault=sandbox,
         out_dir=repo_root() / "out" / "reports" / "graphify-incremental-index" / f"run-{run_id(tmp_path)}",
-        derived_root=repo_root() / "out" / "external-indexing-spike" / "graphify-derived" / f"run-derived-{run_id(tmp_path)}",
+        derived_root=clean_test_dir(
+            repo_root()
+            / "out"
+            / "external-indexing-spike"
+            / "graphify-derived"
+            / f"run-derived-{run_id(tmp_path)}"
+        ),
         provider="local-hashing-v1",
         allow_smoke_provider=True,
         max_candidates=2,
@@ -101,7 +119,13 @@ def test_incremental_wrapper_rejects_unapproved_out_dir(tmp_path: Path) -> None:
             graph_json=graph,
             sandbox_vault=sandbox,
             out_dir=tmp_path / "bad-out",
-            derived_root=repo_root() / "out" / "external-indexing-spike" / "graphify-derived" / f"bad-derived-{run_id(tmp_path)}",
+            derived_root=clean_test_dir(
+                repo_root()
+                / "out"
+                / "external-indexing-spike"
+                / "graphify-derived"
+                / f"bad-derived-{run_id(tmp_path)}"
+            ),
             provider="local-hashing-v1",
             allow_smoke_provider=True,
         )

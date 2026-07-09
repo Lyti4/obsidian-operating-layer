@@ -44,9 +44,11 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `tools/obsidian_sandbox.py` — create/reset protected-path-excluding sandbox vault copies under `out/`.
 - `tools/obsidian_controlled_autonomy.py` — explicit Phase 08 observe/index/report queue jobs and acceptance reports; no scheduler is installed.
 - `tools/obsidian_field_slice.py` — proposal-only field acceptance slice: observe → finding → proposal → verify → dashboard list → decision record.
+- `tools/hermes_obslayer_memory.py` — tracked read-only lexical fallback over Markdown notes.
 - `docs/controlled-autonomy.md` — Phase 08 controlled-autonomy operator notes and safety model.
 - `docs/obsidian-review-dashboard/` — Dataview/Templater-friendly Phase 7 review dashboard source notes.
 - `docs/telegram-summary-templates.md` — short Telegram reporting templates for dry-run, sandbox benchmark, manual acceptance, and live-approval request updates.
+- `docs/audits/hermes-native-memory-audit-2026-07-10.md` — current gap audit, donor decisions, safety boundaries, and phased roadmap toward native Hermes memory.
 - `obsidian_*.py` — compatibility wrappers for the canonical tools.
 - `src/obslayer/guardrails.py` — shared guardrails, approval manifest validation, protected path policy, backup policy.
 - `src/obslayer/sandbox.py` — sandbox vault copy/reset harness for read-only component evaluation.
@@ -57,6 +59,8 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `docs/runbooks/` — short operator runbooks for safe daily use.
 - `manifests/` — checked-in manifest examples only; real manifests belong in task scoped working dirs.
 - `out/`, `artifacts/`, `obslayer-backups/`, `.hermes-backups/` — local generated artifacts, ignored by git.
+
+`tools/hermes_obslayer_memory.py` is not yet an active Hermes `MemoryProvider`, automatic capture path, or semantic indexer; those remain later separately accepted slices.
 
 ## Adopted design patterns
 
