@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
 
       - name: Renovate
-        uses: renovatebot/github-action@13f127373fd3dc43b41b0979e37ba570d6c2b8f4
+        uses: renovatebot/github-action@b50d2ba2bd928235abdcc14d06dfafc217f1c565
         with:
           configurationFile: renovate.json
           token: ${{ secrets.GITHUB_TOKEN }}
