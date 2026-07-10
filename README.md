@@ -7,6 +7,8 @@ Local, read-only-first tooling for observing an Obsidian vault, drafting proposa
 Start here before touching code or worker flows:
 
 - `AGENTS.md` — authority, roles, and safety boundaries.
+- `docs/INSTRUCTION_TREE.md` — precedence from project-wide rules to narrow tool, test, and role instructions.
+- `docs/AGENTS.md` — lifecycle and update rules for working Markdown documents.
 - `docs/PROJECT_OVERVIEW.md` — goal, status, roles, boundaries.
 - `docs/PROJECT_MAP.md` — where to find code, docs, specs, reports.
 - `docs/ARCHITECTURE.md` — high-level control flow.
@@ -15,7 +17,9 @@ Start here before touching code or worker flows:
 - `docs/PROJECT_SKILLS.md` — project skill router.
 - `docs/RUNTIME_STATUS.md` — current runtime/job status; verify before relying.
 - `docs/agents/` — Hermes/Codex/Nanobot role contracts.
+- `docs/tools/INDEX.md` — one authoritative registry entry per `tools/*.py` file; migration status is explicit.
 - `docs/skills/` — short project skill cards.
+- `.specify/feature.json` — active Spec Kit feature under `specs/`.
 
 ## Pre-commit docs integrity check
 
@@ -27,6 +31,15 @@ Before committing documentation integration changes:
 - no secrets/auth/env/cookie/private-key content is present;
 - Hermes remains acceptance owner and Dmitry approval remains required for risky/live actions;
 - generated/runtime reports are evidence, not canonical policy by themselves.
+- every changed tool, workflow, role, or runtime contract updates affected working docs in the same slice or records a reasoned no-impact result.
+
+## Project-local Spec Kit
+
+The repository tracks offline Linux/Bash planning templates under `.specify/`.
+The active feature is selected by `.specify/feature.json`; its specification,
+plan, checklist, and tasks live under `specs/`. Legacy `docs/spec-kit/` files
+remain historical design and evidence sources and do not override the active
+feature or root safety rules.
 
 ## Canonical CLI
 

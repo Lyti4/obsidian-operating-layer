@@ -4,6 +4,29 @@
 
 This workspace builds a safe local operating layer for Obsidian. Treat the Obsidian vault as human memory and the toolchain as a read-only-first control plane.
 
+## Instruction precedence and documentation duty
+
+Apply instructions in this order: external system/developer/user instructions,
+this root `AGENTS.md`, the nearest nested `AGENTS.md`, the relevant role
+contract, the tool family guide, and the operation runbook. A narrower file
+**must not weaken** root safety, permission, data, secret, or approval rules.
+
+- `docs/INSTRUCTION_TREE.md` — canonical precedence, scope, and document-status map.
+- `docs/AGENTS.md` — documentation lifecycle and same-slice update rules.
+- `docs/agents/AGENTS.md` — common Hermes/Codex/Nanobot contract structure.
+- `docs/tools/INDEX.md` — authoritative registry for every `tools/*.py` file.
+- `tools/AGENTS.md` — CLI/internal-module development contract.
+- `src/obslayer/AGENTS.md` — safety-core and trust-boundary contract.
+- `tests/AGENTS.md` — isolated evidence and no-live-vault test contract.
+- `.specify/memory/constitution.md` — Spec Kit governance.
+- `.specify/feature.json` — active feature pointer under `specs/`.
+- `docs/RUNTIME_STATUS.md` — current verify-before-use runtime state.
+
+Every code, tool, workflow, runtime, or instruction change must update affected
+canonical/active documents in the same slice or report
+`documentation impact: none` with a reason. Adding or changing a tool also
+updates its registry row, family guide, and test.
+
 
 ## Canonical project docs
 
@@ -36,6 +59,7 @@ Use the accepted entrypoint structure; do not replace it with ad-hoc “similar 
 - Any live change must be narrowly scoped, backed up, and verified.
 - Do not print or store secrets, tokens, cookies, private keys, `.env` values, or credential file contents.
 - Do not touch money, public posting, production restarts, network exposure, or account/OAuth changes unless the user explicitly asks.
+- Do not create a commit, push a branch, or open/update a pull request unless the user explicitly approves that publication action.
 
 ## Codex implementation/review worker policy
 

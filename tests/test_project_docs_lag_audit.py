@@ -1,6 +1,11 @@
 from pathlib import Path
 
-from obslayer.project_docs_lag_audit import project_docs_lag_audit_to_markdown, run_project_docs_lag_audit
+from obslayer.project_docs_lag_audit import (
+    project_docs_lag_audit_to_markdown,
+    run_project_docs_lag_audit,
+)
+
+REPO = Path(__file__).resolve().parents[1]
 
 
 def _write_minimal_docs(repo: Path, *, include_marker: bool = True) -> None:
@@ -27,6 +32,19 @@ def _write_minimal_docs(repo: Path, *, include_marker: bool = True) -> None:
             "Control-plane source surfaces\nCurrent generated evidence pointers\nSafety boundary\n"
         ),
         "AGENTS.md": "15 minutes\n212b7e8f3c21\nbounded read-only/proposal-only\n",
+        "docs/AGENTS.md": "documentation scope\n",
+        "docs/agents/AGENTS.md": "agent contract scope\n",
+        "tools/AGENTS.md": "tool scope\n",
+        "src/obslayer/AGENTS.md": "safety core scope\n",
+        "tests/AGENTS.md": "test scope\n",
+        "docs/INSTRUCTION_TREE.md": "instruction tree\n",
+        "docs/tools/INDEX.md": (
+            "| tool | purpose | kind | family | mode | write_surface | inputs | outputs | test | instruction | spec | status |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+            "| `tools/example.py` | fixture | cli | reports-evidence | read-only | none | args | stdout | "
+            "`tests/test_project_docs_lag_audit.py` | `docs/AGENTS.md` | none | active |\n"
+        ),
+        "tools/example.py": "raise SystemExit(0)\n",
     }
     if not include_marker:
         docs["AGENTS.md"] = "212b7e8f3c21\nbounded read-only/proposal-only\n"
@@ -56,3 +74,79 @@ def test_project_docs_lag_audit_flags_missing_marker(tmp_path: Path) -> None:
     assert audit.status == "lagging"
     assert any("operator_policy_mentions_15m_audit" in finding for finding in audit.findings)
     assert any("15 minutes" in check.missing_markers for check in audit.checks)
+
+
+def test_instruction_tree_required_files_and_root_links() -> None:
+    required = (
+        "AGENTS.md",
+        "docs/AGENTS.md",
+        "docs/INSTRUCTION_TREE.md",
+        "docs/agents/AGENTS.md",
+        "docs/tools/INDEX.md",
+        "tools/AGENTS.md",
+        "src/obslayer/AGENTS.md",
+        "tests/AGENTS.md",
+        ".specify/memory/constitution.md",
+        ".specify/feature.json",
+    )
+    missing = [path for path in required if not (REPO / path).is_file()]
+    assert missing == []
+
+    root_text = (REPO / "AGENTS.md").read_text(encoding="utf-8")
+    for link in (
+        "docs/INSTRUCTION_TREE.md",
+        "docs/AGENTS.md",
+        "docs/agents/AGENTS.md",
+        "docs/tools/INDEX.md",
+        "tools/AGENTS.md",
+        "src/obslayer/AGENTS.md",
+        "tests/AGENTS.md",
+        ".specify/memory/constitution.md",
+        "docs/RUNTIME_STATUS.md",
+    ):
+        assert link in root_text
+    assert "must not weaken" in root_text
+
+    readme_text = (REPO / "README.md").read_text(encoding="utf-8")
+    for link in ("docs/INSTRUCTION_TREE.md", "docs/tools/INDEX.md", ".specify/feature.json"):
+        assert link in readme_text
+
+    security_text = (REPO / "SECURITY.md").read_text(encoding="utf-8")
+    for link in ("AGENTS.md", "docs/INSTRUCTION_TREE.md", "src/obslayer/AGENTS.md"):
+        assert link in security_text
+
+
+def test_instruction_navigation_is_at_most_three_links() -> None:
+    text = (REPO / "docs/INSTRUCTION_TREE.md").read_text(encoding="utf-8")
+    root_text = (REPO / "AGENTS.md").read_text(encoding="utf-8")
+    table = text.split("<!-- navigation-table:start -->", 1)[1].split(
+        "<!-- navigation-table:end -->", 1
+    )[0]
+    declared_counts: dict[str, int] = {}
+    actual_counts: dict[str, int] = {}
+    for line in table.splitlines():
+        if not line.startswith("| `"):
+            continue
+        cells = [cell.strip().strip("`") for cell in line.strip().strip("|").split("|")]
+        area, nearest, follow_up = cells[:3]
+        declared_counts[area] = int(cells[-1])
+        for path in (nearest, follow_up):
+            assert (REPO / path).exists(), path
+
+        nearest_distance = 0 if nearest == "AGENTS.md" else 1 if nearest in root_text else 2
+        assert nearest == "AGENTS.md" or nearest in root_text or nearest in text
+        nearest_text = (REPO / nearest).read_text(encoding="utf-8")
+        if follow_up in root_text:
+            follow_up_distance = 1
+        elif follow_up in nearest_text:
+            follow_up_distance = nearest_distance + 1
+        else:
+            assert follow_up in text
+            follow_up_distance = 2
+        actual_counts[area] = max(nearest_distance, follow_up_distance)
+
+    expected_areas = {"/", "docs/", "docs/agents/", "tools/", "src/obslayer/", "tests/"}
+    assert set(declared_counts) == expected_areas
+    assert set(actual_counts) == expected_areas
+    assert max(actual_counts.values()) <= 3
+    assert all(actual_counts[area] <= declared_counts[area] for area in expected_areas)
