@@ -1,8 +1,11 @@
+import subprocess
 from pathlib import Path
 
 from obslayer.project_docs_lag_audit import (
+    parse_tool_registry,
     project_docs_lag_audit_to_markdown,
     run_project_docs_lag_audit,
+    tracked_tool_paths,
 )
 
 REPO = Path(__file__).resolve().parents[1]
@@ -150,3 +153,37 @@ def test_instruction_navigation_is_at_most_three_links() -> None:
     assert set(actual_counts) == expected_areas
     assert max(actual_counts.values()) <= 3
     assert all(actual_counts[area] <= declared_counts[area] for area in expected_areas)
+
+
+def test_tool_registry_covers_tracked_tools_exactly_once() -> None:
+    entries = parse_tool_registry(REPO / "docs/tools/INDEX.md")
+    documented = [entry.tool for entry in entries]
+    tracked = tracked_tool_paths(REPO)
+
+    assert len(tracked) == 58
+    assert len(documented) == len(set(documented))
+    assert set(documented) == tracked
+
+
+def test_tool_set_uses_git_index_with_fixture_fallback(tmp_path: Path) -> None:
+    tools = tmp_path / "tools"
+    tools.mkdir()
+    (tools / "present.py").write_text("\n", encoding="utf-8")
+    assert tracked_tool_paths(tmp_path) == {"tools/present.py"}
+
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    (tools / "tracked.py").write_text("\n", encoding="utf-8")
+    (tools / "untracked.py").write_text("\n", encoding="utf-8")
+    subprocess.run(["git", "add", "tools/present.py", "tools/tracked.py"], cwd=tmp_path, check=True)
+
+    assert tracked_tool_paths(tmp_path) == {"tools/present.py", "tools/tracked.py"}
+
+
+def test_internal_support_modules_are_not_cli() -> None:
+    entries = {entry.tool: entry for entry in parse_tool_registry(REPO / "docs/tools/INDEX.md")}
+
+    for tool in ("tools/_bootstrap.py", "tools/common.py"):
+        assert entries[tool].kind == "internal"
+        assert entries[tool].family == "internal-support"
+        assert entries[tool].status == "internal"
+        assert entries[tool].test.startswith("covered-by:")
