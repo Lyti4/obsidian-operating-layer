@@ -13,7 +13,7 @@
 - `obsidian_diagram_pdf_report.py` — diagram/PDF artifacts.
 - `obsidian_external_tool_benchmark.py` — сравнение внешних сигналов.
 - `obsidian_llm_channel_smoke.py` — smoke каналов; live probes только явно.
-- `obsidian_project_docs_lag_audit.py` — расхождение docs и принятого состояния.
+- `obsidian_project_docs_lag_audit.py` — структурная проверка docs, tool registry и ссылок инструкций.
 - `obsidian_backfill_report.py` — запись итогового отчёта в Obsidian Reports.
 
 ## Границы

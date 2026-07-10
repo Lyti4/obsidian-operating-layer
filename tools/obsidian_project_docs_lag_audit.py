@@ -11,7 +11,9 @@ from obslayer.project_docs_lag_audit import project_docs_lag_audit_to_markdown, 
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Check whether key spec-kit/docs markers lag behind implemented repo workflow.")
+    parser = argparse.ArgumentParser(
+        description="Validate repository documentation structure, tool registry coverage, and instruction links."
+    )
     parser.add_argument("--repo", default=".")
     parser.add_argument("--out-dir", default="out/reports/project-docs-lag-audit/manual")
     args = parser.parse_args()

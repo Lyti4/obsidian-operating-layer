@@ -1,7 +1,10 @@
 import subprocess
 from pathlib import Path
 
+import pytest
+
 from obslayer.project_docs_lag_audit import (
+    instruction_artifacts_secret_shape_findings,
     parse_tool_registry,
     project_docs_lag_audit_to_markdown,
     run_project_docs_lag_audit,
@@ -11,50 +14,93 @@ from obslayer.project_docs_lag_audit import (
 REPO = Path(__file__).resolve().parents[1]
 
 
-def _write_minimal_docs(repo: Path, *, include_marker: bool = True) -> None:
+def _registry_row(
+    tool: str = "tools/example.py",
+    *,
+    purpose: str = "fixture",
+    kind: str = "cli",
+    family: str = "reports-evidence",
+    mode: str = "read-only",
+    write_surface: str = "none",
+    inputs: str = "args",
+    outputs: str = "stdout",
+    test: str = "tests/test_project_docs_lag_audit.py",
+    instruction: str = "docs/tools/families/reports-evidence.md",
+    spec: str = "none",
+    status: str = "active",
+) -> str:
+    values = [tool, purpose, kind, family, mode, write_surface, inputs, outputs, test, instruction, spec, status]
+    return "| " + " | ".join(f"`{v}`" if i in {0, 8, 9, 10} and v != "none" else v for i, v in enumerate(values)) + " |\n"
+
+
+def _write_minimal_docs(repo: Path) -> None:
+    instruction_links = "\n".join(
+        [
+            "AGENTS.md",
+            "docs/AGENTS.md",
+            "docs/INSTRUCTION_TREE.md",
+            "docs/agents/AGENTS.md",
+            "docs/tools/INDEX.md",
+            "tools/AGENTS.md",
+            "src/obslayer/AGENTS.md",
+            "tests/AGENTS.md",
+            ".specify/memory/constitution.md",
+            ".specify/feature.json",
+            "docs/RUNTIME_STATUS.md",
+        ]
+    )
     docs = {
-        "docs/spec-kit/26-nanobot-standing-worker.md": "every 15m\n212b7e8f3c21\nproject-state.json\n",
-        "docs/spec-kit/24-orchestration-backlog.md": "Nanobot 15-minute audit loop\nevery 15m\nproject-state.json\n",
-        "docs/spec-kit/29-semantic-proposal-workflow.md": (
-            "tools/obsidian_semantic_review_index.py\nout/proposals/semantic-review-indexes/\nReview index step\n"
-            "Semantic/indexing manifest step\ntools/obsidian_semantic_manifest.py\nout/reports/semantic-manifests/\n"
-        ),
-        "docs/acceptance/index.md": (
-            "Semantic targeted proposal/review index\ntools/obsidian_semantic_review_index.py\n"
-            "Semantic indexing manifest\ntools/obsidian_semantic_manifest.py\nno live mutation authorization\n"
-            "Agentic OS control plane map\ndocs/spec-kit/35-agentic-os-control-plane-map.md\n"
-            "docs/spec-kit/36-current-evidence-index.md\ndoes not authorize live mutation\n"
-        ),
-        "docs/spec-kit/28-global-headroom-only-llm-channel.md": (
-            "docs/spec-kit/schemas/llm-channel.schema.json\nmake llm-channel-smoke\nmake llm-channel-smoke-live\n"
-        ),
-        "docs/spec-kit/35-agentic-os-control-plane-map.md": (
-            "Control-plane surfaces\nQueue state model\nAcceptance gates\nCurrent Nanobot synthesis\n"
-        ),
-        "docs/spec-kit/36-current-evidence-index.md": (
-            "Control-plane source surfaces\nCurrent generated evidence pointers\nSafety boundary\n"
-        ),
-        "AGENTS.md": "15 minutes\n212b7e8f3c21\nbounded read-only/proposal-only\n",
+        "AGENTS.md": instruction_links + "\nmust not weaken\n",
+        "README.md": "docs/INSTRUCTION_TREE.md\ndocs/tools/INDEX.md\n.specify/feature.json\n",
+        "SECURITY.md": "AGENTS.md\ndocs/INSTRUCTION_TREE.md\nsrc/obslayer/AGENTS.md\n",
         "docs/AGENTS.md": "documentation scope\n",
         "docs/agents/AGENTS.md": "agent contract scope\n",
         "tools/AGENTS.md": "tool scope\n",
         "src/obslayer/AGENTS.md": "safety core scope\n",
         "tests/AGENTS.md": "test scope\n",
-        "docs/INSTRUCTION_TREE.md": "instruction tree\n",
+        "docs/RUNTIME_STATUS.md": "runtime status\n",
+        ".specify/memory/constitution.md": "constitution\n",
+        ".specify/feature.json": "{\"feature_directory\": \"specs/001-instruction-tree-tool-documentation\"}\n",
+        "docs/INSTRUCTION_TREE.md": (
+            instruction_links
+            + "\n<!-- navigation-table:start -->\n"
+            + "| area | nearest | follow-up | max links |\n"
+            + "|---|---|---|---|\n"
+            + "| `/` | `AGENTS.md` | `docs/INSTRUCTION_TREE.md` | `1` |\n"
+            + "| `docs/` | `docs/AGENTS.md` | `docs/INSTRUCTION_TREE.md` | `2` |\n"
+            + "| `docs/agents/` | `docs/agents/AGENTS.md` | `docs/agents/AGENTS.md` | `2` |\n"
+            + "| `tools/` | `tools/AGENTS.md` | `docs/tools/INDEX.md` | `2` |\n"
+            + "| `src/obslayer/` | `src/obslayer/AGENTS.md` | `docs/TOOLS_POLICY.md` | `2` |\n"
+            + "| `tests/` | `tests/AGENTS.md` | `tests/AGENTS.md` | `2` |\n"
+            + "<!-- navigation-table:end -->\n"
+        ),
+        "docs/TOOLS_POLICY.md": "policy\n",
+        "docs/tools/families/reports-evidence.md": "guide\n",
         "docs/tools/INDEX.md": (
             "| tool | purpose | kind | family | mode | write_surface | inputs | outputs | test | instruction | spec | status |\n"
             "|---|---|---|---|---|---|---|---|---|---|---|---|\n"
-            "| `tools/example.py` | fixture | cli | reports-evidence | read-only | none | args | stdout | "
-            "`tests/test_project_docs_lag_audit.py` | `docs/AGENTS.md` | none | active |\n"
+            + _registry_row()
         ),
         "tools/example.py": "raise SystemExit(0)\n",
+        "tests/test_project_docs_lag_audit.py": "def test_fixture():\n    assert True\n",
     }
-    if not include_marker:
-        docs["AGENTS.md"] = "212b7e8f3c21\nbounded read-only/proposal-only\n"
     for rel, text in docs.items():
         path = repo / rel
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
+
+
+def _replace_registry(repo: Path, rows: list[str]) -> None:
+    (repo / "docs/tools/INDEX.md").write_text(
+        "| tool | purpose | kind | family | mode | write_surface | inputs | outputs | test | instruction | spec | status |\n"
+        "|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+        + "".join(rows),
+        encoding="utf-8",
+    )
+
+
+def _check(audit, name: str):
+    return next(check for check in audit.checks if check.name == name)
 
 
 def test_project_docs_lag_audit_ok(tmp_path: Path) -> None:
@@ -67,16 +113,75 @@ def test_project_docs_lag_audit_ok(tmp_path: Path) -> None:
     assert all(check.status == "ok" for check in audit.checks)
     assert "Status: `ok`" in text
     assert "- none" in text
+    assert "repository documentation structure" in text
 
 
-def test_project_docs_lag_audit_flags_missing_marker(tmp_path: Path) -> None:
-    _write_minimal_docs(tmp_path, include_marker=False)
+@pytest.mark.parametrize(
+    ("mutation", "check_name"),
+    [
+        ("missing_registry", "tool_registry_document_present"),
+        ("malformed_row", "tool_registry_parseable"),
+        ("missing_tool", "tool_registry_complete"),
+        ("stale_tool", "tool_registry_no_stale_entries"),
+        ("duplicate_tool", "tool_registry_unique"),
+        ("empty_field", "tool_registry_required_fields"),
+        ("invalid_value", "tool_registry_controlled_values"),
+        ("cross_field", "tool_registry_cross_field_rules"),
+        ("missing_reference", "tool_registry_references_exist"),
+        ("missing_instruction_target", "instruction_tree_references_exist"),
+        ("secret_shape", "instruction_artifacts_no_secret_shapes"),
+    ],
+)
+def test_project_docs_lag_audit_structural_failures(tmp_path: Path, mutation: str, check_name: str) -> None:
+    _write_minimal_docs(tmp_path)
+    if mutation == "missing_registry":
+        (tmp_path / "docs/tools/INDEX.md").unlink()
+    elif mutation == "malformed_row":
+        (tmp_path / "docs/tools/INDEX.md").write_text(
+            "| tool | purpose | kind | family | mode | write_surface | inputs | outputs | test | instruction | spec | status |\n"
+            "|---|---|---|---|---|---|---|---|---|---|---|---|\n"
+            "| `tools/example.py` | too-short |\n",
+            encoding="utf-8",
+        )
+    elif mutation == "missing_tool":
+        (tmp_path / "tools/missing.py").write_text("\n", encoding="utf-8")
+    elif mutation == "stale_tool":
+        _replace_registry(tmp_path, [_registry_row(), _registry_row("tools/stale.py")])
+    elif mutation == "duplicate_tool":
+        _replace_registry(tmp_path, [_registry_row(), _registry_row(purpose="duplicate")])
+    elif mutation == "empty_field":
+        _replace_registry(tmp_path, [_registry_row(purpose="")])
+    elif mutation == "invalid_value":
+        _replace_registry(tmp_path, [_registry_row(kind="worker")])
+    elif mutation == "cross_field":
+        _replace_registry(
+            tmp_path,
+            [_registry_row(kind="internal", family="reports-evidence", status="active", test="tests/test_project_docs_lag_audit.py")],
+        )
+    elif mutation == "missing_reference":
+        _replace_registry(tmp_path, [_registry_row(test="tests/missing.py")])
+    elif mutation == "missing_instruction_target":
+        (tmp_path / "docs/AGENTS.md").unlink()
+    elif mutation == "secret_shape":
+        (tmp_path / "docs/AGENTS.md").write_text("api_key = abcdefghijklmnop\n", encoding="utf-8")
 
     audit = run_project_docs_lag_audit(tmp_path)
 
     assert audit.status == "lagging"
-    assert any("operator_policy_mentions_15m_audit" in finding for finding in audit.findings)
-    assert any("15 minutes" in check.missing_markers for check in audit.checks)
+    assert _check(audit, check_name).status == "lagging"
+    assert _check(audit, check_name).missing_markers
+
+
+def test_instruction_artifacts_do_not_contain_secret_shapes(tmp_path: Path) -> None:
+    _write_minimal_docs(tmp_path)
+    secret_file = tmp_path / "specs/001-instruction-tree-tool-documentation/spec.md"
+    secret_file.parent.mkdir(parents=True, exist_ok=True)
+    secret_file.write_text("token: supersecretvalue\n", encoding="utf-8")
+
+    findings = instruction_artifacts_secret_shape_findings(tmp_path)
+
+    assert findings == ["specs/001-instruction-tree-tool-documentation/spec.md"]
+    assert "supersecretvalue" not in str(findings)
 
 
 def test_instruction_tree_required_files_and_root_links() -> None:
