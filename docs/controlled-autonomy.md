@@ -1,6 +1,12 @@
 # Controlled Autonomy
 
+**Статус:** `active-contract`. Это описание ручной queue-модели, а не утверждение
+о текущем scheduler. Runtime всегда проверяется в `docs/RUNTIME_STATUS.md`.
+
 Phase 08 adds a local, explicit controlled-autonomy slice for scheduled-intent observe/index/report work. It records jobs in `out/queue/`, but it does not install cron, systemd units, gateway jobs, or any production scheduler.
+
+Включение или возобновление реального scheduler остаётся отдельным runtime
+изменением с approval и rollback; Nanobot role сам его не включает.
 
 ## Safety model
 

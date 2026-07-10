@@ -1,5 +1,8 @@
 # Operator Guide
 
+**Статус:** `active` — пошаговая инструкция. Текущий runtime проверяется в
+`docs/RUNTIME_STATUS.md`, точные tool modes — в `docs/tools/INDEX.md`.
+
 ## Workflow
 
 1. Run `python tools/obsidian_observe.py --vault <vault> --out <observe.json>`.
@@ -9,7 +12,8 @@
 5. For live apply only, create an approval manifest that binds the exact proposal, vault root, and target set.
 6. Run `python tools/obsidian_apply.py --proposal <proposal.json> --approval-manifest <approval.json> --apply --out <apply.json>`.
 7. Run `python tools/obsidian_verify.py --observe <observe.json> --proposal <proposal.json>` and compare post-apply observation when available.
-8. Write the final run report into Obsidian Reports.
+8. Create a new uniquely named final report with
+   `docs/runbooks/obsidian_backfill_report.md`; overwrite is refused.
 
 ## Approval manifest requirements
 
@@ -43,7 +47,7 @@ The manifest must contain:
 - Use dry-run by default.
 - Keep changes small.
 - Re-scan after every edit.
-- Write final run reports into `Memory-Vault/Hermes/Reports/`.
+- Use only an explicitly approved resolved Reports directory and unique output.
 - Report back to Telegram with `docs/telegram-summary-templates.md` so Dmitry gets exact paths and verification evidence without opening server-local files.
 - Do not touch Gateway/systemd, secrets, payments, public posting, production restarts, or network exposure from this package.
 
@@ -63,4 +67,7 @@ Use a disposable sandbox or approved subset for `field-slice-example` unless Dmi
 
 ## Scheduled reports
 
-Scheduled observe/index reports are intentionally not installed by this project. Cron/systemd/webhook scheduling requires separate explicit approval that names the schedule, destination, retention, and rollback/disable command.
+This guide does not claim whether a job is currently installed or running.
+Verify `docs/RUNTIME_STATUS.md`. Cron/systemd/webhook changes
+`requires separate explicit approval` naming schedule, destination, retention
+and rollback/disable.

@@ -13,6 +13,7 @@
 ## Read first
 
 - `docs/agents/NANOBOT.md`
+- `docs/RUNTIME_STATUS.md`
 - `docs/spec-kit/26-nanobot-standing-worker.md`
 - `docs/spec-kit/30-orchestrator-operating-spec.md`
 
@@ -21,6 +22,8 @@
 - Nanobot does not directly accept, close, or apply recommendations.
 - No live vault/repo mutation unless separately scoped and approved.
 - No secrets/auth/env/cookie/private-key access.
+- No scheduler activation; standing role and current job state are separate.
+- Observe all seven areas from the canonical role and hand findings to Hermes.
 
 ## If full Hermes skill is unavailable
 

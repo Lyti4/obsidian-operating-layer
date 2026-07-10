@@ -1,5 +1,8 @@
 # Runbook — Observe, Propose, Verify
 
+**Статус:** `active proposal-only`. Governing family:
+`docs/tools/families/core-vault-workflow.md`.
+
 Use this for safe live-vault analysis without mutation.
 
 ## Preconditions
@@ -39,3 +42,10 @@ Machine-readable success is `verify.json` with `ok: true` and an empty `issues` 
 - Any command fails.
 - A proposed target is under a protected path.
 - A report contains secrets or raw credentials.
+
+## Rollback boundary
+
+No live rollback is expected because this runbook writes only repo-local
+evidence. On failure, retain diagnostics or remove only the run-owned `out/`
+directory; do not change vault notes. Verify runtime separately through
+`docs/RUNTIME_STATUS.md`.

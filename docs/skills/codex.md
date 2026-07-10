@@ -15,6 +15,7 @@
 ## Read first
 
 - `docs/agents/CODEX.md`
+- `.specify/feature.json` and the active feature `tasks.md`
 - `docs/spec-kit/32-codex-hermes-communication-channel.md`
 - `docs/spec-kit/33-codex-native-runtime.md`
 
@@ -22,7 +23,8 @@
 
 - No live vault mutation.
 - No secrets/auth/profile reads in prompts or reports.
-- No commits/pushes unless Dmitry explicitly asks.
+- No commits/pushes without a current owner publication approval.
+- Every changed code/tool/workflow records `documentation impact`.
 
 ## If full Hermes skill is unavailable
 

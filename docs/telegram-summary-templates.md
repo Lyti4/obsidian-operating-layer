@@ -5,11 +5,15 @@ Short operator-facing templates for reporting Obsidian Operating Layer runs back
 ## Rules
 
 - Result first, evidence second.
-- Include exact artifact paths because Dmitry cannot inspect server files directly.
+- Prefer repo-relative or sanitized artifact paths. Use raw absolute paths only
+  in internal evidence when they are required for verification.
+- UX constraint: `Dmitry cannot inspect server files directly`; therefore the
+  summary must contain useful sanitized paths and the verification result.
 - Never include secrets, tokens, cookies, private keys, browser profiles, or raw `.env` values.
 - Use the exact phrase `No secrets were included` in summaries when secret hygiene was checked.
 - Say explicitly whether the live vault was mutated.
 - For live apply, include approval manifest path, backup path, and post-verify result.
+- Include `documentation impact` for code/tool/workflow/runtime/instruction changes.
 
 ## Safe dry-run / proposal-only result
 
@@ -22,12 +26,15 @@ Short operator-facing templates for reporting Obsidian Operating Layer runs back
 - protected paths: refused/checked
 
 Evidence:
-- proposal/report: <absolute-or-repo-relative-path>
+- proposal/report: <repo-relative-or-sanitized-path>
 - tests: <command> -> <result>
 - git: <commit or clean status>
 
 Next:
 - <one safe next step or “ожидаю approval”>
+
+Documentation impact:
+- <updated docs or none with reason>
 ```
 
 ## Sandbox benchmark result

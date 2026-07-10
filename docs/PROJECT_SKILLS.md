@@ -14,12 +14,16 @@ Do not duplicate full runbooks here. This file routes; detailed behavior lives i
 ## Start sequence
 
 1. Read `AGENTS.md`.
-2. Read the smallest relevant project entrypoint:
+2. Resolve the active instruction and plan:
+   - `docs/INSTRUCTION_TREE.md`
+   - `.specify/feature.json`
+3. Read the smallest relevant project entrypoint:
    - `docs/PROJECT_OVERVIEW.md`
    - `docs/PROJECT_MAP.md`
    - `docs/agents/*.md`
-3. Read one matching skill card under `docs/skills/`.
-4. Load the full Hermes skill only when the card says it is needed.
+4. For tool work, follow `docs/tools/INDEX.md` to one family guide or runbook.
+5. Read one matching skill card under `docs/skills/`.
+6. Load the full Hermes skill only when the card says it is needed.
 
 ## Skill cards
 
@@ -41,6 +45,9 @@ Do not duplicate full runbooks here. This file routes; detailed behavior lives i
 ## Acceptance rule
 
 A skill tells Hermes how to work; it does not accept results. Hermes acceptance still requires scoped evidence, forbidden-action check, and real verification output.
+
+Each skill-guided change reports `documentation impact` and updates affected
+canonical/active docs in the same slice.
 
 ## Skill unavailable fallback
 

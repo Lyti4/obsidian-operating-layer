@@ -1,26 +1,20 @@
-# Role notes
+# Role notes — historical
 
-## Observe
+**Статус:** `historical`
 
-- Read-only scan of the vault.
-- Report counts, broken links, duplicates, and orphan notes.
-- Never write to the vault.
+Этот ранний конспект `observe -> propose -> apply -> verify` сохранён только как
+история проекта. Он не является текущим контрактом роли и не даёт разрешения на
+live apply.
 
-## Propose
+Текущие источники:
 
-- Convert observation data into a dry-run proposal.
-- Include a risk class and safety note.
-- Never mutate the vault.
+- общая структура ролей — `docs/agents/AGENTS.md`;
+- Hermes — `docs/agents/HERMES.md`;
+- Codex — `docs/agents/CODEX.md`;
+- Nanobot — `docs/agents/NANOBOT.md`;
+- актуальный runtime — `docs/RUNTIME_STATUS.md`;
+- approved live workflow — `docs/runbooks/approved-live-apply.md`.
 
-## Apply
-
-- Default to dry-run.
-- Real apply requires an approval manifest and `--real`.
-- Only perform narrow, explicit actions.
-- Create backups before real edits.
-
-## Verify
-
-- Compare observation and proposal artifacts.
-- Confirm the counts and target vault match.
-- Fail fast on drift.
+Историческая идея остаётся верной только на уровне порядка: сначала наблюдать,
+затем предложить, проверить и получить явное approval; запись выполняется через
+действующий runbook с backup и verify.

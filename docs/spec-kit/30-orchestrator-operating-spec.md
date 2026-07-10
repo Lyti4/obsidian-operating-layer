@@ -1,14 +1,21 @@
 # 30 — Orchestrator Operating Spec
 
-Status: active consolidation spec
+Status: historical consolidation/design source
 Date: 2026-07-04
 Scope: single operator-facing control document for continuing Obsidian Operating Layer work as an orchestrated, proposal-first system.
+
+Current authority is `AGENTS.md`, `docs/INSTRUCTION_TREE.md`, role contracts in
+`docs/agents/`, active `.specify/feature.json`, `docs/tools/INDEX.md`, and
+`docs/RUNTIME_STATUS.md`. Commands, routes, jobs and artifact pointers below are
+the 2026-07-04 snapshot and must be re-verified before use.
 
 ## Purpose
 
 This document consolidates the current operating boundary that was previously spread across the orchestration backlog, Nanobot worker contract, Headroom channel policy, channel registry, and semantic proposal workflow.
 
-It does not replace the detailed source specs. It is the first document Hermes should read when deciding the next safe action.
+It does not replace the detailed source specs and is no longer the first current
+document Hermes reads. Use it only for historical rationale after the current
+instruction/role/feature/runtime sources above.
 
 Source specs:
 
@@ -39,11 +46,11 @@ Nanobot works as a supervised standing worker:
 - allowed: observe, summarize, find docs lag, route task packets, draft proposal-only reports, review sanitized evidence;
 - forbidden without explicit approval: live vault mutation, repo mutation outside a dispatched repo-doc task, auth/profile changes, service restarts, network exposure, cron changes beyond the approved scout, paid actions, and automatic embeddings.
 
-## Channel rules
+## Historical channel design
 
 External LLM calls must go through Headroom. Local-only health checks, read-only gateways, systemd checks, and Ollama embeddings remain local traffic.
 
-Accepted routes:
+Routes recorded in the 2026-07-04 design (verify in current runtime before use):
 
 | Component | Route | Boundary |
 |---|---|---|
@@ -55,7 +62,7 @@ Accepted routes:
 
 If a route returns provider/auth/capacity errors, mark the worker blocked. Do not silently bypass Headroom or switch to raw provider credentials.
 
-## Current workstream
+## 2026-07-04 workstream snapshot
 
 The active product slice is the semantic proposal/review layer:
 
@@ -78,7 +85,7 @@ Current boundary:
 - generated artifacts stay under `out/proposals/` or `out/reports/`;
 - live Obsidian apply remains closed.
 
-## Orchestrator backlog now
+## Historical orchestrator backlog
 
 1. Keep baseline green: `git diff --check`, targeted tests, and `make verify` when code/runtime changes.
 2. Keep docs consolidated: update this spec and the source spec only when an accepted boundary changes.
@@ -88,7 +95,7 @@ Current boundary:
 6. Keep the generated artifact pointers below current when new review/report indexes are emitted.
 7. Do not move to live apply until Dmitry approves a named approval manifest.
 
-## Current generated artifact pointers
+## Historical generated artifact pointers
 
 These pointers are review inputs, not approval to apply. Refresh them when the semantic workflow emits a newer accepted artifact.
 

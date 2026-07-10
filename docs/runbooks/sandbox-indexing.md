@@ -1,5 +1,9 @@
 # Runbook — Sandbox Indexing Probe
 
+**Статус:** `active sandbox`. Governing family:
+`docs/tools/families/indexing-graphify-semantic.md`. Current provider/service
+state is not copied here; verify `docs/RUNTIME_STATUS.md`.
+
 Use this before any larger semantic/MCP indexing work.
 
 ## Boundary
@@ -33,3 +37,9 @@ Before full indexing, run a bounded medium sandbox probe and confirm:
 - secret/env data leaks;
 - external tool declares new write/delete/move capability;
 - any live vault file changes.
+
+## Rollback
+
+Stop the external process and remove only the named sandbox/derived root owned
+by the failed run after checking its resolved path. Never clean the live vault,
+shared cache or another run's evidence as sandbox rollback.

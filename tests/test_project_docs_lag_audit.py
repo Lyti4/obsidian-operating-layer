@@ -187,3 +187,43 @@ def test_internal_support_modules_are_not_cli() -> None:
         assert entries[tool].family == "internal-support"
         assert entries[tool].status == "internal"
         assert entries[tool].test.startswith("covered-by:")
+
+
+def test_agent_contracts_include_documentation_duty_and_runtime_source() -> None:
+    required_sections = (
+        "## Назначение",
+        "## Разрешённые действия",
+        "## Запрещённые действия",
+        "## Входы",
+        "## Выходы",
+        "## Граница записи",
+        "## Передача",
+        "## Доказательства",
+        "## Влияние на документацию",
+        "## Runtime source",
+    )
+    volatile_ids = ("212b7e8f3c21", "d2a5fd33b29f", "835d51562f73")
+
+    for role in ("HERMES", "CODEX", "NANOBOT"):
+        text = (REPO / "docs" / "agents" / f"{role}.md").read_text(encoding="utf-8")
+        assert all(section in text for section in required_sections), role
+        assert "docs/RUNTIME_STATUS.md" in text
+        assert "documentation impact" in text
+        assert not any(job_id in text for job_id in volatile_ids)
+
+
+def test_nanobot_contract_is_project_wide_readonly_observer() -> None:
+    text = (REPO / "docs" / "agents" / "NANOBOT.md").read_text(encoding="utf-8")
+    observation_areas = (
+        "repository-structure",
+        "instruction-hierarchy",
+        "tool-coverage",
+        "test-health",
+        "runtime-evidence",
+        "open-plans",
+        "documentation-drift",
+    )
+
+    assert all(f"`{area}`" in text for area in observation_areas)
+    for marker in ("read-only", "proposal-only", "no scheduler activation", "handoff target"):
+        assert marker in text

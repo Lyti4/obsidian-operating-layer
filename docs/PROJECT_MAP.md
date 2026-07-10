@@ -4,9 +4,11 @@
 
 - `README.md` — CLI and project layout.
 - `AGENTS.md` — agent rules and safety boundaries.
-- `HANDOFF.md` — current operational handoff; may be stale; canonical docs beat HANDOFF unless HANDOFF has fresher timestamped evidence.
+- `HANDOFF.md` — short pointer only; it never overrides canonical docs or runtime.
 - `docs/PROJECT_OVERVIEW.md` — concise project anchor.
 - `docs/PROJECT_SKILLS.md` — skill loading budget.
+- `docs/INSTRUCTION_TREE.md` — instruction precedence and lifecycle map.
+- `.specify/feature.json` — active feature pointer.
 
 ## Agent entrypoints
 
@@ -27,6 +29,8 @@
 ## Core code
 
 - `tools/` — canonical CLI implementations and operator tools.
+- `docs/tools/INDEX.md` — one authoritative row for every tracked `tools/*.py`.
+- `docs/tools/families/` — shared operating contracts for eight tool families.
 - root `obsidian_*.py` files — compatibility wrappers around `tools/`.
 - `src/obslayer/` — package code where present.
 - `tests/` — pytest coverage.
@@ -40,12 +44,19 @@
 - `docs/report-template.md` — reporting template.
 - `SECURITY.md` — security notes.
 
-## Spec kit
+## Planning system
+
+- `.specify/` — current project-local Spec Kit infrastructure.
+- `specs/` — active feature specifications, plans, tasks and evidence.
+- `docs/spec-kit/` — preserved numbered design/history sources; not the active
+  feature pointer or runtime authority.
+
+Useful historical design sources:
 
 - `docs/spec-kit/00-overview.md` — spec-kit index.
 - `docs/spec-kit/03-safety-contract.md` — safety contract.
 - `docs/spec-kit/26-nanobot-standing-worker.md` — Nanobot worker contract.
-- `docs/spec-kit/30-orchestrator-operating-spec.md` — current orchestrator operating spec.
+- `docs/spec-kit/30-orchestrator-operating-spec.md` — orchestrator design source.
 - `docs/spec-kit/32-codex-hermes-communication-channel.md` — Codex/Hermes channel.
 - `docs/spec-kit/33-codex-native-runtime.md` — Codex runtime.
 

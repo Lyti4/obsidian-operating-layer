@@ -1,8 +1,15 @@
 # Orchestration Board
 
+**Статус:** `historical-mirror`. Этот большой Markdown-board содержит датированные
+решения и прошлые evidence pointers; он не является текущей lifecycle или
+runtime authority. Активные задачи: `.specify/feature.json` и соответствующий
+`specs/*/tasks.md`. Текущий runtime: `docs/RUNTIME_STATUS.md`. Role contracts:
+`docs/agents/`. Не возобновляйте описанные ниже jobs или applies по тексту этого
+файла.
+
 This board is the operator-facing control surface for advancing Obsidian Operating Layer without silently collapsing planning, implementation, review, and acceptance into one role.
 
-## Current safety boundary
+## Сохранённая safety boundary
 
 - Live Obsidian vault mutation is blocked until a concrete approval manifest is explicitly approved.
 - Default mode remains read-only/proposal-only/dry-run.
@@ -37,7 +44,7 @@ Standard mode for Nanobot review is **gateway + evidence packet**:
 3. For important reviews Hermes also generates a compact packet with `tools/nanobot_review_packet.py`, including scope, forbidden actions, safe URLs, git status, and a bounded diff.
 4. If Nanobot cannot access gateway URLs or loops on file access, Hermes records `Nanobot unavailable/no verdict` and falls back to local verification + Codex/Ops review; it must not broaden access to live vault/secrets.
 
-## Active lanes
+## Исторический снимок lanes
 
 | Lane | Owner role | Current state | Acceptance gate |
 | --- | --- | --- | --- |
@@ -49,7 +56,7 @@ Standard mode for Nanobot review is **gateway + evidence packet**:
 | External tools/MCP | Research worker + Hermes acceptance | Read/search/propose only | No direct write/delete/move/secret-read capability |
 
 
-## Current blockers from reviewer lanes
+## Исторические blockers reviewer lanes
 
 - **P4 blocker — backup root policy:** live apply must fail closed unless backups use the approved namespace `_Backups/obsidian-operating-layer`. Either code and tests must enforce that exact namespace or the runbook must explicitly accept a different policy.
 - **P4 blocker — post-apply verification:** `require_post_verify` must have an enforceable acceptance contract. A live apply is not accepted until a fresh post-apply observation/verification proves only approved targets changed.
@@ -78,7 +85,7 @@ A live apply may proceed only when all items are true:
 - Bot dependency PRs may auto-merge only when required checks are green and advisory findings are reviewed.
 - Workflow/security changes require explicit mention of security scan outcome before merge.
 
-## Latest repo-only slice
+## Сохранённые repo-only slices
 
 P4 manifest-review fixture added: `tests/fixtures/p4_manifest_review/` plus `tests/test_p4_manifest_review_fixture.py` prove live-like approval manifests fail closed when proposal paths, target lists, or vault roots drift. This remains sandbox-only and does not touch the live vault.
 
@@ -87,7 +94,7 @@ Nanobot recommendation decisions are now fixed in `docs/spec-kit/36-current-evid
 - Standing link-prefix baseline is now a reusable read-only tool: `tools/obsidian_standing_safe_link_prefix_baseline.py`; latest live baseline evidence under `out/reports/standing-safe-link-prefix-baseline/live-current/` reports `allowed_count: 0`, `actionable_apply_items: 0`, and no live mutation authority.
 - Closure: the standing-policy/baseline integration and R13 reconciliation are accepted and closed. Do not reopen `lane-schema-v1` or other accepted R1–R13 control-plane layers as the next slice. The next useful work is fresh selector/regeneration evidence for remaining broken/ambiguous link discovery, suppression, and operator review.
 
-## Next active Kanban slice
+## Исторический Kanban snapshot
 
 Kanban card `t_423691d1` (`generated-artifacts-registry-drift / docs_update`) is done: compact pointers are in `docs/spec-kit/36-current-evidence-index.md`, with evidence at `out/reports/kanban-triage-continuation/20260706T173514Z-generated-artifacts-registry-drift/REPORT.md`. Generated `out/` artifacts remain evidence only.
 

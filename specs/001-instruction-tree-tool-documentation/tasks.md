@@ -105,18 +105,18 @@ Nanobot observes the whole project and every agent records documentation impact.
 Nanobot names seven observation areas and proposal-only outputs, and runtime
 state is linked rather than copied.
 
-- [ ] T027 [US3] Add `test_agent_contracts_include_documentation_duty_and_runtime_source()` and `test_nanobot_contract_is_project_wide_readonly_observer()` to `tests/test_project_docs_lag_audit.py`, then confirm RED against current role files. [Docs: none — failing tests only]
-- [ ] T028 [P] [US3] Update `docs/agents/HERMES.md` with orchestration boundary, documentation-impact duty, runtime-source link, and explicit handoff for repository or live actions. [Docs: `docs/agents/HERMES.md`]
-- [ ] T029 [P] [US3] Update `docs/agents/CODEX.md` with repository-change, test evidence, documentation-impact, commit/push approval, and live-system handoff rules. [Docs: `docs/agents/CODEX.md`]
-- [ ] T030 [P] [US3] Update `docs/agents/NANOBOT.md` with seven project-wide observation areas, read-only/proposal-only outputs, alert/handoff format, documentation-drift duty, and no scheduler activation. [Docs: `docs/agents/NANOBOT.md`]
-- [ ] T031 [US3] Replace `HANDOFF.md` with a short current pointer and mark `ROLE_NOTES.md` historical with links to `docs/agents/` and `docs/RUNTIME_STATUS.md`. [Docs: `HANDOFF.md`, `ROLE_NOTES.md`]
-- [ ] T032 [P] [US3] Align authority and current-state links in `docs/PROJECT_OVERVIEW.md`, `docs/PROJECT_MAP.md`, `docs/ARCHITECTURE.md`, and `docs/DECISIONS.md`. [Docs: the four named files]
-- [ ] T033 [P] [US3] Align tool and skill ownership in `docs/TOOLS_POLICY.md`, `docs/PROJECT_SKILLS.md`, and `docs/component-inventory.md`. [Docs: the three named files]
-- [ ] T034 [P] [US3] Classify and align operating instructions in `docs/operator-guide.md`, `docs/controlled-autonomy.md`, `docs/release-readiness.md`, `docs/orchestration-board.md`, `docs/github-integration.md`, `docs/github-integration-rollout.md`, and `docs/github-marketplace-integrations.md`. [Docs: the seven named files]
-- [ ] T035 [P] [US3] Align skill guidance in `docs/skills/README.md`, `docs/skills/codex.md`, `docs/skills/graphify.md`, `docs/skills/nanobot.md`, `docs/skills/obsidian-layer-triage-kanban.md`, and `docs/skills/obsidian.md`. [Docs: the six named files]
-- [ ] T036 [P] [US3] Align risk, rollback, and authority links in `docs/runbooks/approved-live-apply.md`, `docs/runbooks/observe-propose-verify.md`, `docs/runbooks/proposal-review.md`, and `docs/runbooks/sandbox-indexing.md`. [Docs: the four named files]
-- [ ] T037 [US3] Correct stale command/runtime authority in `docs/spec-kit/30-orchestrator-operating-spec.md`, `docs/RUNTIME_STATUS.md`, `docs/report-template.md`, and `docs/telegram-summary-templates.md` without rewriting dated evidence. [Docs: the four named files]
-- [ ] T038 [US3] Run focused role-contract tests and manually review one sample change handoff from each agent for an explicit documentation-impact result. [Docs: none — verification only]
+- [x] T027 [US3] Add `test_agent_contracts_include_documentation_duty_and_runtime_source()` and `test_nanobot_contract_is_project_wide_readonly_observer()` to `tests/test_project_docs_lag_audit.py`, then confirm RED against current role files. [Docs: none — failing tests only]
+- [x] T028 [P] [US3] Update `docs/agents/HERMES.md` with orchestration boundary, documentation-impact duty, runtime-source link, and explicit handoff for repository or live actions. [Docs: `docs/agents/HERMES.md`]
+- [x] T029 [P] [US3] Update `docs/agents/CODEX.md` with repository-change, test evidence, documentation-impact, commit/push approval, and live-system handoff rules. [Docs: `docs/agents/CODEX.md`]
+- [x] T030 [P] [US3] Update `docs/agents/NANOBOT.md` with seven project-wide observation areas, read-only/proposal-only outputs, alert/handoff format, documentation-drift duty, and no scheduler activation. [Docs: `docs/agents/NANOBOT.md`]
+- [x] T031 [US3] Replace `HANDOFF.md` with a short current pointer and mark `ROLE_NOTES.md` historical with links to `docs/agents/` and `docs/RUNTIME_STATUS.md`. [Docs: `HANDOFF.md`, `ROLE_NOTES.md`]
+- [x] T032 [P] [US3] Align authority and current-state links in `docs/PROJECT_OVERVIEW.md`, `docs/PROJECT_MAP.md`, `docs/ARCHITECTURE.md`, and `docs/DECISIONS.md`. [Docs: the four named files]
+- [x] T033 [P] [US3] Align tool and skill ownership in `docs/TOOLS_POLICY.md`, `docs/PROJECT_SKILLS.md`, and `docs/component-inventory.md`. [Docs: the three named files]
+- [x] T034 [P] [US3] Classify and align operating instructions in `docs/operator-guide.md`, `docs/controlled-autonomy.md`, `docs/release-readiness.md`, `docs/orchestration-board.md`, `docs/github-integration.md`, `docs/github-integration-rollout.md`, and `docs/github-marketplace-integrations.md`. [Docs: the seven named files]
+- [x] T035 [P] [US3] Align skill guidance in `docs/skills/README.md`, `docs/skills/codex.md`, `docs/skills/graphify.md`, `docs/skills/nanobot.md`, `docs/skills/obsidian-layer-triage-kanban.md`, and `docs/skills/obsidian.md`. [Docs: the six named files]
+- [x] T036 [P] [US3] Align risk, rollback, and authority links in `docs/runbooks/approved-live-apply.md`, `docs/runbooks/observe-propose-verify.md`, `docs/runbooks/proposal-review.md`, and `docs/runbooks/sandbox-indexing.md`. [Docs: the four named files]
+- [x] T037 [US3] Correct stale command/runtime authority in `docs/spec-kit/30-orchestrator-operating-spec.md`, `docs/RUNTIME_STATUS.md`, `docs/report-template.md`, and `docs/telegram-summary-templates.md` without rewriting dated evidence. [Docs: the four named files]
+- [x] T038 [US3] Run focused role-contract tests and manually review one sample change handoff from each agent for an explicit documentation-impact result. [Docs: none — verification only]
 
 **Checkpoint**: User Story 3 is independently usable; Nanobot is a standing
 observer contract but no job is resumed.
