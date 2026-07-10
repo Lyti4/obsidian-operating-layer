@@ -1,6 +1,8 @@
 # GitHub Integration Layer
 
-Status: active for `Lyti4/obsidian-operating-layer`.
+**Статус:** `active-policy / verify-before-use`. Workflow-файлы проверяются в
+текущем checkout, а GitHub settings/checks — через GitHub UI/API перед выводом.
+Ни один снимок ниже не является постоянным доказательством текущих настроек.
 
 ## Enabled repository checks
 
@@ -41,7 +43,7 @@ Apply this layer repo-by-repo after a local green baseline. Do not bulk-enable d
 
 - Scorecard external result publishing is disabled because this workflow uploads SARIF to GitHub code scanning and therefore needs `security-events: write`; OpenSSF external publication rejects workflows with that write permission.
 
-## Actual branch protection
+## Last recorded branch protection snapshot
 
 `main` currently requires:
 

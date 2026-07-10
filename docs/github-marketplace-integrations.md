@@ -1,5 +1,9 @@
 # GitHub Apps / Marketplace integration shortlist
 
+**Статус:** `evidence/research`. Это shortlist (список кандидатов), а не текущий
+install state и не разрешение установки. Проверяйте актуальные permissions,
+стоимость и установленные workflows в GitHub перед каждым решением.
+
 Purpose: choose GitHub-platform integrations that work directly with repositories: analyze code, suggest fixes, open PRs, update dependencies, improve security, and improve PR flow.
 
 Policy: do not install third-party GitHub Apps without explicit owner approval. Each app must be installed only on selected repositories, not the full account by default.
@@ -71,7 +75,7 @@ Policy: do not install third-party GitHub Apps without explicit owner approval. 
 - Apps requiring write access to all repositories without narrow selection.
 - Apps that upload private repository code to external services without explicit approval.
 
-## Wave 1 implementation status
+## Last recorded Wave 1 implementation snapshot
 
 Implemented directly through repository files and GitHub Actions:
 

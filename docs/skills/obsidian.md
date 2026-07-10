@@ -13,6 +13,7 @@
 ## Read first
 
 - `docs/TOOLS_POLICY.md`
+- `docs/tools/INDEX.md` and the linked family guide/runbook
 - `docs/spec-kit/03-safety-contract.md`
 - relevant runbook or approval manifest
 
@@ -21,6 +22,8 @@
 - No live vault mutation without explicit Dmitry approval.
 - No edits to `.obsidian`, backups/archive/trash, Soul, secrets, or auth paths.
 - No raw secrets in notes.
+- A tool or workflow change updates its registry row, guide, test and
+  `documentation impact` in the same slice.
 
 ## If full Hermes skill is unavailable
 

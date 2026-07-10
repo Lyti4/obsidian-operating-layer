@@ -4,6 +4,29 @@
 
 This workspace builds a safe local operating layer for Obsidian. Treat the Obsidian vault as human memory and the toolchain as a read-only-first control plane.
 
+## Instruction precedence and documentation duty
+
+Apply instructions in this order: external system/developer/user instructions,
+this root `AGENTS.md`, the nearest nested `AGENTS.md`, the relevant role
+contract, the tool family guide, and the operation runbook. A narrower file
+**must not weaken** root safety, permission, data, secret, or approval rules.
+
+- `docs/INSTRUCTION_TREE.md` — canonical precedence, scope, and document-status map.
+- `docs/AGENTS.md` — documentation lifecycle and same-slice update rules.
+- `docs/agents/AGENTS.md` — common Hermes/Codex/Nanobot contract structure.
+- `docs/tools/INDEX.md` — authoritative registry for every `tools/*.py` file.
+- `tools/AGENTS.md` — CLI/internal-module development contract.
+- `src/obslayer/AGENTS.md` — safety-core and trust-boundary contract.
+- `tests/AGENTS.md` — isolated evidence and no-live-vault test contract.
+- `.specify/memory/constitution.md` — Spec Kit governance.
+- `.specify/feature.json` — active feature pointer under `specs/`.
+- `docs/RUNTIME_STATUS.md` — current verify-before-use runtime state.
+
+Every code, tool, workflow, runtime, or instruction change must update affected
+canonical/active documents in the same slice or report
+`documentation impact: none` with a reason. Adding or changing a tool also
+updates its registry row, family guide, and test.
+
 
 ## Canonical project docs
 
@@ -36,6 +59,7 @@ Use the accepted entrypoint structure; do not replace it with ad-hoc “similar 
 - Any live change must be narrowly scoped, backed up, and verified.
 - Do not print or store secrets, tokens, cookies, private keys, `.env` values, or credential file contents.
 - Do not touch money, public posting, production restarts, network exposure, or account/OAuth changes unless the user explicitly asks.
+- Do not create a commit, push a branch, or open/update a pull request unless the user explicitly approves that publication action.
 
 ## Codex implementation/review worker policy
 
@@ -64,7 +88,7 @@ Standing Nanobot task packets and reports should stay under `out/queue/`, `out/r
 
 Current Nanobot runtime/scheduled-loop state is tracked in `docs/RUNTIME_STATUS.md`. Treat it as verify-before-use status, not canonical acceptance policy.
 
-Current scheduled scout: Nanobot 15-minute audit loop runs every 15 minutes as job `212b7e8f3c21`; it is bounded read-only/proposal-only and writes `project-state.json` plus reports under `out/reports/`.
+Current verified state (2026-07-10): the approved Nanobot scout/reviewer/deep-review definitions still exist, but jobs `212b7e8f3c21`, `d2a5fd33b29f`, and `835d51562f73` are paused. Verify with `hermes cron list --all`; this repo-only slice does not resume them.
 
 Nanobot should read recurring project/server evidence through the local server-safe read-only gateway (`http://127.0.0.1:18791/`) instead of receiving repeated copied packets. The gateway exposes allowlisted project evidence plus selected server context roots (`~/work`, user systemd units, selected Hermes/Nanobot docs/workspace/skills/cron, and local operator scripts), supports only GET/HEAD/OPTIONS, blocks traversal/hidden/secret-like/sensitive paths, blocks oversized or unsafe-extension files, and does not grant filesystem write permission. Workspace-local copied packets remain a fallback for one-off sanitized bundles. Do not give Nanobot raw `/`, `~/secure`, `.ssh`, `.codex`, browser profiles, live vault roots, or credential directories.
 

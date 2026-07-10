@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -32,6 +33,39 @@ class ProjectDocsLagAudit:
         payload = asdict(self)
         payload["checks"] = [check.to_dict() for check in self.checks]
         return payload
+
+
+@dataclass(frozen=True)
+class ToolRegistryEntry:
+    tool: str
+    purpose: str
+    kind: str
+    family: str
+    mode: str
+    write_surface: str
+    inputs: str
+    outputs: str
+    test: str
+    instruction: str
+    spec: str
+    status: str
+    line_number: int
+
+
+TOOL_REGISTRY_HEADER: tuple[str, ...] = (
+    "tool",
+    "purpose",
+    "kind",
+    "family",
+    "mode",
+    "write_surface",
+    "inputs",
+    "outputs",
+    "test",
+    "instruction",
+    "spec",
+    "status",
+)
 
 
 DEFAULT_CHECKS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
@@ -99,6 +133,68 @@ DEFAULT_CHECKS: tuple[tuple[str, str, tuple[str, ...]], ...] = (
         ("15 minutes", "212b7e8f3c21", "bounded read-only/proposal-only"),
     ),
 )
+
+
+def tracked_tool_paths(repo: str | Path) -> set[str]:
+    repo_path = Path(repo).expanduser().resolve()
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(repo_path), "ls-files", "--", "tools/*.py"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        result = None
+    if result is not None and result.returncode == 0:
+        return {
+            line.strip().replace("\\", "/")
+            for line in result.stdout.splitlines()
+            if line.strip()
+        }
+
+    tools_dir = repo_path / "tools"
+    if not tools_dir.is_dir():
+        return set()
+    return {
+        path.relative_to(repo_path).as_posix()
+        for path in tools_dir.glob("*.py")
+        if path.is_file()
+    }
+
+
+def _tool_registry_cells(line: str) -> list[str]:
+    cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+    return [
+        cell[1:-1].strip()
+        if len(cell) >= 2 and cell.startswith("`") and cell.endswith("`")
+        else cell
+        for cell in cells
+    ]
+
+
+def parse_tool_registry(path: str | Path) -> list[ToolRegistryEntry]:
+    registry_path = Path(path).expanduser()
+    lines = registry_path.read_text(encoding="utf-8").splitlines()
+    header_line: int | None = None
+    for index, line in enumerate(lines):
+        if line.startswith("|") and tuple(_tool_registry_cells(line)) == TOOL_REGISTRY_HEADER:
+            header_line = index
+            break
+    if header_line is None:
+        raise ValueError(f"Tool registry header not found: {registry_path}")
+
+    entries: list[ToolRegistryEntry] = []
+    for index, line in enumerate(lines[header_line + 2 :], start=header_line + 3):
+        if not line.startswith("|"):
+            if entries or line.strip():
+                break
+            continue
+        cells = _tool_registry_cells(line)
+        if len(cells) != len(TOOL_REGISTRY_HEADER):
+            raise ValueError(f"Tool registry row {index} has {len(cells)} cells; expected 12")
+        entries.append(ToolRegistryEntry(*cells, line_number=index))
+    return entries
 
 
 def run_project_docs_lag_audit(repo: str | Path, *, generated_utc: str | None = None) -> ProjectDocsLagAudit:

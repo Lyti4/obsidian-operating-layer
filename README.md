@@ -7,6 +7,8 @@ Local, read-only-first tooling for observing an Obsidian vault, drafting proposa
 Start here before touching code or worker flows:
 
 - `AGENTS.md` — authority, roles, and safety boundaries.
+- `docs/INSTRUCTION_TREE.md` — precedence from project-wide rules to narrow tool, test, and role instructions.
+- `docs/AGENTS.md` — lifecycle and update rules for working Markdown documents.
 - `docs/PROJECT_OVERVIEW.md` — goal, status, roles, boundaries.
 - `docs/PROJECT_MAP.md` — where to find code, docs, specs, reports.
 - `docs/ARCHITECTURE.md` — high-level control flow.
@@ -15,7 +17,9 @@ Start here before touching code or worker flows:
 - `docs/PROJECT_SKILLS.md` — project skill router.
 - `docs/RUNTIME_STATUS.md` — current runtime/job status; verify before relying.
 - `docs/agents/` — Hermes/Codex/Nanobot role contracts.
+- `docs/tools/INDEX.md` — one authoritative registry entry per `tools/*.py` file; migration status is explicit.
 - `docs/skills/` — short project skill cards.
+- `.specify/feature.json` — active Spec Kit feature under `specs/`.
 
 ## Pre-commit docs integrity check
 
@@ -27,6 +31,15 @@ Before committing documentation integration changes:
 - no secrets/auth/env/cookie/private-key content is present;
 - Hermes remains acceptance owner and Dmitry approval remains required for risky/live actions;
 - generated/runtime reports are evidence, not canonical policy by themselves.
+- every changed tool, workflow, role, or runtime contract updates affected working docs in the same slice or records a reasoned no-impact result.
+
+## Project-local Spec Kit
+
+The repository tracks offline Linux/Bash planning templates under `.specify/`.
+The active feature is selected by `.specify/feature.json`; its specification,
+plan, checklist, and tasks live under `specs/`. Legacy `docs/spec-kit/` files
+remain historical design and evidence sources and do not override the active
+feature or root safety rules.
 
 ## Canonical CLI
 
@@ -44,9 +57,11 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `tools/obsidian_sandbox.py` — create/reset protected-path-excluding sandbox vault copies under `out/`.
 - `tools/obsidian_controlled_autonomy.py` — explicit Phase 08 observe/index/report queue jobs and acceptance reports; no scheduler is installed.
 - `tools/obsidian_field_slice.py` — proposal-only field acceptance slice: observe → finding → proposal → verify → dashboard list → decision record.
+- `tools/hermes_obslayer_memory.py` — tracked read-only lexical fallback over Markdown notes.
 - `docs/controlled-autonomy.md` — Phase 08 controlled-autonomy operator notes and safety model.
 - `docs/obsidian-review-dashboard/` — Dataview/Templater-friendly Phase 7 review dashboard source notes.
 - `docs/telegram-summary-templates.md` — short Telegram reporting templates for dry-run, sandbox benchmark, manual acceptance, and live-approval request updates.
+- `docs/audits/hermes-native-memory-audit-2026-07-10.md` — current gap audit, donor decisions, safety boundaries, and phased roadmap toward native Hermes memory.
 - `obsidian_*.py` — compatibility wrappers for the canonical tools.
 - `src/obslayer/guardrails.py` — shared guardrails, approval manifest validation, protected path policy, backup policy.
 - `src/obslayer/sandbox.py` — sandbox vault copy/reset harness for read-only component evaluation.
@@ -57,6 +72,8 @@ The canonical implementation is under `tools/`. Root-level `obsidian_*.py` files
 - `docs/runbooks/` — short operator runbooks for safe daily use.
 - `manifests/` — checked-in manifest examples only; real manifests belong in task scoped working dirs.
 - `out/`, `artifacts/`, `obslayer-backups/`, `.hermes-backups/` — local generated artifacts, ignored by git.
+
+`tools/hermes_obslayer_memory.py` is not yet an active Hermes `MemoryProvider`, automatic capture path, or semantic indexer; those remain later separately accepted slices.
 
 ## Adopted design patterns
 

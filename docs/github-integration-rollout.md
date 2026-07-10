@@ -2,9 +2,14 @@
 
 This document is the reusable GitHub operating baseline for Dmitry/Lyti4 repositories.
 
-## Safe baseline applied across active repositories
+**Статус:** `active-policy` с `historical` account/repository snapshot. Все
+утверждения ниже о том, что уже применено, API/plan limits и repository status
+являются прошлым снимком и проверяются repo-by-repo через GitHub перед
+использованием. Этот файл не расширяет полномочия проекта на другие repositories.
 
-Applied to public repositories when GitHub API supports it:
+## Historical applied-baseline snapshot
+
+Recorded as applied to public repositories when GitHub API supported it:
 
 - Dependabot vulnerability alerts.
 - Dependabot security updates.
@@ -14,15 +19,18 @@ Applied to public repositories when GitHub API supports it:
 - Auto-merge enabled where GitHub accepts it.
 - Delete branch on merge enabled.
 
-Applied to private repositories where supported:
+Recorded as applied to private repositories where supported:
 
 - Dependabot vulnerability alerts.
 - Issues enabled.
 - Delete branch on merge enabled.
 
-Current API limitation observed for private repositories on this account/plan: `security_and_analysis` is not returned by the repository API, and the full security patch is rejected. Do not report private secret scanning as enabled unless verified in the repo UI/API later.
+Historical API limitation: `security_and_analysis` was not returned for private
+repositories and a full security patch was rejected. Reverify the current
+account plan and repo UI/API; do not report private secret scanning as enabled
+from this snapshot.
 
-## Current repository status snapshot
+## Historical repository status snapshot
 
 | Repository | Visibility | Default branch | Security baseline | Branch protection |
 | --- | --- | --- | --- | --- |

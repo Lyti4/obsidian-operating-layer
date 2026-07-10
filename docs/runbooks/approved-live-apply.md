@@ -1,6 +1,14 @@
 # Runbook — Approved Live Apply
 
+**Статус:** `active approved-write`. Governing tool row:
+`docs/tools/INDEX.md` -> `tools/obsidian_apply.py`. Runtime availability is
+verified separately through `docs/RUNTIME_STATUS.md`.
+
 This runbook is only for a narrow live change that the operator explicitly approved.
+
+Hermes may prepare and verify the manifest, but only the human owner authorizes
+the exact live operation. Agent role, proposal or successful dry-run is not
+permission.
 
 ## Preconditions
 
@@ -71,3 +79,9 @@ Report:
 - post-apply verification mismatch;
 - unexpected live vault changes;
 - any target under `.obsidian`, `_Backups`, `_Archive`, `.trash`, or Soul-protected paths.
+
+## Rollback
+
+Stop further applies, restore only approved targets from the recorded backup
+tree, then run a fresh observation/verification. Preserve the failed apply JSON
+and report unexpected drift; never broaden restoration to unrelated notes.

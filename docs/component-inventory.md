@@ -4,6 +4,11 @@
 Источник: GitHub API через `gh` + официальный registry community plugins `obsidianmd/obsidian-releases/community-plugins.json`.
 Политика: **готовые рабочие куски сначала**, свой код — только как glue/safety layer.
 
+**Статус:** `evidence` — датированный снимок кандидатов, не текущий install list,
+runtime source или разрешение интеграции. Текущие tool boundaries смотрите в
+`docs/tools/INDEX.md`, навыки — в `docs/PROJECT_SKILLS.md`, runtime — в
+`docs/RUNTIME_STATUS.md`, активный план — через `.specify/feature.json`.
+
 ## Вывод
 
 Не строим автономность с нуля. Собираем систему из готовых слоёв:
@@ -101,11 +106,12 @@
 
 ```text
 External component/plugin -> read/search/analyze/propose only
-Our obslayer safety core -> единственный путь live mutation
-Live vault writes -> только через approval manifest + backup + verify
+Our obslayer safety core -> существующие note edits только через approved apply
+New operator report -> отдельный non-overwrite backfill runbook
+Live vault writes -> только через точный approval/rollback/verify контракт
 ```
 
-## Следующие шаги spec kit
+## Исторически предложенные шаги
 
 1. Описать component adapters: MCP adapter, Plugin registry adapter, RAG adapter, Proposal adapter.
 2. Сделать allowlist capabilities: read/search/graph/propose/write-request, где write-request != direct write.
@@ -116,6 +122,9 @@ Live vault writes -> только через approval manifest + backup + verify
    - `03-safety-contract.md`
    - `04-integration-plan.md`
 4. Потом уже выбирать 2–3 компонента для реальной установки/песочницы.
+
+Этот список сохранён как история: каталог уже существует, а новые активные
+features планируются под `specs/` через проект-local `.specify/`.
 
 ## Raw artifacts
 

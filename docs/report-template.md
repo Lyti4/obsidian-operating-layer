@@ -2,8 +2,22 @@
 
 Date: YYYY-MM-DD
 Task: <task id>
-Operator: <profile>
-Vault: <absolute vault path>
+Operator/agent: <role>
+Data boundary: <repo-relative or sanitized path class>
+
+## Кто
+
+- Владелец решения:
+- Исполнитель:
+- Handoff target:
+
+## Зачем
+
+- Пользовательский результат:
+
+## Почему
+
+- Evidence и причина решения:
 
 ## Summary
 
@@ -31,7 +45,12 @@ Vault: <absolute vault path>
 ## Changed files
 
 - <path>
-- <path>
+
+## Границы
+
+- Live vault/runtime changed: yes/no
+- Approval used: <none or exact approved operation ID/path>
+- Secrets included: no
 
 ## Safety gates checked
 
@@ -45,8 +64,15 @@ Vault: <absolute vault path>
 ## Tests
 
 - <test command>
-- <test command>
+
+## Влияние на документацию
+
+- `documentation impact`: <updated canonical/active paths or reasoned none>
 
 ## Next safe step
 
 - <one actionable step>
+
+## Термины
+
+- <term>: <короткое русское объяснение>

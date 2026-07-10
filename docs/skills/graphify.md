@@ -13,6 +13,7 @@
 ## Read first
 
 - `docs/PROJECT_MAP.md`
+- `docs/tools/families/indexing-graphify-semantic.md`
 - `docs/spec-kit/30-orchestrator-operating-spec.md`
 - current Graphify/embedding run report or roadmap slice
 
@@ -21,6 +22,7 @@
 - Do not run broad embeddings by default.
 - Do not mutate live vault.
 - Do not treat generated graph/RAG output as apply authority.
+- Record `documentation impact` when a graph/index/tool contract changes.
 
 ## If full Hermes skill is unavailable
 

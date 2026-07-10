@@ -4,6 +4,10 @@ Purpose: short project-local skill cards. Use these as routing cards before load
 
 Source of truth: `docs/PROJECT_SKILLS.md` is the index. These files are the per-capability cards.
 
+Every card inherits `AGENTS.md`, the applicable role contract, active feature
+from `.specify/feature.json`, and the same-slice `documentation impact` duty.
+A skill routes work; it never grants live or publication permission.
+
 ## Cards
 
 - `obsidian-layer-triage-kanban.md` — project orchestration/Kanban workflow.

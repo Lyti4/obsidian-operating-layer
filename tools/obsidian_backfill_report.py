@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 from _bootstrap import SRC  # noqa: F401
 
-from obslayer import canonical_run_commands, load_json
+from obslayer import GuardrailError, canonical_run_commands, load_json
 
 
 def render_report(proposal: dict) -> str:
@@ -58,6 +59,19 @@ def render_report(proposal: dict) -> str:
     return "\n".join(lines)
 
 
+def report_output_path(reports_dir: Path, requested: str | None) -> Path:
+    out = (
+        Path(requested).expanduser().resolve()
+        if requested
+        else reports_dir / "obslayer-implementation-report.md"
+    )
+    try:
+        out.relative_to(reports_dir)
+    except ValueError as exc:
+        raise GuardrailError("Report output is outside --reports-dir") from exc
+    return out
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Write an Obsidian report note from a proposal bundle.")
     parser.add_argument("--proposal", required=True, help="Proposal JSON path")
@@ -68,12 +82,24 @@ def main() -> int:
     proposal = load_json(Path(args.proposal).expanduser().resolve())
     report_md = render_report(proposal)
     reports_dir = Path(args.reports_dir).expanduser().resolve()
+    out = report_output_path(reports_dir, args.out)
     reports_dir.mkdir(parents=True, exist_ok=True)
-    out = Path(args.out).expanduser().resolve() if args.out else reports_dir / "obslayer-implementation-report.md"
-    out.write_text(report_md, encoding="utf-8")
+    try:
+        with out.open("x", encoding="utf-8") as handle:
+            handle.write(report_md)
+    except FileExistsError as exc:
+        raise GuardrailError(f"Report output already exists: {out}") from exc
     print(json.dumps({"status": "ok", "out": str(out)}, indent=2, sort_keys=True))
     return 0
 
 
+def cli() -> int:
+    try:
+        return main()
+    except GuardrailError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+
+
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(cli())
